@@ -1,0 +1,149 @@
+{
+  "version": "2.1.0",
+  "tenant": "nferreira.staging.volterra.us",
+  "last_crawled": "2025-12-24T21:35:00Z",
+  "deterministic_navigation": {
+    "enabled": true,
+    "description": "Element refs extracted for deterministic browser automation - no guessing required",
+    "note": "Refs may change between sessions; use as primary navigation with find() as fallback"
+  },
+  "authentication": {
+    "method": "azure_sso",
+    "login_url": "https://nferreira.staging.volterra.us",
+    "sso_provider": "Microsoft Azure",
+    "auto_authorized": true
+  },
+
+  "home_page": {
+    "url": "/web/home",
+    "elements": {
+      "search": { "ref": "ref_2", "type": "textbox" },
+      "support": { "ref": "ref_4" },
+      "view_catalog": { "ref": "ref_6" }
+    },
+    "workspace_cards": {
+      "web_app_api_protection": { "ref": "ref_7", "name": "Web App & API Protection" },
+      "multi_cloud_network_connect": { "ref": "ref_8", "name": "Multi-Cloud Network Connect" },
+      "multi_cloud_app_connect": { "ref": "ref_9", "name": "Multi-Cloud App Connect" },
+      "distributed_apps": { "ref": "ref_10", "name": "Distributed Apps" },
+      "dns_management": { "ref": "ref_11", "name": "DNS Management" },
+      "bot_defense": { "ref": "ref_12", "name": "Bot Defense" },
+      "data_intelligence": { "ref": "ref_13", "name": "Data Intelligence" },
+      "client_side_defense": { "ref": "ref_14", "name": "Client-Side Defense" },
+      "web_app_scanning": { "ref": "ref_15", "name": "Web App Scanning" },
+      "nginx_one": { "ref": "ref_16", "name": "NGINX One" },
+      "bigip_utilities": { "ref": "ref_17", "name": "BIG-IP Utilities" },
+      "content_delivery_network": { "ref": "ref_18", "name": "Content Delivery Network" },
+      "routed_ddos": { "ref": "ref_73", "name": "Routed DDoS" },
+      "observability": { "ref": "ref_76", "name": "Observability" },
+      "account_protection": { "ref": "ref_79", "name": "Account Protection" },
+      "authentication_intelligence": { "ref": "ref_82", "name": "Authentication Intelligence" },
+      "application_traffic_insight": { "ref": "ref_85", "name": "Application Traffic Insight" },
+      "delegated_access": { "ref": "ref_88", "name": "Delegated Access" },
+      "shared_configuration": { "ref": "ref_91", "name": "Shared Configuration" },
+      "audit_logs_alerts": { "ref": "ref_94", "name": "Audit Logs & Alerts" },
+      "billing": { "ref": "ref_97", "name": "Billing" },
+      "administration": { "ref": "ref_100", "name": "Administration" }
+    }
+  },
+
+  "waap_workspace": {
+    "url": "/web/workspaces/web-app-and-api-protection",
+    "sidebar": {
+      "overview": {
+        "ref": "ref_445",
+        "security": { "ref": "ref_448", "url": "/web/workspaces/web-app-and-api-protection/namespaces/default/overview/security" },
+        "performance": { "ref": "ref_450", "url": "/web/workspaces/web-app-and-api-protection/namespaces/default/overview/performance" }
+      },
+      "manage": {
+        "ref": "ref_453",
+        "load_balancers": { "ref": "ref_456" },
+        "cdn": { "ref": "ref_458" },
+        "bigip_virtual_servers": { "ref": "ref_460" },
+        "third_party_applications": { "ref": "ref_462" },
+        "app_firewall": { "ref": "ref_465" },
+        "service_policies": { "ref": "ref_467" },
+        "rate_limiter_policies": { "ref": "ref_469" },
+        "shared_objects": { "ref": "ref_471" },
+        "ai_ml": { "ref": "ref_473" },
+        "public_ip_addresses": { "ref": "ref_475" },
+        "alerts_management": { "ref": "ref_477" },
+        "files": { "ref": "ref_479" },
+        "api_security": { "ref": "ref_481" },
+        "reports": { "ref": "ref_483" },
+        "certificate_management": { "ref": "ref_485" },
+        "bot_defense_management": { "ref": "ref_487" },
+        "saved_filters": { "ref": "ref_490" }
+      },
+      "notifications": { "ref": "ref_493" },
+      "workspace_info": { "ref": "ref_498" }
+    }
+  },
+
+  "http_load_balancer_list": {
+    "url": "/web/workspaces/web-app-and-api-protection/namespaces/default/manage/load_balancers/http_loadbalancers",
+    "add_button": { "ref": "ref_545", "text": "Add HTTP Load Balancer" },
+    "tech_docs_link": { "ref": "ref_541" }
+  },
+
+  "http_load_balancer_form": {
+    "dialog": { "ref": "ref_555" },
+    "tabs": {
+      "form": { "ref": "ref_558" },
+      "documentation": { "ref": "ref_560" },
+      "json": { "ref": "ref_562" }
+    },
+    "search": { "ref": "ref_565" },
+    "section_tabs": {
+      "metadata": { "ref": "ref_569" },
+      "domains_and_lb_type": { "ref": "ref_570" },
+      "origins": { "ref": "ref_571" },
+      "routes": { "ref": "ref_572" },
+      "web_application_firewall": { "ref": "ref_573" },
+      "bot_protection": { "ref": "ref_574" },
+      "api_protection": { "ref": "ref_575" },
+      "malware_protection": { "ref": "ref_576" },
+      "dos_settings": { "ref": "ref_577" },
+      "client_side_defense": { "ref": "ref_578" },
+      "common_security_controls": { "ref": "ref_579" },
+      "other_settings": { "ref": "ref_580" }
+    },
+    "fields": {
+      "name": { "ref": "ref_585", "type": "textbox", "required": true },
+      "add_label": { "ref": "ref_589" },
+      "description": { "ref": "ref_593", "type": "textbox" },
+      "domains_input": { "ref": "ref_616", "type": "textbox" },
+      "add_domain": { "ref": "ref_619" },
+      "load_balancer_type": { "ref": "ref_624", "type": "listbox" },
+      "http_redirect_to_https": { "ref": "ref_626", "type": "checkbox" },
+      "add_hsts_header": { "ref": "ref_630", "type": "checkbox" },
+      "https_listen_port": { "ref": "ref_640", "type": "spinbutton" },
+      "tls_security_level": { "ref": "ref_645", "type": "listbox" },
+      "mtls": { "ref": "ref_649", "type": "listbox" },
+      "add_origin_pool": { "ref": "ref_683" },
+      "waf": { "ref": "ref_695", "type": "listbox" },
+      "bot_defense": { "ref": "ref_723", "type": "listbox" },
+      "api_definition": { "ref": "ref_729", "type": "listbox" },
+      "api_discovery": { "ref": "ref_739", "type": "listbox" },
+      "mitigation_action": { "ref": "ref_764", "type": "listbox" },
+      "service_policies": { "ref": "ref_799", "type": "listbox" },
+      "ip_reputation": { "ref": "ref_803", "type": "listbox" },
+      "rate_limiting": { "ref": "ref_823", "type": "listbox" },
+      "vip_advertisement": { "ref": "ref_837", "type": "listbox" },
+      "load_balancing_algorithm": { "ref": "ref_841", "type": "listbox" }
+    },
+    "actions": {
+      "cancel": { "ref": "ref_855", "text": "Cancel All" },
+      "submit": { "ref": "ref_858", "text": "Add HTTP Load Balancer" }
+    }
+  },
+
+  "crawl_summary": {
+    "pages_crawled": 3,
+    "forms_extracted": 1,
+    "total_refs": 150,
+    "workspaces_discovered": 22,
+    "sidebar_items": 18,
+    "form_fields": 25
+  }
+}

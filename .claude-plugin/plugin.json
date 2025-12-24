@@ -1,0 +1,14 @@
+{
+  "name": "f5xc-chrome",
+  "version": "1.0.0",
+  "description": "Chrome browser automation for F5 Distributed Cloud console - navigate, crawl, and automate XC GUI operations",
+  "author": {
+    "name": "Robin Mordasiewicz",
+    "url": "https://github.com/robinmordasiewicz"
+  },
+  "repository": "https://github.com/robinmordasiewicz/f5xc-chrome",
+  "license": "MIT",
+  "keywords": ["f5", "xc", "distributed-cloud", "chrome", "console", "automation", "browser"],
+  "skills": "./skills/",
+  "commands": "./commands/"
+}
