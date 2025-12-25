@@ -1,7 +1,7 @@
 {
   "version": "2.2.0",
   "tenant": "nferreira.staging.volterra.us",
-  "last_crawled": null,
+  "last_crawled": "2025-12-25T02:45:00Z",
   "description": "Complete URL sitemap for F5 XC console deterministic navigation",
 
   "static_routes": {
@@ -9,6 +9,11 @@
       "title": "F5 Distributed Cloud Console Home",
       "description": "Landing page with workspace cards",
       "page_type": "home"
+    },
+    "/web/catalog/use-cases": {
+      "title": "Catalog - Use Cases",
+      "description": "Service catalog with use cases and workspaces",
+      "page_type": "catalog"
     },
     "/web/workspaces/web-app-and-api-protection": {
       "title": "Web App & API Protection",
@@ -44,6 +49,76 @@
       "title": "Administration",
       "workspace": "admin",
       "page_type": "workspace"
+    },
+    "/web/workspaces/bot-defense": {
+      "title": "Bot Defense",
+      "workspace": "bot_defense",
+      "page_type": "workspace"
+    },
+    "/web/workspaces/data-intelligence": {
+      "title": "Data Intelligence",
+      "workspace": "data_intelligence",
+      "page_type": "workspace"
+    },
+    "/web/workspaces/client-side-defense": {
+      "title": "Client-Side Defense",
+      "workspace": "client_side_defense",
+      "page_type": "workspace"
+    },
+    "/web/workspaces/web-app-scanning": {
+      "title": "Web App Scanning",
+      "workspace": "web_app_scanning",
+      "page_type": "workspace"
+    },
+    "/web/workspaces/nginx-one": {
+      "title": "NGINX One",
+      "workspace": "nginx_one",
+      "page_type": "workspace"
+    },
+    "/web/workspaces/bigip-utilities": {
+      "title": "BIG-IP Utilities",
+      "workspace": "bigip_utilities",
+      "page_type": "workspace"
+    },
+    "/web/workspaces/routed-ddos": {
+      "title": "Routed DDoS",
+      "workspace": "routed_ddos",
+      "page_type": "workspace"
+    },
+    "/web/workspaces/observability": {
+      "title": "Observability",
+      "workspace": "observability",
+      "page_type": "workspace"
+    },
+    "/web/workspaces/account-protection": {
+      "title": "Account Protection",
+      "workspace": "account_protection",
+      "page_type": "workspace"
+    },
+    "/web/workspaces/authentication-intelligence": {
+      "title": "Authentication Intelligence",
+      "workspace": "auth_intelligence",
+      "page_type": "workspace"
+    },
+    "/web/workspaces/application-traffic-insight": {
+      "title": "Application Traffic Insight",
+      "workspace": "app_traffic_insight",
+      "page_type": "workspace"
+    },
+    "/web/workspaces/delegated-access": {
+      "title": "Delegated Access",
+      "workspace": "delegated_access",
+      "page_type": "workspace"
+    },
+    "/web/workspaces/shared-configuration": {
+      "title": "Shared Configuration",
+      "workspace": "shared_config",
+      "page_type": "workspace"
+    },
+    "/web/workspaces/audit-logs-alerts": {
+      "title": "Audit Logs & Alerts",
+      "workspace": "audit_logs",
+      "page_type": "workspace"
     }
   },
 
@@ -64,7 +139,7 @@
       "variables": {
         "workspace": ["web-app-and-api-protection"],
         "namespace": "user-defined",
-        "lb_type": ["http_loadbalancers", "tcp_loadbalancers", "dns_loadbalancers"]
+        "lb_type": ["http_loadbalancers", "tcp_loadbalancers", "origin_pools", "health_checks"]
       },
       "example": "/web/workspaces/web-app-and-api-protection/namespaces/default/manage/load_balancers/http_loadbalancers"
     },
@@ -75,14 +150,12 @@
         "workspace": ["web-app-and-api-protection", "multi-cloud-network-connect"],
         "namespace": "user-defined",
         "resource_type": [
-          "origin_pools",
           "app_firewall",
-          "service_policies",
+          "bigip_virtual_server",
+          "third_party_application",
           "rate_limiter_policies",
-          "api_security",
-          "bot_defense",
-          "certificate_management",
-          "public_ip_addresses"
+          "public_ip",
+          "saved_filters"
         ]
       },
       "example": "/web/workspaces/web-app-and-api-protection/namespaces/default/manage/origin_pools"
@@ -102,6 +175,46 @@
         "resource_id": "resource-specific-name"
       },
       "example": "/web/workspaces/web-app-and-api-protection/namespaces/default/manage/http_loadbalancers/my-lb"
+    },
+    {
+      "pattern": "/web/workspaces/{workspace}/namespaces/{namespace}/manage/cdn/{cdn_resource}",
+      "description": "CDN management pages",
+      "variables": {
+        "workspace": ["web-app-and-api-protection"],
+        "namespace": "user-defined",
+        "cdn_resource": ["distributions", "cdn_cache_rule"]
+      },
+      "example": "/web/workspaces/web-app-and-api-protection/namespaces/default/manage/cdn/distributions"
+    },
+    {
+      "pattern": "/web/workspaces/{workspace}/namespaces/{namespace}/manage/service_policies/{sp_type}",
+      "description": "Service Policies management pages",
+      "variables": {
+        "workspace": ["web-app-and-api-protection"],
+        "namespace": "user-defined",
+        "sp_type": ["active_service_policies", "service_policies", "service_policy_rules"]
+      },
+      "example": "/web/workspaces/web-app-and-api-protection/namespaces/default/manage/service_policies/service_policies"
+    },
+    {
+      "pattern": "/web/workspaces/{workspace}/namespaces/{namespace}/manage/shared_objects/{so_type}",
+      "description": "Shared Objects management pages",
+      "variables": {
+        "workspace": ["web-app-and-api-protection"],
+        "namespace": "user-defined",
+        "so_type": ["ip_prefix_sets", "bgp_asn_sets", "rate_limiters", "user_identifications", "waf_exclusion_policy", "malicious_user_mitigation"]
+      },
+      "example": "/web/workspaces/web-app-and-api-protection/namespaces/default/manage/shared_objects/ip_prefix_sets"
+    },
+    {
+      "pattern": "/web/workspaces/{workspace}/namespaces/{namespace}/manage/ai_ml/{ai_type}",
+      "description": "AI & ML management pages",
+      "variables": {
+        "workspace": ["web-app-and-api-protection"],
+        "namespace": "user-defined",
+        "ai_type": ["app_settings"]
+      },
+      "example": "/web/workspaces/web-app-and-api-protection/namespaces/default/manage/ai_ml/app_settings"
     }
   ],
 
@@ -112,21 +225,46 @@
     "dns": "/web/workspaces/dns-management",
     "cdn": "/web/workspaces/content-delivery-network",
     "admin": "/web/workspaces/administration",
+    "bot": "/web/workspaces/bot-defense",
+    "data-intel": "/web/workspaces/data-intelligence",
+    "csd": "/web/workspaces/client-side-defense",
+    "scan": "/web/workspaces/web-app-scanning",
+    "nginx": "/web/workspaces/nginx-one",
+    "bigip": "/web/workspaces/bigip-utilities",
+    "ddos": "/web/workspaces/routed-ddos",
+    "observe": "/web/workspaces/observability",
+    "account": "/web/workspaces/account-protection",
+    "auth": "/web/workspaces/authentication-intelligence",
+    "traffic": "/web/workspaces/application-traffic-insight",
+    "delegated": "/web/workspaces/delegated-access",
+    "shared": "/web/workspaces/shared-configuration",
+    "audit": "/web/workspaces/audit-logs-alerts",
+    "catalog": "/web/catalog/use-cases",
     "home": "/web/home"
   },
 
   "resource_shortcuts": {
     "http-lb": "/web/workspaces/web-app-and-api-protection/namespaces/{namespace}/manage/load_balancers/http_loadbalancers",
     "tcp-lb": "/web/workspaces/web-app-and-api-protection/namespaces/{namespace}/manage/load_balancers/tcp_loadbalancers",
-    "origin-pools": "/web/workspaces/web-app-and-api-protection/namespaces/{namespace}/manage/origin_pools",
-    "waf": "/web/workspaces/web-app-and-api-protection/namespaces/{namespace}/manage/app_firewall"
+    "origin-pools": "/web/workspaces/web-app-and-api-protection/namespaces/{namespace}/manage/load_balancers/origin_pools",
+    "health-checks": "/web/workspaces/web-app-and-api-protection/namespaces/{namespace}/manage/load_balancers/health_checks",
+    "waf": "/web/workspaces/web-app-and-api-protection/namespaces/{namespace}/manage/app_firewall",
+    "cdn": "/web/workspaces/web-app-and-api-protection/namespaces/{namespace}/manage/cdn/distributions",
+    "service-policies": "/web/workspaces/web-app-and-api-protection/namespaces/{namespace}/manage/service_policies/service_policies",
+    "rate-limiters": "/web/workspaces/web-app-and-api-protection/namespaces/{namespace}/manage/rate_limiter_policies",
+    "security": "/web/workspaces/web-app-and-api-protection/namespaces/{namespace}/overview/security",
+    "performance": "/web/workspaces/web-app-and-api-protection/namespaces/{namespace}/overview/performance"
   },
 
   "crawl_coverage": {
-    "static_routes_discovered": 8,
-    "dynamic_patterns_defined": 5,
-    "workspaces_mapped": 7,
-    "needs_crawl": true,
-    "note": "Run /xc:console crawl to populate complete sitemap"
+    "static_routes_discovered": 23,
+    "dynamic_patterns_defined": 9,
+    "workspaces_mapped": 21,
+    "shortcuts_defined": 10,
+    "waap_complete": true,
+    "mcn_complete": false,
+    "dns_complete": false,
+    "needs_full_crawl": true,
+    "note": "WAAP workspace fully crawled. Run /xc:console crawl to complete other workspaces."
   }
 }
