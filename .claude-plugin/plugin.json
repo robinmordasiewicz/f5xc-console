@@ -1,5 +1,5 @@
 {
-  "name": "f5xc-chrome",
+  "name": "xc",
   "version": "0.1.0",
   "description": "Chrome browser automation for F5 Distributed Cloud console - navigate, crawl, and automate XC GUI operations",
   "author": {

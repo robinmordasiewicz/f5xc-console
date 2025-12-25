@@ -91,7 +91,7 @@ f5xc-chrome/
 │       ├── workflows/       # Task automation patterns
 │       └── scripts/         # Crawl utilities
 ├── commands/
-│   └── xc:console.md        # Command definition
+│   └── console.md           # Command definition
 ├── README.md
 ├── LICENSE
 └── CHANGELOG.md
