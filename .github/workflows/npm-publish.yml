@@ -86,13 +86,16 @@ jobs:
 
       - name: Summary
         run: |
-          echo "## npm Publish Summary" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "- **Package**: claude-plugin-f5xc-chrome" >> $GITHUB_STEP_SUMMARY
-          echo "- **Version**: $(node -p \"require('./package.json').version\")" >> $GITHUB_STEP_SUMMARY
-          echo "- **Registry**: https://www.npmjs.com/package/claude-plugin-f5xc-chrome" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### Installation" >> $GITHUB_STEP_SUMMARY
-          echo "\`\`\`bash" >> $GITHUB_STEP_SUMMARY
-          echo "claude plugin add claude-plugin-f5xc-chrome" >> $GITHUB_STEP_SUMMARY
-          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          VERSION=$(node -p "require('./package.json').version")
+          cat >> $GITHUB_STEP_SUMMARY << EOF
+          ## npm Publish Summary
+
+          - **Package**: claude-plugin-f5xc-chrome
+          - **Version**: ${VERSION}
+          - **Registry**: https://www.npmjs.com/package/claude-plugin-f5xc-chrome
+
+          ### Installation
+          \`\`\`bash
+          claude plugin add claude-plugin-f5xc-chrome
+          \`\`\`
+          EOF
