@@ -1,0 +1,216 @@
+# Field Mappings: UI → API Property Paths
+#
+# Maps F5 XC Console UI field names to their corresponding API property paths.
+# This bridges the gap between human-friendly UI labels and machine-readable API schemas.
+#
+# Format:
+#   resource_type:
+#     common_fields:         # Always mapped regardless of form state
+#       ui_field_name: "api.property.path"
+#     discriminator_fields:  # Conditional mappings based on dropdown selections
+#       ui_field_name:
+#         option_value: "api.property.path"
+#     nested_configs:        # Mappings within nested configuration dialogs
+#       trigger_field_name:
+#         ui_field_name: "api.property.path"
+
+version: "1.0.0"
+last_updated: "2026-01-21"
+
+# ==============================================================================
+# HEALTHCHECK Resource Mappings
+# ==============================================================================
+healthcheck:
+  description: "F5 XC Health Check resource"
+  api_type: "ves.io.schema.healthcheck.Object"
+
+  # Common fields (always present, regardless of health check type)
+  common_fields:
+    # Metadata fields
+    name: "metadata.name"
+    labels: "metadata.labels"
+    description: "metadata.description"
+
+    # Disabled field (not shown in UI, always false)
+    disable: "metadata.disable"
+
+    # Common health check configuration
+    timeout: "timeout"
+    interval: "interval"
+    unhealthy_threshold: "unhealthy_threshold"
+    healthy_threshold: "healthy_threshold"
+    jitter_percent: "jitter_percent"
+
+    # Advanced fields
+    show_advanced_fields: "__ui_only__"  # Special marker: UI-only field
+
+  # Discriminator field: "Health Check Type" dropdown
+  discriminator_fields:
+    health_check:
+      # UI option → API property mapping
+      "HTTP HealthCheck": "http_health_check"
+      "TCP HealthCheck": "tcp_health_check"
+      "ICMP HealthCheck": "icmp_ping_health_check"
+
+  # Nested configuration mappings
+  nested_configs:
+    # HTTP Health Check nested configuration
+    http_health_check:
+      path: "http_health_check.path"
+      use_http2: "http_health_check.use_http2"
+      request_headers_to_add: "http_health_check.request_headers_to_add"
+      expected_status_codes: "http_health_check.expected_status_codes"
+
+      # Nested discriminator: "Host Header" dropdown
+      __discriminator__:
+        field: "specify_host_header"
+        mappings:
+          "Origin Server Name": "http_health_check.host_header"
+          "Custom Value": "http_health_check.host_header"
+
+      # Host Header custom value
+      host_header_value: "http_health_check.host_header"
+
+    # TCP Health Check nested configuration
+    tcp_health_check:
+      send_payload: "tcp_health_check.send_payload.text"
+      receive_payload: "tcp_health_check.receive_payload"
+
+    # ICMP Ping Health Check (no nested config typically)
+    icmp_ping_health_check: {}
+
+  # Special field transformations
+  transformations:
+    # Array-type fields that need special handling
+    expected_status_codes:
+      type: "array"
+      item_type: "string"
+      ui_format: "comma_separated"  # "200, 201, 204" → ["200", "201", "204"]
+
+    request_headers_to_add:
+      type: "array"
+      item_type: "object"
+      ui_format: "key_value_pairs"  # [{name: "X-Header", value: "val"}]
+
+  # Validation rules for API property paths
+  validation:
+    required_api_fields:
+      - "metadata.name"
+      - "timeout"
+      - "interval"
+      - "unhealthy_threshold"
+      - "healthy_threshold"
+
+    mutually_exclusive:
+      - ["http_health_check", "tcp_health_check", "icmp_ping_health_check"]
+
+# ==============================================================================
+# ORIGIN_POOL Resource Mappings (Example for future expansion)
+# ==============================================================================
+origin_pool:
+  description: "F5 XC Origin Pool resource"
+  api_type: "ves.io.schema.views.origin_pool.Object"
+
+  common_fields:
+    name: "metadata.name"
+    labels: "metadata.labels"
+    description: "metadata.description"
+
+    # Origin pool specific fields
+    port: "port"
+    no_tls: "no_tls"
+    use_tls: "use_tls"
+
+  discriminator_fields:
+    origin_servers:
+      "Public DNS Name of Origin Server": "origin_servers.public_name"
+      "DNS Name of Origin Server on given Sites": "origin_servers.k8s_service"
+      "IP Address of Origin Server on given Sites": "origin_servers.private_name"
+
+  nested_configs:
+    # Placeholder for origin pool nested configurations
+    load_balancer_algorithm: {}
+
+# ==============================================================================
+# LOAD_BALANCER Resource Mappings (Example for future expansion)
+# ==============================================================================
+load_balancer:
+  description: "F5 XC HTTP Load Balancer resource"
+  api_type: "ves.io.schema.views.http_loadbalancer.Object"
+
+  common_fields:
+    name: "metadata.name"
+    labels: "metadata.labels"
+    description: "metadata.description"
+    domains: "domains"
+
+  discriminator_fields:
+    advertise_on_public_default_vip:
+      "Advertise": "advertise_on_public_default_vip"
+      "Do not Advertise": "do_not_advertise"
+
+# ==============================================================================
+# Global Mapping Patterns
+# ==============================================================================
+global_patterns:
+  # Common metadata mappings across all resources
+  metadata:
+    name: "metadata.name"
+    namespace: "metadata.namespace"
+    labels: "metadata.labels"
+    annotations: "metadata.annotations"
+    description: "metadata.description"
+    disable: "metadata.disable"
+
+  # UI-only fields (not sent to API)
+  ui_only_markers:
+    - "show_advanced_fields"
+    - "__ui_state__"
+    - "__form_version__"
+
+  # Common transformation patterns
+  common_transformations:
+    # Boolean fields that appear as checkboxes
+    boolean_checkbox:
+      - "use_http2"
+      - "no_tls"
+      - "use_tls"
+      - "disable"
+
+    # String fields that need trimming
+    string_trim:
+      - "name"
+      - "description"
+      - "path"
+
+# ==============================================================================
+# Mapping Metadata
+# ==============================================================================
+metadata:
+  version: "1.0.0"
+  schema_version: "1.0.0"
+  last_updated: "2026-01-21"
+  maintainer: "f5xc-console schema extraction"
+
+  # Source of truth priorities
+  priorities:
+    1: "UI field names (source of truth for labels)"
+    2: "API property paths (source of truth for structure)"
+    3: "API specification (source of truth for validation)"
+
+  # Update workflow
+  update_workflow:
+    - "Extract new UI fields from F5 Console"
+    - "Map to API property paths (manual or discovered)"
+    - "Validate mappings against API spec"
+    - "Update this file with new mappings"
+    - "Regenerate schemas with updated mappings"
+
+  # Known conflicts (documented for resolution)
+  conflicts:
+    healthcheck:
+      - issue: "Health Check Type UI dropdown vs API oneOf structure"
+        ui_field: "health_check"
+        ui_options: ["HTTP HealthCheck", "TCP HealthCheck", "ICMP HealthCheck"]
+        api_fields: ["http_health_check", "tcp_health_check", "icmp_ping_health_check"]
+        resolution: "Use discriminator_fields mapping to select correct API field based on UI option"

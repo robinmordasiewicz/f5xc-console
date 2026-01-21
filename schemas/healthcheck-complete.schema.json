@@ -1,0 +1,178 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "F5 XC Healthcheck Configuration",
+  "description": "JSON Schema for F5 Distributed Cloud healthcheck resource",
+  "type": "object",
+  "properties": {
+    "name": {
+      "description": "Input type: textbox. Required field",
+      "x-f5xc-field": {
+        "inputType": "textbox",
+        "selector": "ref_594",
+        "advanced": false
+      },
+      "type": "string",
+      "minLength": 1
+    },
+    "labels": {
+      "description": "Input type: textbox",
+      "x-f5xc-field": {
+        "inputType": "textbox",
+        "selector": "ref_598",
+        "advanced": false
+      },
+      "type": "string",
+      "minLength": 1
+    },
+    "description": {
+      "description": "Input type: textbox",
+      "x-f5xc-field": {
+        "inputType": "textbox",
+        "selector": "ref_602",
+        "advanced": false
+      },
+      "type": "string",
+      "minLength": 1
+    },
+    "show_advanced_fields": {
+      "description": "Input type: checkbox",
+      "x-f5xc-field": {
+        "inputType": "checkbox",
+        "selector": "ref_606",
+        "advanced": false
+      },
+      "type": "boolean",
+      "default": false
+    },
+    "health_check": {
+      "description": "Input type: listbox. Required field. Options: HTTP HealthCheck, TCP HealthCheck, ICMP HealthCheck",
+      "x-f5xc-field": {
+        "inputType": "listbox",
+        "selector": "ref_611",
+        "advanced": false
+      },
+      "type": "string",
+      "enum": [
+        "HTTP HealthCheck",
+        "TCP HealthCheck",
+        "ICMP HealthCheck"
+      ],
+      "default": "HTTP HealthCheck"
+    },
+    "timeout": {
+      "description": "Input type: spinbutton",
+      "x-f5xc-field": {
+        "inputType": "spinbutton",
+        "selector": "ref_621",
+        "advanced": false
+      },
+      "type": "number"
+    },
+    "interval": {
+      "description": "Input type: spinbutton",
+      "x-f5xc-field": {
+        "inputType": "spinbutton",
+        "selector": "ref_627",
+        "advanced": false
+      },
+      "type": "number"
+    },
+    "unhealthy_threshold": {
+      "description": "Input type: spinbutton",
+      "x-f5xc-field": {
+        "inputType": "spinbutton",
+        "selector": "ref_632",
+        "advanced": false
+      },
+      "type": "number"
+    },
+    "healthy_threshold": {
+      "description": "Input type: spinbutton",
+      "x-f5xc-field": {
+        "inputType": "spinbutton",
+        "selector": "ref_637",
+        "advanced": false
+      },
+      "type": "number"
+    },
+    "jitter_percent": {
+      "description": "Input type: spinbutton",
+      "x-f5xc-field": {
+        "inputType": "spinbutton",
+        "selector": "ref_642",
+        "advanced": false
+      },
+      "type": "number"
+    }
+  },
+  "required": [
+    "name",
+    "health_check"
+  ],
+  "oneOf": [
+    {
+      "type": "object",
+      "properties": {
+        "health_check": {
+          "const": "HTTP",
+          "description": "When Health Check is HTTP"
+        }
+      },
+      "required": []
+    },
+    {
+      "type": "object",
+      "properties": {
+        "health_check": {
+          "const": "TCP",
+          "description": "When Health Check is TCP"
+        }
+      },
+      "required": []
+    },
+    {
+      "type": "object",
+      "properties": {
+        "health_check": {
+          "const": "ICMP",
+          "description": "When Health Check is ICMP"
+        }
+      },
+      "required": []
+    },
+    {
+      "type": "object",
+      "properties": {
+        "specify_host_header": {
+          "const": "Custom Value",
+          "description": "When Specify Host Header is Custom Value"
+        }
+      },
+      "required": []
+    },
+    {
+      "type": "object",
+      "properties": {
+        "specify_host_header": {
+          "const": "Origin Server Name",
+          "description": "When Specify Host Header is Origin Server Name"
+        }
+      },
+      "required": []
+    }
+  ],
+  "x-f5xc-metadata": {
+    "formUrl": "https://f5-amer-ent.console.ves.volterra.io/web/workspaces/*/namespaces/*/manage/load_balancers/health_checks",
+    "resourceType": "healthcheck",
+    "extractedAt": "2026-01-21T06:26:13.232Z",
+    "version": "1.0.0",
+    "advancedFields": [
+      "Jitter Percent"
+    ],
+    "warnings": [
+      "Schema generated from systematic form exploration",
+      "All health check types (HTTP/TCP/ICMP) captured",
+      "HTTP nested configuration fully extracted"
+    ]
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "timestamp": "2026-01-21T06:26:13.235Z",
+  "resourceType": "healthcheck",
+  "formUrl": "https://f5-amer-ent.console.ves.volterra.io/web/workspaces/*/namespaces/*/manage/load_balancers/health_checks",
+  "statesCaptured": 6,
+  "oneOfRelationships": 2,
+  "detectionConfidence": 0.8999999999999999,
+  "coverage": {
+    "totalFields": 10,
+    "schemaFields": 10,
+    "fieldsWithSelectors": 10,
+    "percentage": 100
+  },
+  "warnings": [
+    "Schema generated from systematic form exploration",
+    "All health check types (HTTP/TCP/ICMP) captured",
+    "HTTP nested configuration fully extracted"
+  ]
+}

@@ -97,5 +97,8 @@
         "chrome-devtools"
       ]
     }
+  },
+  "dependencies": {
+    "js-yaml": "^4.1.1"
   }
 }
