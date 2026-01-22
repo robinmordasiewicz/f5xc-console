@@ -12,45 +12,93 @@ Each schema follows JSON Schema draft-07 specification and includes:
 
 ## Schema Naming Convention
 
-Schemas are named by resource type:
+### Canonical Schema Files
+
+Single source of truth for each resource type:
+- `{resourceType}.schema.json` - Consolidated schema with metadata
+
+Examples:
 - `healthcheck.schema.json` - Health Check resource
-- `origin_pool.schema.json` - Origin Pool resource
+- `origin_pool.schema.json` - Origin Pool resource (when consolidated)
 - `load_balancer.schema.json` - HTTP Load Balancer resource
+
+### Variant Schema Files (for phased development)
+
+Multiple variants for comparison and testing:
+- `{resourceType}-{variant}.schema.json`
+
+Examples:
+- `origin_pool-mvp.schema.json` - Minimal viable product (Phase 1)
+- `origin_pool-full.schema.json` - Comprehensive with array fields (Phase 2)
+- `origin_pool-api.schema.json` - With live API discovery (Phase 3)
 
 ## Schema Structure
 
+### Consolidated File Format
+
+All canonical schema files contain three main sections:
+
 ```json
 {
-  "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "F5 XC Resource Configuration",
-  "type": "object",
-  "properties": {
-    "field_name": {
-      "type": "string",
-      "description": "Field description",
-      "x-f5xc-field": {
-        "inputType": "textbox",
-        "selector": "ref_123",
-        "advanced": false
+  "schema": {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "F5 XC Resource Configuration",
+    "type": "object",
+    "properties": {
+      "field_name": {
+        "type": "string",
+        "description": "Field description",
+        "x-f5xc-field": {
+          "inputType": "textbox",
+          "selector": "ref_123",
+          "advanced": false
+        }
       }
+    },
+    "required": ["field_name"],
+    "x-f5xc-metadata": {
+      "formUrl": "https://...",
+      "resourceType": "healthcheck",
+      "extractedAt": "2026-01-22T...",
+      "version": "1.0.0"
     }
   },
-  "oneOf": [
-    {
-      "properties": {
-        "type": { "const": "HTTP" },
-        "http_config": { ... }
+  "selectors": {
+    "resourceType": "healthcheck",
+    "fieldSelectors": {
+      "Field Name": {
+        "schemaPath": "properties.field_name",
+        "selector": "ref_123",
+        "inputType": "textbox",
+        "required": true
       }
+    },
+    "actionSelectors": {
+      "submit": "button[type=\"submit\"]",
+      "cancel": "button[aria-label*=\"cancel\" i]"
     }
-  ],
-  "x-f5xc-metadata": {
+  },
+  "metadata": {
     "formUrl": "https://...",
     "resourceType": "healthcheck",
-    "extractedAt": "2026-01-21T...",
-    "version": "1.0.0"
+    "extractedAt": "2026-01-22T...",
+    "version": "1.0.0",
+    "coverage": {
+      "totalFields": 9,
+      "schemaFields": 9,
+      "fieldsWithSelectors": 9,
+      "percentage": 100
+    },
+    "warnings": []
   }
 }
 ```
+
+**Benefits of consolidated format:**
+- Single file distribution
+- All related information together
+- Easier version control
+- Simpler script maintenance
 
 ## Using Schemas
 
@@ -59,8 +107,8 @@ Schemas are named by resource type:
 ```typescript
 import Ajv from 'ajv';
 const ajv = new Ajv();
-const schema = require('./schemas/healthcheck.schema.json');
-const validate = ajv.compile(schema);
+const schemaFile = require('./schemas/healthcheck.schema.json');
+const validate = ajv.compile(schemaFile.schema);
 
 const valid = validate(data);
 if (!valid) {
@@ -73,9 +121,19 @@ if (!valid) {
 Schemas include selector metadata for automated form filling:
 
 ```typescript
-const schema = require('./schemas/healthcheck.schema.json');
-const metadata = schema['x-f5xc-metadata'];
-const fieldSelector = schema.properties.name['x-f5xc-field'].selector;
+const schemaFile = require('./schemas/healthcheck.schema.json');
+
+// Access schema metadata
+const metadata = schemaFile.metadata;
+console.log(`Coverage: ${metadata.coverage.percentage}%`);
+
+// Access field selectors
+const nameSelector = schemaFile.selectors.fieldSelectors['Name'];
+console.log(`Selector: ${nameSelector.selector}`);
+console.log(`Required: ${nameSelector.required}`);
+
+// Access action selectors
+const submitButton = schemaFile.selectors.actionSelectors.submit;
 ```
 
 ## Schema Maintenance
