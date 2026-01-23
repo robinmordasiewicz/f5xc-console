@@ -7,7 +7,7 @@
     "properties": {
       "name": {
         "type": "string",
-        "description": "The configuration object will be created with name. It has to be unique within the namespace. The value of name has to follow DNS-1035 format.",
+        "description": "The configuration object will be created with name. It has to be unique within the namespace.\nThe value of name has to follow DNS-1035 format.",
         "x-f5xc-field": {
           "inputType": "textbox",
           "uiLabel": "Name",
@@ -17,7 +17,7 @@
       },
       "labels": {
         "type": "object",
-        "description": "Map of string keys and values that can be used to organize and categorize (scope and select) objects as chosen by the user. Values specified here will be used by selector expression",
+        "description": "Map of string keys and values that can be used to organize and categorize\n(scope and select) objects as chosen by the user. Values specified here will be used\nby selector expression",
         "x-f5xc-field": {
           "inputType": "textbox",
           "uiLabel": "Labels",
@@ -30,7 +30,7 @@
       },
       "description": {
         "type": "string",
-        "description": "Description field",
+        "description": "Human readable description for the object",
         "x-f5xc-field": {
           "inputType": "textbox",
           "uiLabel": "Description",
@@ -58,7 +58,7 @@
       },
       "timeout": {
         "type": "number",
-        "description": "Timeout in seconds to wait for successful response. In other words, it is the time to wait for a health check response. If the timeout is reached the health check attempt will be considered a failure.",
+        "description": "Timeout in seconds to wait for successful response. In other words, it is\nthe time to wait for a health check response. If the timeout is reached the\nhealth check attempt will be considered a failure.",
         "x-f5xc-field": {
           "inputType": "spinbutton",
           "uiLabel": "Timeout",
@@ -88,7 +88,7 @@
       },
       "unhealthy_threshold": {
         "type": "number",
-        "description": "Number of failed responses before declaring unhealthy. In other words, this is the number of unhealthy health checks required before a host is marked unhealthy. Note that for http health checking if a host responds with 503 this threshold is ignored and the host is considered unhealthy immediately.",
+        "description": "Number of failed responses before declaring unhealthy. In other words, this is\nthe number of unhealthy health checks required before a host is marked\nunhealthy. Note that for http health checking if a host responds with 503\nthis threshold is ignored and the host is considered unhealthy immediately.",
         "x-f5xc-field": {
           "inputType": "spinbutton",
           "uiLabel": "Unhealthy Threshold",
@@ -102,7 +102,7 @@
       },
       "healthy_threshold": {
         "type": "number",
-        "description": "Number of successful responses before declaring healthy. In other words, this is the number of healthy health checks required before a host is marked healthy. Note that during startup, only a single successful health check is required to mark a host healthy.",
+        "description": "Number of successful responses before declaring healthy. In other words, this is\nthe number of healthy health checks required before a host is marked\nhealthy. Note that during startup, only a single successful health check is\nrequired to mark a host healthy.",
         "x-f5xc-field": {
           "inputType": "spinbutton",
           "uiLabel": "Healthy Threshold",
@@ -141,7 +141,7 @@
     "x-f5xc-metadata": {
       "formUrl": "https://f5-amer-ent.console.ves.volterra.io/web/workspaces/web-app-and-api-protection/namespaces/default/manage/load_balancers/health_checks",
       "resourceType": "healthcheck",
-      "extractedAt": "2026-01-23T17:34:33.641Z",
+      "extractedAt": "2026-01-23T17:47:30.607Z",
       "version": "1.0.0",
       "extractionVersion": "2.0.0-enriched",
       "extractionMethod": "tooltip-capture"
@@ -213,14 +213,14 @@
   "metadata": {
     "formUrl": "https://f5-amer-ent.console.ves.volterra.io/web/workspaces/web-app-and-api-protection/namespaces/default/manage/load_balancers/health_checks",
     "resourceType": "healthcheck",
-    "extractedAt": "2026-01-23T17:34:33.642Z",
+    "extractedAt": "2026-01-23T17:47:30.607Z",
     "version": "1.0.0",
     "extractionVersion": "2.0.0-enriched",
     "coverage": {
       "totalFields": 9,
       "schemaFields": 9,
       "fieldsWithSelectors": 9,
-      "fieldsWithTooltips": 8,
+      "fieldsWithTooltips": 9,
       "fieldsWithDefaults": 6,
       "percentage": 100
     },

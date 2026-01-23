@@ -122,16 +122,23 @@ const HEALTHCHECK_FIELDS = [
 
 // Tooltip data captured from F5 XC Console (extracted via browser automation)
 // This data is captured by hovering over info icons and reading [role="tooltip"] content
+// Last captured: 2026-01-23 via Claude in Chrome MCP
 const TOOLTIP_DATA: Record<string, string> = {
-  name: 'The configuration object will be created with name. It has to be unique within the namespace. The value of name has to follow DNS-1035 format.',
-  labels: 'Map of string keys and values that can be used to organize and categorize (scope and select) objects as chosen by the user. Values specified here will be used by selector expression',
-  description: '', // No tooltip for Description field
+  name: 'The configuration object will be created with name. It has to be unique within the namespace.\nThe value of name has to follow DNS-1035 format.',
+  labels: 'Map of string keys and values that can be used to organize and categorize\n(scope and select) objects as chosen by the user. Values specified here will be used\nby selector expression',
+  description: 'Human readable description for the object',
   health_check: 'Specifies whether to perform HTTP Health Check or TCP Health check',
-  timeout: 'Timeout in seconds to wait for successful response. In other words, it is the time to wait for a health check response. If the timeout is reached the health check attempt will be considered a failure.',
+  timeout: 'Timeout in seconds to wait for successful response. In other words, it is\nthe time to wait for a health check response. If the timeout is reached the\nhealth check attempt will be considered a failure.',
   interval: 'Time interval in seconds between two healthcheck requests.',
-  unhealthy_threshold: 'Number of failed responses before declaring unhealthy. In other words, this is the number of unhealthy health checks required before a host is marked unhealthy. Note that for http health checking if a host responds with 503 this threshold is ignored and the host is considered unhealthy immediately.',
-  healthy_threshold: 'Number of successful responses before declaring healthy. In other words, this is the number of healthy health checks required before a host is marked healthy. Note that during startup, only a single successful health check is required to mark a host healthy.',
+  unhealthy_threshold: 'Number of failed responses before declaring unhealthy. In other words, this is\nthe number of unhealthy health checks required before a host is marked\nunhealthy. Note that for http health checking if a host responds with 503\nthis threshold is ignored and the host is considered unhealthy immediately.',
+  healthy_threshold: 'Number of successful responses before declaring healthy. In other words, this is\nthe number of healthy health checks required before a host is marked\nhealthy. Note that during startup, only a single successful health check is\nrequired to mark a host healthy.',
   jitter_percent: 'Add a random amount of time as a percent value to the interval between successive healthcheck requests.'
+};
+
+// Section-level tooltip (for Metadata section header)
+const SECTION_TOOLTIPS: Record<string, string> = {
+  metadata: 'Common attributes that can be set during create for all configuration objects like name, labels etc.',
+  http_healthcheck: 'Specifies the following details for HTTP health check requests\n1. Host header\n2. Path\n3. Request headers to add\n4. Request headers to remove'
 };
 
 /**
