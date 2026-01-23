@@ -2,132 +2,131 @@
   "schema": {
     "$schema": "http://json-schema.org/draft-07/schema#",
     "title": "F5 XC Healthcheck Configuration",
-    "description": "JSON Schema for F5 Distributed Cloud healthcheck resource",
+    "description": "JSON Schema for F5 Distributed Cloud healthcheck resource with UI tooltips and defaults",
     "type": "object",
     "properties": {
       "name": {
-        "description": "Input type: textbox. Required field",
+        "type": "string",
+        "description": "The configuration object will be created with name. It has to be unique within the namespace. The value of name has to follow DNS-1035 format.",
         "x-f5xc-field": {
           "inputType": "textbox",
-          "selector": "ref_10_168",
-          "advanced": false,
           "uiLabel": "Name",
-          "apiProperty": "metadata.name"
-        },
-        "type": "string",
-        "minLength": 1
+          "apiProperty": "name",
+          "advanced": false
+        }
       },
       "labels": {
-        "description": "Input type: textbox",
+        "type": "object",
+        "description": "Map of string keys and values that can be used to organize and categorize (scope and select) objects as chosen by the user. Values specified here will be used by selector expression",
         "x-f5xc-field": {
           "inputType": "textbox",
-          "selector": "ref_10_171",
-          "advanced": false,
           "uiLabel": "Labels",
-          "apiProperty": "metadata.labels"
+          "apiProperty": "labels",
+          "advanced": false
         },
-        "type": "string",
-        "minLength": 1
+        "x-f5xc-ui": {
+          "placeholder": "Add Label"
+        }
       },
       "description": {
-        "description": "Input type: textbox",
+        "type": "string",
+        "description": "Description field",
         "x-f5xc-field": {
           "inputType": "textbox",
-          "selector": "ref_10_174",
-          "advanced": false,
           "uiLabel": "Description",
-          "apiProperty": "metadata.description"
-        },
-        "type": "string",
-        "minLength": 1
-      },
-      "show_advanced_fields": {
-        "description": "Input type: checkbox",
-        "x-f5xc-field": {
-          "inputType": "checkbox",
-          "selector": "ref_10_177",
-          "advanced": false,
-          "uiLabel": "Show Advanced Fields"
-        },
-        "type": "boolean"
+          "apiProperty": "description",
+          "advanced": false
+        }
       },
       "health_check": {
-        "description": "Input type: listbox. Required field. Options: HTTP HealthCheck, TCP HealthCheck, ICMP HealthCheck",
-        "x-f5xc-field": {
-          "inputType": "listbox",
-          "selector": "ref_10_181",
-          "advanced": false,
-          "uiLabel": "Health Check"
-        },
         "type": "string",
-        "enum": [
-          "HTTP HealthCheck",
-          "TCP HealthCheck",
-          "ICMP HealthCheck"
-        ],
+        "description": "Specifies whether to perform HTTP Health Check or TCP Health check",
+        "x-f5xc-field": {
+          "inputType": "textbox",
+          "uiLabel": "Health Check",
+          "apiProperty": "health_check",
+          "advanced": false
+        },
         "default": "HTTP HealthCheck",
         "x-f5xc-ui": {
           "defaultValue": "HTTP HealthCheck"
-        }
+        },
+        "enum": [
+          "HTTP HealthCheck",
+          "TCP HealthCheck"
+        ]
       },
       "timeout": {
-        "description": "Input type: spinbutton. Required field",
+        "type": "number",
+        "description": "Timeout in seconds to wait for successful response. In other words, it is the time to wait for a health check response. If the timeout is reached the health check attempt will be considered a failure.",
         "x-f5xc-field": {
           "inputType": "spinbutton",
-          "selector": "ref_10_191",
-          "advanced": false,
           "uiLabel": "Timeout",
-          "apiProperty": "timeout"
+          "apiProperty": "timeout",
+          "advanced": false
         },
-        "type": "number",
         "default": 3,
         "x-f5xc-ui": {
-          "defaultValue": "3"
+          "defaultValue": "3",
+          "unit": "seconds"
         }
       },
       "interval": {
-        "description": "Input type: spinbutton. Required field",
+        "type": "number",
+        "description": "Time interval in seconds between two healthcheck requests.",
         "x-f5xc-field": {
           "inputType": "spinbutton",
-          "selector": "ref_10_196",
-          "advanced": false,
           "uiLabel": "Interval",
-          "apiProperty": "interval"
+          "apiProperty": "interval",
+          "advanced": false
         },
-        "type": "number",
         "default": 15,
         "x-f5xc-ui": {
-          "defaultValue": "15"
+          "defaultValue": "15",
+          "unit": "seconds"
         }
       },
       "unhealthy_threshold": {
-        "description": "Input type: spinbutton. Required field",
+        "type": "number",
+        "description": "Number of failed responses before declaring unhealthy. In other words, this is the number of unhealthy health checks required before a host is marked unhealthy. Note that for http health checking if a host responds with 503 this threshold is ignored and the host is considered unhealthy immediately.",
         "x-f5xc-field": {
           "inputType": "spinbutton",
-          "selector": "ref_10_200",
-          "advanced": false,
           "uiLabel": "Unhealthy Threshold",
-          "apiProperty": "unhealthy_threshold"
+          "apiProperty": "unhealthy_threshold",
+          "advanced": false
         },
-        "type": "number",
         "default": 1,
         "x-f5xc-ui": {
           "defaultValue": "1"
         }
       },
       "healthy_threshold": {
-        "description": "Input type: spinbutton. Required field",
+        "type": "number",
+        "description": "Number of successful responses before declaring healthy. In other words, this is the number of healthy health checks required before a host is marked healthy. Note that during startup, only a single successful health check is required to mark a host healthy.",
         "x-f5xc-field": {
           "inputType": "spinbutton",
-          "selector": "ref_10_204",
-          "advanced": false,
           "uiLabel": "Healthy Threshold",
-          "apiProperty": "healthy_threshold"
+          "apiProperty": "healthy_threshold",
+          "advanced": false
         },
-        "type": "number",
         "default": 3,
         "x-f5xc-ui": {
           "defaultValue": "3"
+        }
+      },
+      "jitter_percent": {
+        "type": "number",
+        "description": "Add a random amount of time as a percent value to the interval between successive healthcheck requests.",
+        "x-f5xc-field": {
+          "inputType": "spinbutton",
+          "uiLabel": "Jitter Percent",
+          "apiProperty": "jitter_percent",
+          "advanced": true
+        },
+        "default": 30,
+        "x-f5xc-ui": {
+          "defaultValue": "30",
+          "unit": "percent"
         }
       }
     },
@@ -142,10 +141,10 @@
     "x-f5xc-metadata": {
       "formUrl": "https://f5-amer-ent.console.ves.volterra.io/web/workspaces/web-app-and-api-protection/namespaces/default/manage/load_balancers/health_checks",
       "resourceType": "healthcheck",
-      "extractedAt": "2026-01-22T05:08:00.581Z",
+      "extractedAt": "2026-01-23T17:34:33.641Z",
       "version": "1.0.0",
-      "extractionVersion": "1.0.0",
-      "advancedFields": []
+      "extractionVersion": "2.0.0-enriched",
+      "extractionMethod": "tooltip-capture"
     }
   },
   "selectors": {
@@ -153,75 +152,76 @@
     "fieldSelectors": {
       "Name": {
         "schemaPath": "properties.name",
-        "selector": "ref_10_168",
         "inputType": "textbox",
-        "required": true
+        "required": true,
+        "advanced": false
       },
       "Labels": {
         "schemaPath": "properties.labels",
-        "selector": "ref_10_171",
         "inputType": "textbox",
-        "required": false
+        "required": false,
+        "advanced": false
       },
       "Description": {
         "schemaPath": "properties.description",
-        "selector": "ref_10_174",
         "inputType": "textbox",
-        "required": false
-      },
-      "Show Advanced Fields": {
-        "schemaPath": "properties.show_advanced_fields",
-        "selector": "ref_10_177",
-        "inputType": "checkbox",
-        "required": false
+        "required": false,
+        "advanced": false
       },
       "Health Check": {
         "schemaPath": "properties.health_check",
-        "selector": "ref_10_181",
-        "inputType": "listbox",
-        "required": true
+        "inputType": "textbox",
+        "required": true,
+        "advanced": false
       },
       "Timeout": {
         "schemaPath": "properties.timeout",
-        "selector": "ref_10_191",
         "inputType": "spinbutton",
-        "required": true
+        "required": true,
+        "advanced": false
       },
       "Interval": {
         "schemaPath": "properties.interval",
-        "selector": "ref_10_196",
         "inputType": "spinbutton",
-        "required": true
+        "required": true,
+        "advanced": false
       },
       "Unhealthy Threshold": {
         "schemaPath": "properties.unhealthy_threshold",
-        "selector": "ref_10_200",
         "inputType": "spinbutton",
-        "required": true
+        "required": true,
+        "advanced": false
       },
       "Healthy Threshold": {
         "schemaPath": "properties.healthy_threshold",
-        "selector": "ref_10_204",
         "inputType": "spinbutton",
-        "required": true
+        "required": true,
+        "advanced": false
+      },
+      "Jitter Percent": {
+        "schemaPath": "properties.jitter_percent",
+        "inputType": "spinbutton",
+        "required": false,
+        "advanced": true
       }
     },
     "actionSelectors": {
-      "submit": "button[type=\"submit\"]",
-      "cancel": "button[aria-label*=\"cancel\" i]"
+      "submit": "button:has(generic:text(\"Add Health\"))",
+      "cancel": "button:has(generic:text(\"Cancel\"))"
     }
   },
   "metadata": {
     "formUrl": "https://f5-amer-ent.console.ves.volterra.io/web/workspaces/web-app-and-api-protection/namespaces/default/manage/load_balancers/health_checks",
     "resourceType": "healthcheck",
-    "extractedAt": "2026-01-22T05:08:00.580Z",
+    "extractedAt": "2026-01-23T17:34:33.642Z",
     "version": "1.0.0",
-    "extractionVersion": "1.0",
-    "advancedFields": [],
+    "extractionVersion": "2.0.0-enriched",
     "coverage": {
       "totalFields": 9,
       "schemaFields": 9,
       "fieldsWithSelectors": 9,
+      "fieldsWithTooltips": 8,
+      "fieldsWithDefaults": 6,
       "percentage": 100
     },
     "warnings": []
