@@ -12,13 +12,9 @@
         <meta name="author" content="Robin Mordasiewicz">
       
       
-        <link rel="canonical" href="https://robinmordasiewicz.github.io/f5xc-console/reference/manifest/">
+        <link rel="canonical" href="https://robinmordasiewicz.github.io/f5xc-console/features/schema-extraction/">
       
       
-        <link rel="prev" href="../commands/">
-      
-      
-        <link rel="next" href="../api/">
       
       
         
@@ -29,7 +25,7 @@
     
     
       
-        <title>Manifest - F5 XC Chrome Plugin</title>
+        <title>Schema Extraction ↔ API Enrichment Integration - F5 XC Chrome Plugin</title>
       
     
     
@@ -80,7 +76,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#manifest-reference" class="md-skip">
+        <a href="#schema-extraction-api-enrichment-integration" class="md-skip">
           Skip to content
         </a>
       
@@ -114,7 +110,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Manifest
+              Schema Extraction ↔ API Enrichment Integration
             
           </span>
         </div>
@@ -268,7 +264,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../features/navigation/" class="md-tabs__link">
+        <a href="../navigation/" class="md-tabs__link">
           
   
   
@@ -284,13 +280,11 @@
   
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
-        <a href="../commands/" class="md-tabs__link">
+      <li class="md-tabs__item">
+        <a href="../../reference/commands/" class="md-tabs__link">
           
   
   
@@ -620,7 +614,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../features/navigation/" class="md-nav__link">
+      <a href="../navigation/" class="md-nav__link">
         
   
   
@@ -648,7 +642,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../features/workflows/" class="md-nav__link">
+      <a href="../workflows/" class="md-nav__link">
         
   
   
@@ -676,7 +670,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../features/crawling/" class="md-nav__link">
+      <a href="../crawling/" class="md-nav__link">
         
   
   
@@ -708,31 +702,28 @@
       
   
   
-    
   
   
-  
     
     
     
     
-      
-        
-        
       
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
         
           
-          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
             
   
   
@@ -750,7 +741,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
             
@@ -768,7 +759,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../commands/" class="md-nav__link">
+      <a href="../../reference/commands/" class="md-nav__link">
         
   
   
@@ -793,37 +784,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Manifest
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../reference/manifest/" class="md-nav__link">
         
   
   
@@ -839,120 +803,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#manifest-location" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Manifest Location
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#generation" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Generation
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#schema" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Schema
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#using-the-manifest" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Using the Manifest
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Using the Manifest">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#in-mkdocs" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        In MkDocs
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#programmatically" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Programmatically
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#in-cicd" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        In CI/CD
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#data-files" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Data Files
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -965,7 +815,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api/" class="md-nav__link">
+      <a href="../../reference/api/" class="md-nav__link">
         
   
   
@@ -1338,10 +1188,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#manifest-location" class="md-nav__link">
+  <a href="#executive-summary" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Manifest Location
+        Executive Summary
       
     </span>
   </a>
@@ -1349,66 +1199,34 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#generation" class="md-nav__link">
+  <a href="#what-was-accomplished" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Generation
+        What Was Accomplished
       
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#schema" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Schema
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#using-the-manifest" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Using the Manifest
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Using the Manifest">
+    <nav class="md-nav" aria-label="What Was Accomplished">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#in-mkdocs" class="md-nav__link">
+  <a href="#milestone-1-nested-configuration-capture" class="md-nav__link">
     <span class="md-ellipsis">
       
-        In MkDocs
+        Milestone 1: Nested Configuration Capture ✅
       
     </span>
   </a>
   
-</li>
+    <nav class="md-nav" aria-label="Milestone 1: Nested Configuration Capture ✅">
+      <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#programmatically" class="md-nav__link">
+  <a href="#implemented-features" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Programmatically
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#in-cicd" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        In CI/CD
+        Implemented Features:
       
     </span>
   </a>
@@ -1419,15 +1237,170 @@
     </nav>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#data-files" class="md-nav__link">
+        
+          <li class="md-nav__item">
+  <a href="#milestone-2-metadata-enrichment" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Data Files
+        Milestone 2: Metadata Enrichment ✅
       
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="Milestone 2: Metadata Enrichment ✅">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#new-extension-schemas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        New Extension Schemas:
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#milestone-3-api-property-mapping" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Milestone 3: API Property Mapping ✅
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Milestone 3: API Property Mapping ✅">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#implemented-features_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Implemented Features:
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-mappings" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example Mappings:
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#usage-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Usage Example:
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#key-design-decisions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Design Decisions:
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#test-coverage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Test Coverage ✅
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#next-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Next Steps
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Next Steps">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#milestone-4-schema-bridge-week-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Milestone 4: Schema Bridge (Week 3) ⏳
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#milestone-5-6-downstream-integration-week-4-5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Milestone 5-6: Downstream Integration (Week 4-5) ⏳
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#milestone-7-proof-of-concept-week-6-7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Milestone 7: Proof of Concept (Week 6-7) ⏳
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#milestone-8-production-pipeline-week-8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Milestone 8: Production Pipeline (Week 8+) ⏳
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1451,161 +1424,203 @@
   
 
 
-<h1 id="manifest-reference">Manifest Reference<a class="headerlink" href="#manifest-reference" title="Permanent link">&para;</a></h1>
-<p>The plugin generates a machine-readable manifest for downstream consumption.</p>
-<h2 id="manifest-location">Manifest Location<a class="headerlink" href="#manifest-location" title="Permanent link">&para;</a></h2>
-<ul>
-<li><strong>Root</strong>: <code>manifest.json</code> - Generated manifest (gitignored)</li>
-<li><strong>Docs</strong>: <code>@docs/data/manifest.json</code> - MkDocs data source (gitignored)</li>
+<h1 id="schema-extraction-api-enrichment-integration">Schema Extraction ↔ API Enrichment Integration<a class="headerlink" href="#schema-extraction-api-enrichment-integration" title="Permanent link">&para;</a></h1>
+<p><strong>Status</strong>: Milestone 1, 2 &amp; 3 Complete ✅
+<strong>Date</strong>: 2026-01-21
+<strong>Implementation</strong>: f5xc-console (this repository)</p>
+<h2 id="executive-summary">Executive Summary<a class="headerlink" href="#executive-summary" title="Permanent link">&para;</a></h2>
+<p>Successfully implemented Milestone 1 (Nested Configuration Capture), Milestone 2 (Metadata Enrichment), and Milestone 3 (API Property Mapping) of the Schema Extraction ↔ API Enrichment integration plan. The f5xc-console repository now serves as the authoritative source of truth for F5 XC resource schemas with comprehensive UI intelligence and complete UI-to-API field mapping.</p>
+<h2 id="what-was-accomplished">What Was Accomplished<a class="headerlink" href="#what-was-accomplished" title="Permanent link">&para;</a></h2>
+<h3 id="milestone-1-nested-configuration-capture">Milestone 1: Nested Configuration Capture ✅<a class="headerlink" href="#milestone-1-nested-configuration-capture" title="Permanent link">&para;</a></h3>
+<p><strong>Goal</strong>: Capture nested configuration dialogs (like "Edit HTTP Configuration") with hierarchical schema structure.</p>
+<h4 id="implemented-features">Implemented Features:<a class="headerlink" href="#implemented-features" title="Permanent link">&para;</a></h4>
+<ol>
+<li><strong>Nested Configuration Button Detection</strong> (<code>src/extractors/oneof-detector.ts</code>)</li>
+<li><code>detectNestedConfigButtons()</code>: Identifies "Edit Configuration" triggers</li>
+<li>Detects configuration-related fields (configuration, settings, options keywords)</li>
+<li>
+<p>Returns trigger metadata (button UID, field name, trigger text)</p>
+</li>
+<li>
+<p><strong>Nested Dialog Field Recording</strong> (<code>src/extractors/oneof-detector.ts</code>)</p>
+</li>
+<li><code>recordNestedConfigFields()</code>: Captures fields within nested dialogs</li>
+<li>Creates special snapshots for nested configurations</li>
+<li>
+<p>Tracks dialog metadata (trigger field, nested fields, dialog title)</p>
+</li>
+<li>
+<p><strong>Nested OneOf Analysis</strong> (<code>src/extractors/oneof-detector.ts</code>)</p>
+</li>
+<li><code>analyzeNestedOneOf()</code>: Detects oneOf relationships within nested configurations</li>
+<li>Supports multi-level oneOf (e.g., Health Check → HTTP → Host Header → Custom Value)</li>
+<li>
+<p>Preserves hierarchical relationships in schema</p>
+</li>
+<li>
+<p><strong>Hierarchical Schema Generation</strong> (<code>src/extractors/schema-generator.ts</code>)</p>
+</li>
+<li><code>buildNestedConfigSchemas()</code>: Creates nested property structures</li>
+<li><code>integrateNestedConfigsIntoOneOf()</code>: Merges nested configs into oneOf blocks</li>
+<li>Generates object-type properties for nested configurations</li>
+<li>Includes <code>x-f5xc-field.nestedConfig</code> metadata for automation</li>
+</ol>
+<h3 id="milestone-2-metadata-enrichment">Milestone 2: Metadata Enrichment ✅<a class="headerlink" href="#milestone-2-metadata-enrichment" title="Permanent link">&para;</a></h3>
+<p><strong>Goal</strong>: Extract comprehensive field metadata (descriptions, validation, defaults) from accessibility tree.</p>
+<h4 id="new-extension-schemas">New Extension Schemas:<a class="headerlink" href="#new-extension-schemas" title="Permanent link">&para;</a></h4>
+<p><strong>x-f5xc-validation</strong>: Validation constraints
+<strong>x-f5xc-ui</strong>: UI behavior metadata
+<strong>x-f5xc-field</strong>: Enhanced with uiLabel and apiProperty</p>
+<h3 id="milestone-3-api-property-mapping">Milestone 3: API Property Mapping ✅<a class="headerlink" href="#milestone-3-api-property-mapping" title="Permanent link">&para;</a></h3>
+<p><strong>Goal</strong>: Create systematic UI-to-API field mapping infrastructure to bridge the gap between human-friendly UI labels and machine-readable API property paths.</p>
+<h4 id="implemented-features_1">Implemented Features:<a class="headerlink" href="#implemented-features_1" title="Permanent link">&para;</a></h4>
+<ol>
+<li><strong>Field Mapping Configuration</strong> (<code>config/field-mappings.yaml</code>)</li>
+<li>Centralized YAML configuration for UI ↔ API mappings</li>
+<li>Structured mapping types:<ul>
+<li><code>common_fields</code>: Always-present fields (name → metadata.name, timeout → timeout)</li>
+<li><code>discriminator_fields</code>: Dropdown option mappings (HTTP HealthCheck → http_health_check)</li>
+<li><code>nested_configs</code>: Nested configuration field mappings (path → http_health_check.path)</li>
 </ul>
-<h2 id="generation">Generation<a class="headerlink" href="#generation" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>python<span class="w"> </span>scripts/generate-manifest.py
-</code></pre></div>
-<p>This aggregates:</p>
-<ul>
-<li><code>.claude-plugin/plugin.json</code></li>
-<li><code>skills/xc-console/console-navigation-metadata.json</code></li>
-<li><code>skills/xc-console/url-sitemap.json</code></li>
-<li>Git metadata</li>
+</li>
+<li>Validation rules: required API fields, mutually exclusive groups</li>
+<li>Transformation specifications for complex field types (arrays, objects)</li>
+<li>
+<p>UI-only field markers (<code>__ui_only__</code> for fields not sent to API)</p>
+</li>
+<li>
+<p><strong>Field Mapper Implementation</strong> (<code>src/bridge/field-mapper.ts</code>)</p>
+</li>
+<li><code>FieldMapper</code> class with comprehensive mapping capabilities:<ul>
+<li><code>loadMappings(yamlPath)</code>: Async YAML configuration loading</li>
+<li><code>mapFieldToApiProperty()</code>: Map common field names to API properties</li>
+<li><code>mapDiscriminatorField()</code>: Map dropdown options to API property paths</li>
+<li><code>mapNestedConfigField()</code>: Map nested configuration fields</li>
+<li><code>validateMappings()</code>: Validate required fields and mutual exclusivity</li>
+<li><code>getUIOnlyFields()</code>: Identify fields that shouldn't be sent to API</li>
 </ul>
-<h2 id="schema">Schema<a class="headerlink" href="#schema" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="p">{</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span><span class="nt">&quot;$schema&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://f5xc-console.github.io/schema/manifest-v1.json&quot;</span><span class="p">,</span>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">  </span><span class="nt">&quot;manifest_version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1.0.0&quot;</span><span class="p">,</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">  </span><span class="nt">&quot;generated_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2025-12-24T00:00:00Z&quot;</span><span class="p">,</span>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">  </span><span class="nt">&quot;plugin&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;xc&quot;</span><span class="p">,</span>
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">    </span><span class="nt">&quot;version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0.3.0&quot;</span><span class="p">,</span>
-<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">    </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;...&quot;</span><span class="p">,</span>
-<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="w">    </span><span class="nt">&quot;author&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{},</span>
-<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="w">    </span><span class="nt">&quot;license&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;MIT&quot;</span><span class="p">,</span>
-<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="w">    </span><span class="nt">&quot;repository&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;...&quot;</span><span class="p">,</span>
-<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="w">    </span><span class="nt">&quot;keywords&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span>
-<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="w">  </span><span class="p">},</span>
-<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>
-<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="w">  </span><span class="nt">&quot;build&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="w">    </span><span class="nt">&quot;commit&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;abc123&quot;</span><span class="p">,</span>
-<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="w">    </span><span class="nt">&quot;branch&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;main&quot;</span><span class="p">,</span>
-<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a><span class="w">    </span><span class="nt">&quot;tag&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;v0.3.0&quot;</span>
-<a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a><span class="w">  </span><span class="p">},</span>
-<a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a>
-<a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a><span class="w">  </span><span class="nt">&quot;console_metadata&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a><span class="w">    </span><span class="nt">&quot;version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2.2.0&quot;</span><span class="p">,</span>
-<a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a><span class="w">    </span><span class="nt">&quot;tenant&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;...&quot;</span><span class="p">,</span>
-<a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a><span class="w">    </span><span class="nt">&quot;last_crawled&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;...&quot;</span><span class="p">,</span>
-<a id="__codelineno-1-26" name="__codelineno-1-26" href="#__codelineno-1-26"></a><span class="w">    </span><span class="nt">&quot;selector_priority&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
-<a id="__codelineno-1-27" name="__codelineno-1-27" href="#__codelineno-1-27"></a><span class="w">    </span><span class="nt">&quot;authentication&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{},</span>
-<a id="__codelineno-1-28" name="__codelineno-1-28" href="#__codelineno-1-28"></a><span class="w">    </span><span class="nt">&quot;stats&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{}</span>
-<a id="__codelineno-1-29" name="__codelineno-1-29" href="#__codelineno-1-29"></a><span class="w">  </span><span class="p">},</span>
-<a id="__codelineno-1-30" name="__codelineno-1-30" href="#__codelineno-1-30"></a>
-<a id="__codelineno-1-31" name="__codelineno-1-31" href="#__codelineno-1-31"></a><span class="w">  </span><span class="nt">&quot;url_sitemap&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-32" name="__codelineno-1-32" href="#__codelineno-1-32"></a><span class="w">    </span><span class="nt">&quot;version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2.2.0&quot;</span><span class="p">,</span>
-<a id="__codelineno-1-33" name="__codelineno-1-33" href="#__codelineno-1-33"></a><span class="w">    </span><span class="nt">&quot;coverage&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{},</span>
-<a id="__codelineno-1-34" name="__codelineno-1-34" href="#__codelineno-1-34"></a><span class="w">    </span><span class="nt">&quot;workspace_mapping&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{},</span>
-<a id="__codelineno-1-35" name="__codelineno-1-35" href="#__codelineno-1-35"></a><span class="w">    </span><span class="nt">&quot;resource_shortcuts&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{},</span>
-<a id="__codelineno-1-36" name="__codelineno-1-36" href="#__codelineno-1-36"></a><span class="w">    </span><span class="nt">&quot;static_route_count&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">23</span><span class="p">,</span>
-<a id="__codelineno-1-37" name="__codelineno-1-37" href="#__codelineno-1-37"></a><span class="w">    </span><span class="nt">&quot;dynamic_pattern_count&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">9</span>
-<a id="__codelineno-1-38" name="__codelineno-1-38" href="#__codelineno-1-38"></a><span class="w">  </span><span class="p">},</span>
-<a id="__codelineno-1-39" name="__codelineno-1-39" href="#__codelineno-1-39"></a>
-<a id="__codelineno-1-40" name="__codelineno-1-40" href="#__codelineno-1-40"></a><span class="w">  </span><span class="nt">&quot;skills&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
-<a id="__codelineno-1-41" name="__codelineno-1-41" href="#__codelineno-1-41"></a><span class="w">  </span><span class="nt">&quot;workflows&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
-<a id="__codelineno-1-42" name="__codelineno-1-42" href="#__codelineno-1-42"></a><span class="w">  </span><span class="nt">&quot;mcp_tools&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
-<a id="__codelineno-1-43" name="__codelineno-1-43" href="#__codelineno-1-43"></a><span class="w">  </span><span class="nt">&quot;commands&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
-<a id="__codelineno-1-44" name="__codelineno-1-44" href="#__codelineno-1-44"></a><span class="w">  </span><span class="nt">&quot;documentation&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{},</span>
-<a id="__codelineno-1-45" name="__codelineno-1-45" href="#__codelineno-1-45"></a><span class="w">  </span><span class="nt">&quot;ecosystem&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span>
-<a id="__codelineno-1-46" name="__codelineno-1-46" href="#__codelineno-1-46"></a><span class="p">}</span>
+</li>
+<li>Field name normalization (snake_case conversion for matching)</li>
+<li>Singleton pattern with <code>getFieldMapper()</code> helper</li>
+<li>
+<p>Hot-reload support for development</p>
+</li>
+<li>
+<p><strong>Schema Generator Integration</strong> (<code>src/extractors/schema-generator.ts</code>)</p>
+</li>
+<li>Auto-population of <code>apiProperty</code> in <code>x-f5xc-field</code> extension</li>
+<li>Trigger field filtering (excluded from regular properties when used for nested configs)</li>
+<li>Optional field mapper loading via <code>loadFieldMappings()</code></li>
+<li>Graceful degradation when field mapper not loaded</li>
+</ol>
+<h4 id="example-mappings">Example Mappings:<a class="headerlink" href="#example-mappings" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nt">healthcheck</span><span class="p">:</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">  </span><span class="nt">common_fields</span><span class="p">:</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;metadata.name&quot;</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">    </span><span class="nt">timeout</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;timeout&quot;</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">    </span><span class="nt">labels</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;metadata.labels&quot;</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">    </span><span class="nt">show_advanced_fields</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;__ui_only__&quot;</span><span class="w">  </span><span class="c1"># UI-only field</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">  </span><span class="nt">discriminator_fields</span><span class="p">:</span>
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">    </span><span class="nt">health_check</span><span class="p">:</span>
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w">      </span><span class="s">&quot;HTTP</span><span class="nv"> </span><span class="s">HealthCheck&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="s">&quot;http_health_check&quot;</span>
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="w">      </span><span class="s">&quot;TCP</span><span class="nv"> </span><span class="s">HealthCheck&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="s">&quot;tcp_health_check&quot;</span>
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="w">      </span><span class="s">&quot;ICMP</span><span class="nv"> </span><span class="s">HealthCheck&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="s">&quot;icmp_ping_health_check&quot;</span>
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="w">  </span><span class="nt">nested_configs</span><span class="p">:</span>
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="w">    </span><span class="nt">http_health_check</span><span class="p">:</span>
+<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="w">      </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;http_health_check.path&quot;</span>
+<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="w">      </span><span class="nt">use_http2</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;http_health_check.use_http2&quot;</span>
+<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="w">      </span><span class="nt">host_header_value</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;http_health_check.host_header&quot;</span>
+<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>
+<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="w">  </span><span class="nt">validation</span><span class="p">:</span>
+<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="w">    </span><span class="nt">required_api_fields</span><span class="p">:</span>
+<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;metadata.name&quot;</span>
+<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;timeout&quot;</span>
+<a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;interval&quot;</span>
+<a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a><span class="w">    </span><span class="nt">mutually_exclusive</span><span class="p">:</span>
+<a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&quot;http_health_check&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;tcp_health_check&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;icmp_ping_health_check&quot;</span><span class="p p-Indicator">]</span>
 </code></pre></div>
-<h2 id="using-the-manifest">Using the Manifest<a class="headerlink" href="#using-the-manifest" title="Permanent link">&para;</a></h2>
-<h3 id="in-mkdocs">In MkDocs<a class="headerlink" href="#in-mkdocs" title="Permanent link">&para;</a></h3>
-<p>The manifest data is available through macros:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>!!! info &quot;Plugin Information&quot;
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">    </span><span class="k">-</span><span class="w"> </span><span class="gs">**Name**</span>: <span class="sb">`xc`</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">    </span><span class="k">-</span><span class="w"> </span><span class="gs">**Version**</span>: <span class="sb">`0.16.0`</span>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">    </span><span class="k">-</span><span class="w"> </span><span class="gs">**License**</span>: MIT
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">    </span><span class="k">-</span><span class="w"> </span><span class="gs">**Repository**</span>: [<span class="nt">https://github.com/robinmordasiewicz/f5xc-console</span>](<span class="na">https://github.com/robinmordasiewicz/f5xc-console</span>)
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>
-<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>
-<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>| Metric | Value |
-<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>|--------|-------|
-<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>| Metadata Version | <span class="sb">`2.3.0`</span> |
-<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>| Pages Crawled | 5 |
-<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>| Workspaces Discovered | 22 |
-<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>| Form Fields | 25 |
-<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>| Static Routes | 38 |
-<a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>| Dynamic Patterns | 11 |
-<a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a>| Last Crawled | 2026-01-09T02:45:00Z |
-<a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a>
-<a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a>
-<a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a>| Shortcut | Path |
-<a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a>|----------|------|
-<a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a>| <span class="sb">`account`</span> | <span class="sb">`/web/workspaces/account-protection`</span> |
-<a id="__codelineno-2-22" name="__codelineno-2-22" href="#__codelineno-2-22"></a>| <span class="sb">`admin`</span> | <span class="sb">`/web/workspaces/administration`</span> |
-<a id="__codelineno-2-23" name="__codelineno-2-23" href="#__codelineno-2-23"></a>| <span class="sb">`audit`</span> | <span class="sb">`/web/workspaces/audit-logs-alerts`</span> |
-<a id="__codelineno-2-24" name="__codelineno-2-24" href="#__codelineno-2-24"></a>| <span class="sb">`auth`</span> | <span class="sb">`/web/workspaces/authentication-intelligence`</span> |
-<a id="__codelineno-2-25" name="__codelineno-2-25" href="#__codelineno-2-25"></a>| <span class="sb">`bigip`</span> | <span class="sb">`/web/workspaces/bigip-utilities`</span> |
-<a id="__codelineno-2-26" name="__codelineno-2-26" href="#__codelineno-2-26"></a>| <span class="sb">`bot`</span> | <span class="sb">`/web/workspaces/bot-defense`</span> |
-<a id="__codelineno-2-27" name="__codelineno-2-27" href="#__codelineno-2-27"></a>| <span class="sb">`catalog`</span> | <span class="sb">`/web/catalog/use-cases`</span> |
-<a id="__codelineno-2-28" name="__codelineno-2-28" href="#__codelineno-2-28"></a>| <span class="sb">`cdn`</span> | <span class="sb">`/web/workspaces/content-delivery-network`</span> |
-<a id="__codelineno-2-29" name="__codelineno-2-29" href="#__codelineno-2-29"></a>| <span class="sb">`csd`</span> | <span class="sb">`/web/workspaces/client-side-defense`</span> |
-<a id="__codelineno-2-30" name="__codelineno-2-30" href="#__codelineno-2-30"></a>| <span class="sb">`data-intel`</span> | <span class="sb">`/web/workspaces/data-intelligence`</span> |
-<a id="__codelineno-2-31" name="__codelineno-2-31" href="#__codelineno-2-31"></a>| <span class="sb">`ddos`</span> | <span class="sb">`/web/workspaces/routed-ddos`</span> |
-<a id="__codelineno-2-32" name="__codelineno-2-32" href="#__codelineno-2-32"></a>| <span class="sb">`delegated`</span> | <span class="sb">`/web/workspaces/delegated-access`</span> |
-<a id="__codelineno-2-33" name="__codelineno-2-33" href="#__codelineno-2-33"></a>| <span class="sb">`dns`</span> | <span class="sb">`/web/workspaces/dns-management`</span> |
-<a id="__codelineno-2-34" name="__codelineno-2-34" href="#__codelineno-2-34"></a>| <span class="sb">`home`</span> | <span class="sb">`/web/home`</span> |
-<a id="__codelineno-2-35" name="__codelineno-2-35" href="#__codelineno-2-35"></a>| <span class="sb">`mac`</span> | <span class="sb">`/web/workspaces/multi-cloud-app-connect`</span> |
-<a id="__codelineno-2-36" name="__codelineno-2-36" href="#__codelineno-2-36"></a>| <span class="sb">`mcn`</span> | <span class="sb">`/web/workspaces/multi-cloud-network-connect`</span> |
-<a id="__codelineno-2-37" name="__codelineno-2-37" href="#__codelineno-2-37"></a>| <span class="sb">`nginx`</span> | <span class="sb">`/web/workspaces/nginx-one`</span> |
-<a id="__codelineno-2-38" name="__codelineno-2-38" href="#__codelineno-2-38"></a>| <span class="sb">`observe`</span> | <span class="sb">`/web/workspaces/observability`</span> |
-<a id="__codelineno-2-39" name="__codelineno-2-39" href="#__codelineno-2-39"></a>| <span class="sb">`scan`</span> | <span class="sb">`/web/workspaces/web-app-scanning`</span> |
-<a id="__codelineno-2-40" name="__codelineno-2-40" href="#__codelineno-2-40"></a>| <span class="sb">`shared`</span> | <span class="sb">`/web/workspaces/shared-configuration`</span> |
-<a id="__codelineno-2-41" name="__codelineno-2-41" href="#__codelineno-2-41"></a>| <span class="sb">`traffic`</span> | <span class="sb">`/web/workspaces/application-traffic-insight`</span> |
-<a id="__codelineno-2-42" name="__codelineno-2-42" href="#__codelineno-2-42"></a>| <span class="sb">`waap`</span> | <span class="sb">`/web/workspaces/web-app-and-api-protection`</span> |
+<h4 id="usage-example">Usage Example:<a class="headerlink" href="#usage-example" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">FieldMapper</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">&#39;./bridge/field-mapper&#39;</span><span class="p">;</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">SchemaGenerator</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">&#39;./extractors/schema-generator&#39;</span><span class="p">;</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="c1">// Initialize field mapper</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="kd">const</span><span class="w"> </span><span class="nx">mapper</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">FieldMapper</span><span class="p">();</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="k">await</span><span class="w"> </span><span class="nx">mapper</span><span class="p">.</span><span class="nx">loadMappings</span><span class="p">(</span><span class="s1">&#39;config/field-mappings.yaml&#39;</span><span class="p">);</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="c1">// Map UI field to API property</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="kd">const</span><span class="w"> </span><span class="nx">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">mapper</span><span class="p">.</span><span class="nx">mapFieldToApiProperty</span><span class="p">(</span><span class="s1">&#39;healthcheck&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;name&#39;</span><span class="p">);</span>
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="c1">// Returns: { apiProperty: &#39;metadata.name&#39;, isUIOnly: false, source: &#39;common&#39; }</span>
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="c1">// Map discriminator option</span>
+<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="kd">const</span><span class="w"> </span><span class="nx">discResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">mapper</span><span class="p">.</span><span class="nx">mapDiscriminatorField</span><span class="p">(</span>
+<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="w">  </span><span class="s1">&#39;healthcheck&#39;</span><span class="p">,</span>
+<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="w">  </span><span class="s1">&#39;health_check&#39;</span><span class="p">,</span>
+<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="w">  </span><span class="s1">&#39;HTTP HealthCheck&#39;</span>
+<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="p">);</span>
+<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="c1">// Returns: { apiProperty: &#39;http_health_check&#39;, isUIOnly: false, source: &#39;discriminator&#39; }</span>
+<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a>
+<a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a><span class="c1">// Use with schema generator</span>
+<a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a><span class="kd">const</span><span class="w"> </span><span class="nx">generator</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">SchemaGenerator</span><span class="p">();</span>
+<a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a><span class="k">await</span><span class="w"> </span><span class="nx">generator</span><span class="p">.</span><span class="nx">loadFieldMappings</span><span class="p">(</span><span class="s1">&#39;config/field-mappings.yaml&#39;</span><span class="p">);</span>
+<a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a><span class="kd">const</span><span class="w"> </span><span class="nx">output</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">generator</span><span class="p">.</span><span class="nx">generate</span><span class="p">(</span><span class="nx">input</span><span class="p">);</span>
+<a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a><span class="c1">// output.schema.properties[&#39;name&#39;][&#39;x-f5xc-field&#39;].apiProperty === &#39;metadata.name&#39;</span>
 </code></pre></div>
-<h3 id="programmatically">Programmatically<a class="headerlink" href="#programmatically" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">urllib.request</span><span class="w"> </span><span class="kn">import</span> <span class="n">urlopen</span>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="n">manifest_url</span> <span class="o">=</span> <span class="s2">&quot;https://robinmordasiewicz.github.io/f5xc-console/data/manifest.json&quot;</span>
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="n">manifest</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">urlopen</span><span class="p">(</span><span class="n">manifest_url</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
-<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>
-<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Plugin version: </span><span class="si">{</span><span class="n">manifest</span><span class="p">[</span><span class="s1">&#39;plugin&#39;</span><span class="p">][</span><span class="s1">&#39;version&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Metadata version: </span><span class="si">{</span><span class="n">manifest</span><span class="p">[</span><span class="s1">&#39;console_metadata&#39;</span><span class="p">][</span><span class="s1">&#39;version&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-</code></pre></div>
-<h3 id="in-cicd">In CI/CD<a class="headerlink" href="#in-cicd" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Check manifest version</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">  </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">    </span><span class="no">VERSION=$(jq -r &#39;.plugin.version&#39; manifest.json)</span>
-<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">    </span><span class="no">echo &quot;Plugin version: $VERSION&quot;</span>
-</code></pre></div>
-<h2 id="data-files">Data Files<a class="headerlink" href="#data-files" title="Permanent link">&para;</a></h2>
-<p>Individual data files are also generated:</p>
-<table>
-<thead>
-<tr>
-<th>File</th>
-<th>Contents</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>@docs/data/plugin.json</code></td>
-<td>Plugin identity</td>
-</tr>
-<tr>
-<td><code>@docs/data/console_metadata.json</code></td>
-<td>Console crawl stats</td>
-</tr>
-<tr>
-<td><code>@docs/data/url_sitemap.json</code></td>
-<td>URL routing</td>
-</tr>
-<tr>
-<td><code>@docs/data/workflows.json</code></td>
-<td>Available workflows</td>
-</tr>
-</tbody>
-</table>
+<h4 id="key-design-decisions">Key Design Decisions:<a class="headerlink" href="#key-design-decisions" title="Permanent link">&para;</a></h4>
+<ol>
+<li><strong>YAML Configuration</strong>: Human-readable, version-controllable mapping definitions</li>
+<li><strong>Explicit Mapping</strong>: No auto-inference - all mappings manually defined for clarity</li>
+<li><strong>Namespace Separation</strong>: Common, discriminator, and nested config mappings kept distinct</li>
+<li><strong>Validation Support</strong>: Built-in validation for required fields and mutual exclusivity</li>
+<li><strong>Graceful Degradation</strong>: Schema generation works without field mapper (missing apiProperty fields)</li>
+<li><strong>Trigger Field Filtering</strong>: Prevents duplicate properties when nested configs use trigger fields</li>
+</ol>
+<h2 id="test-coverage">Test Coverage ✅<a class="headerlink" href="#test-coverage" title="Permanent link">&para;</a></h2>
+<p><strong>Results</strong>: 1080/1080 tests passing (26 test suites)
+<strong>Coverage</strong>:
+- OneOfDetector: 97.38% statements
+- SchemaGenerator: 78.10% statements
+- FieldMapper: 89.00% statements
+- FormHandler: 71.68% statements</p>
+<p><strong>Test Files</strong>:
+- <code>tests/unit/extractors/nested-config-detection.test.ts</code>: 11 tests
+- <code>tests/unit/extractors/oneof-detector.test.ts</code>: 11 tests
+- <code>tests/unit/bridge/field-mapper.test.ts</code>: 52 tests</p>
+<h2 id="next-steps">Next Steps<a class="headerlink" href="#next-steps" title="Permanent link">&para;</a></h2>
+<h3 id="milestone-4-schema-bridge-week-3">Milestone 4: Schema Bridge (Week 3) ⏳<a class="headerlink" href="#milestone-4-schema-bridge-week-3" title="Permanent link">&para;</a></h3>
+<p><strong>Goal</strong>: Create <code>src/bridge/schema-merger.ts</code> to merge UI schema + raw API spec → unified schema</p>
+<p><strong>Tasks</strong>:
+- Design merger architecture for combining UI schemas with API specifications
+- Resolve field naming conflicts (UI labels vs API property paths)
+- Preserve oneOf relationships from UI while integrating API structure
+- Generate unified schema ready for downstream enrichment pipeline</p>
+<h3 id="milestone-5-6-downstream-integration-week-4-5">Milestone 5-6: Downstream Integration (Week 4-5) ⏳<a class="headerlink" href="#milestone-5-6-downstream-integration-week-4-5" title="Permanent link">&para;</a></h3>
+<p><strong>Goal</strong>: Create GitHub issues in f5xc-api-enrichment repository</p>
+<p><strong>Issues to Create</strong>:
+1. Schema-First Enrichment Pipeline
+2. OneOf Relationship Support
+3. Consolidate Extension Namespace
+4. UI-to-API Field Mapping
+5. Selector Metadata for Automation</p>
+<h3 id="milestone-7-proof-of-concept-week-6-7">Milestone 7: Proof of Concept (Week 6-7) ⏳<a class="headerlink" href="#milestone-7-proof-of-concept-week-6-7" title="Permanent link">&para;</a></h3>
+<p><strong>Goal</strong>: End-to-end validation of schema extraction → enrichment pipeline</p>
+<p><strong>Tasks</strong>:
+- Run schema extraction for healthcheck resource
+- Bridge schema with API spec
+- Feed unified schema to enrichment
+- Validate enriched output quality
+- Document improvements vs current output</p>
+<h3 id="milestone-8-production-pipeline-week-8">Milestone 8: Production Pipeline (Week 8+) ⏳<a class="headerlink" href="#milestone-8-production-pipeline-week-8" title="Permanent link">&para;</a></h3>
+<p><strong>Goal</strong>: Automate extraction → enrichment → publishing workflow</p>
+<p><strong>Tasks</strong>:
+- Automate extraction on Console updates
+- Trigger enrichment on schema changes
+- Publish enriched specs to releases
+- Update Terraform provider integration
+- Monitor schema drift detection</p>
+<p><strong>Milestone Status</strong>: 3/8 Complete (37.5%)
+<strong>Next Action</strong>: Begin Milestone 4 (Schema Bridge)</p>
 
 
 
