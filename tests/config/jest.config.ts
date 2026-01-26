@@ -8,7 +8,8 @@ const config: Config = {
   rootDir: '../..',
   testMatch: [
     '<rootDir>/tests/unit/**/*.test.ts',
-    '<rootDir>/tests/integration/pipeline/**/*.test.ts'
+    '<rootDir>/tests/integration/pipeline/**/*.test.ts',
+    '<rootDir>/tests/integration/extractors/**/*.test.ts'
   ],
   testPathIgnorePatterns: [
     '/node_modules/',

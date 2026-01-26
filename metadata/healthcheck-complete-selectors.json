@@ -1,0 +1,69 @@
+{
+  "resourceType": "healthcheck",
+  "fieldSelectors": {
+    "Name": {
+      "schemaPath": "properties.name",
+      "selector": "ref_594",
+      "inputType": "textbox",
+      "required": true
+    },
+    "Labels": {
+      "schemaPath": "properties.labels",
+      "selector": "ref_598",
+      "inputType": "textbox",
+      "required": false
+    },
+    "Description": {
+      "schemaPath": "properties.description",
+      "selector": "ref_602",
+      "inputType": "textbox",
+      "required": false
+    },
+    "Show Advanced Fields": {
+      "schemaPath": "properties.show_advanced_fields",
+      "selector": "ref_606",
+      "inputType": "checkbox",
+      "required": false
+    },
+    "Health Check": {
+      "schemaPath": "properties.health_check",
+      "selector": "ref_611",
+      "inputType": "listbox",
+      "required": true
+    },
+    "Timeout": {
+      "schemaPath": "properties.timeout",
+      "selector": "ref_621",
+      "inputType": "spinbutton",
+      "required": false
+    },
+    "Interval": {
+      "schemaPath": "properties.interval",
+      "selector": "ref_627",
+      "inputType": "spinbutton",
+      "required": false
+    },
+    "Unhealthy Threshold": {
+      "schemaPath": "properties.unhealthy_threshold",
+      "selector": "ref_632",
+      "inputType": "spinbutton",
+      "required": false
+    },
+    "Healthy Threshold": {
+      "schemaPath": "properties.healthy_threshold",
+      "selector": "ref_637",
+      "inputType": "spinbutton",
+      "required": false
+    },
+    "Jitter Percent": {
+      "schemaPath": "properties.jitter_percent",
+      "selector": "ref_642",
+      "inputType": "spinbutton",
+      "required": false
+    }
+  },
+  "actionSelectors": {
+    "submit": "button[type=\"submit\"]",
+    "cancel": "button[aria-label*=\"cancel\" i]"
+  }
+}

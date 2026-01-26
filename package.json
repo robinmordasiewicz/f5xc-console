@@ -68,7 +68,9 @@
     "qa:uat": "playwright test --project=uat",
     "qa:full": "npm run qa && npm run qa:uat",
     "qa:report": "npx ts-node scripts/generate-qa-report.ts",
-    "qa:pipeline": "npx ts-node scripts/qa-pipeline.ts"
+    "qa:pipeline": "npx ts-node scripts/qa-pipeline.ts",
+    "validate:api": "npx ts-node scripts/validate-against-api.ts",
+    "validate:api:fix": "npx ts-node scripts/validate-against-api.ts --suggest-fixes"
   },
   "devDependencies": {
     "@playwright/test": "^1.48.0",
@@ -97,5 +99,8 @@
         "chrome-devtools"
       ]
     }
+  },
+  "dependencies": {
+    "js-yaml": "^4.1.1"
   }
 }

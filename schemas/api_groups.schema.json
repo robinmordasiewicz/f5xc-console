@@ -1,0 +1,135 @@
+{
+  "schema": {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "F5 XC API Groups Configuration",
+    "description": "JSON Schema for F5 Distributed Cloud API Groups resource with UI tooltips, defaults, and nested configurations",
+    "type": "object",
+    "properties": {
+      "name": {
+        "type": "string",
+        "description": "The configuration object will be created with name. It has to be unique within the namespace. The value of name has to follow DNS-1035 format.",
+        "x-f5xc-field": {
+          "inputType": "textbox",
+          "uiLabel": "Name",
+          "apiProperty": "name",
+          "advanced": false
+        },
+        "minLength": 1,
+        "maxLength": 63,
+        "pattern": "^[a-z][a-z0-9-]*[a-z0-9]$",
+        "x-f5xc-pattern-description": "Must start with lowercase letter, contain only lowercase letters, numbers, and hyphens, and end with letter or number"
+      },
+      "description": {
+        "type": "string",
+        "description": "Human readable description for the object",
+        "x-f5xc-field": {
+          "inputType": "textbox",
+          "uiLabel": "Description",
+          "apiProperty": "description",
+          "advanced": false
+        }
+      },
+      "scope": {
+        "type": "string",
+        "description": "The API Endpoints list is generated based on the item that you have selected in the scope field.",
+        "x-f5xc-field": {
+          "inputType": "textbox",
+          "uiLabel": "Scope",
+          "apiProperty": "spec.elements",
+          "advanced": false
+        },
+        "default": "HTTP Load Balancer",
+        "x-f5xc-ui": {
+          "defaultValue": "HTTP Load Balancer"
+        },
+        "enum": [
+          "HTTP Load Balancer"
+        ],
+        "x-f5xc-enum-descriptions": {
+          "HTTP Load Balancer": "Select an HTTP Load Balancer to scope the API endpoints"
+        },
+        "minLength": 1
+      },
+      "http_load_balancer": {
+        "type": "string",
+        "description": "Select the HTTP Load Balancer to associate with this API group",
+        "x-f5xc-field": {
+          "inputType": "textbox",
+          "uiLabel": "HTTP Load Balancer",
+          "apiProperty": "spec.elements[].http_loadbalancer",
+          "advanced": false
+        },
+        "x-f5xc-conditional": {
+          "field": "scope",
+          "value": "HTTP Load Balancer"
+        },
+        "minLength": 1
+      }
+    },
+    "required": [
+      "name",
+      "scope",
+      "http_load_balancer"
+    ],
+    "x-f5xc-metadata": {
+      "formUrl": "https://f5-amer-ent.console.ves.volterra.io/web/workspaces/web-app-and-api-protection/namespaces/default/manage/api_security/api_groups",
+      "resourceType": "api_groups",
+      "extractedAt": "1.0.0-stable",
+      "version": "1.0.0",
+      "extractionVersion": "3.0.0-unified",
+      "extractionMethod": "property-builder"
+    }
+  },
+  "selectors": {
+    "resourceType": "api_groups",
+    "fieldSelectors": {
+      "Name": {
+        "schemaPath": "properties.name",
+        "inputType": "textbox",
+        "required": true,
+        "advanced": false
+      },
+      "Description": {
+        "schemaPath": "properties.description",
+        "inputType": "textbox",
+        "required": false,
+        "advanced": false
+      },
+      "Scope": {
+        "schemaPath": "properties.scope",
+        "inputType": "textbox",
+        "required": true,
+        "advanced": false
+      },
+      "HTTP Load Balancer": {
+        "schemaPath": "properties.http_load_balancer",
+        "inputType": "textbox",
+        "required": true,
+        "advanced": false
+      }
+    },
+    "nestedSelectors": {},
+    "actionSelectors": {
+      "submit": "button:has(generic:text(\"Add Api_groups\"))",
+      "cancel": "button:has(generic:text(\"Cancel\"))"
+    }
+  },
+  "metadata": {
+    "formUrl": "https://f5-amer-ent.console.ves.volterra.io/web/workspaces/web-app-and-api-protection/namespaces/default/manage/api_security/api_groups",
+    "resourceType": "api_groups",
+    "extractedAt": "1.0.0-stable",
+    "version": "1.0.0",
+    "extractionVersion": "3.0.0-unified",
+    "coverage": {
+      "totalFields": 4,
+      "topLevelFields": 4,
+      "nestedFields": 0,
+      "nestedConfigurations": 0,
+      "fieldsWithSelectors": 4,
+      "fieldsWithTooltips": 4,
+      "fieldsWithDefaults": 1,
+      "percentage": 100
+    },
+    "warnings": []
+  }
+}

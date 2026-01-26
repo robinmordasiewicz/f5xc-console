@@ -1,0 +1,888 @@
+{
+  "schema": {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "F5 XC App Firewall Configuration",
+    "description": "JSON Schema for F5 Distributed Cloud App Firewall (WAF) resource with UI tooltips, defaults, and nested configurations",
+    "type": "object",
+    "properties": {
+      "name": {
+        "type": "string",
+        "description": "The configuration object will be created with name. It has to be unique within the namespace.\nThe value of name has to follow DNS-1035 format.",
+        "x-f5xc-field": {
+          "inputType": "textbox",
+          "uiLabel": "Name",
+          "apiProperty": "metadata.name",
+          "advanced": false
+        },
+        "minLength": 1,
+        "maxLength": 63,
+        "pattern": "^[a-z][a-z0-9-]*[a-z0-9]$",
+        "x-f5xc-pattern-description": "Must start with lowercase letter, contain only lowercase letters, numbers, and hyphens, and end with letter or number"
+      },
+      "labels": {
+        "type": "object",
+        "description": "Map of string keys and values that can be used to organize and categorize\n(scope and select) objects as chosen by the user. Values specified here will be used\nby selector expression",
+        "x-f5xc-field": {
+          "inputType": "object",
+          "uiLabel": "Labels",
+          "apiProperty": "metadata.labels",
+          "advanced": false
+        },
+        "x-f5xc-ui": {
+          "placeholder": "Add Label"
+        }
+      },
+      "description": {
+        "type": "string",
+        "description": "Human readable description for the object",
+        "x-f5xc-field": {
+          "inputType": "textbox",
+          "uiLabel": "Description",
+          "apiProperty": "metadata.description",
+          "advanced": false
+        },
+        "maxLength": 256
+      },
+      "enforcement_mode": {
+        "type": "string",
+        "description": "Specifies whether the App Firewall should block requests that match WAF rules or only log them (monitoring mode)",
+        "x-f5xc-field": {
+          "inputType": "textbox",
+          "uiLabel": "Enforcement Mode",
+          "apiProperty": "spec.monitoring|spec.blocking",
+          "advanced": false
+        },
+        "default": "Monitoring",
+        "x-f5xc-ui": {
+          "defaultValue": "Monitoring"
+        },
+        "enum": [
+          "Monitoring",
+          "Blocking"
+        ],
+        "x-f5xc-enum-descriptions": {
+          "Monitoring": "Requests will be logged but not blocked (alert-only mode)",
+          "Blocking": "Requests matching WAF rules will be blocked"
+        },
+        "minLength": 1
+      },
+      "security_policy": {
+        "type": "string",
+        "description": "Configure WAF security policy including attack signatures, signature accuracy, and automatic tuning. Options include Default, AI-powered Risk-Based Blocking, or Custom configuration.",
+        "x-f5xc-field": {
+          "inputType": "textbox",
+          "uiLabel": "Security Policy",
+          "apiProperty": "spec.default_detection_settings|spec.ai_risk_based_blocking|spec.detection_settings",
+          "advanced": false
+        },
+        "default": "Default",
+        "x-f5xc-ui": {
+          "defaultValue": "Default"
+        },
+        "enum": [
+          "Default",
+          "Risk-Based Blocking (Powered by AI) - Preview",
+          "Custom"
+        ],
+        "x-f5xc-enum-descriptions": {
+          "Default": "Use default WAF security policy with recommended signatures and thresholds",
+          "Risk-Based Blocking (Powered by AI) - Preview": "AI-powered risk assessment for intelligent blocking decisions (Preview feature)",
+          "Custom": "Configure custom security policy including signature selection and attack type settings"
+        },
+        "minLength": 1
+      },
+      "blocking_response_page": {
+        "type": "string",
+        "description": "Configure the response page shown when a request is blocked by the WAF",
+        "x-f5xc-field": {
+          "inputType": "textbox",
+          "uiLabel": "Blocking Response Page",
+          "apiProperty": "spec.use_default_blocking_page|spec.blocking_page",
+          "advanced": false
+        },
+        "default": "Default Blocking Page",
+        "x-f5xc-ui": {
+          "defaultValue": "Default Blocking Page"
+        },
+        "enum": [
+          "Default Blocking Page",
+          "Custom Blocking Page"
+        ],
+        "x-f5xc-enum-descriptions": {
+          "Default Blocking Page": "Use the default F5 XC blocking page",
+          "Custom Blocking Page": "Configure a custom blocking page with custom HTML body"
+        }
+      },
+      "bot_protection_setting": {
+        "type": "string",
+        "description": "Configure bot protection features including JavaScript challenge insertion",
+        "x-f5xc-field": {
+          "inputType": "textbox",
+          "uiLabel": "Bot Protection Setting",
+          "apiProperty": "spec.detection_settings.default_bot_setting|spec.bot_protection_setting",
+          "advanced": true
+        },
+        "default": "Default Bot Settings",
+        "x-f5xc-ui": {
+          "defaultValue": "Default Bot Settings"
+        },
+        "enum": [
+          "Default Bot Settings",
+          "Custom Bot Settings"
+        ],
+        "x-f5xc-enum-descriptions": {
+          "Default Bot Settings": "Use default bot protection settings",
+          "Custom Bot Settings": "Configure custom bot protection with JavaScript insertion and grace period"
+        }
+      },
+      "allowed_response_status_codes": {
+        "type": "string",
+        "description": "Configure which HTTP response status codes are allowed from the origin server. Use default (1xx, 2xx, 3xx), allow all, or specify a custom list.",
+        "x-f5xc-field": {
+          "inputType": "textbox",
+          "uiLabel": "Allowed Response Status Codes",
+          "apiProperty": "spec.allow_all_response_codes|spec.allowed_response_codes",
+          "advanced": false
+        },
+        "default": "Default Allowed Response Status Codes",
+        "x-f5xc-ui": {
+          "defaultValue": "Default Allowed Response Status Codes"
+        },
+        "enum": [
+          "Default Allowed Response Status Codes",
+          "Allow All Response Status Codes",
+          "Custom Allowed Response Status Codes"
+        ],
+        "x-f5xc-enum-descriptions": {
+          "Default Allowed Response Status Codes": "Allow standard HTTP success and redirect status codes (1xx, 2xx, 3xx)",
+          "Allow All Response Status Codes": "Allow all HTTP response codes from origin server without inspection",
+          "Custom Allowed Response Status Codes": "Configure a custom list of allowed response status codes"
+        }
+      },
+      "mask_sensitive_parameters": {
+        "type": "string",
+        "description": "Configure which parameters should be masked in WAF logs to protect sensitive data like passwords and tokens",
+        "x-f5xc-field": {
+          "inputType": "textbox",
+          "uiLabel": "Mask Sensitive Parameters in Logs",
+          "apiProperty": "spec.default_anonymization|spec.disable_anonymization|spec.custom_anonymization",
+          "advanced": false
+        },
+        "default": "Default Masked Parameters",
+        "x-f5xc-ui": {
+          "defaultValue": "Default Masked Parameters"
+        },
+        "enum": [
+          "Default Masked Parameters",
+          "Custom Masked Parameters",
+          "Disable Masking"
+        ],
+        "x-f5xc-enum-descriptions": {
+          "Default Masked Parameters": "Use default list of sensitive parameters to mask in logs (passwords, tokens, etc.)",
+          "Custom Masked Parameters": "Configure custom list of parameters to mask in logs",
+          "Disable Masking": "Disable masking of sensitive parameters (not recommended)"
+        }
+      },
+      "default_anonymization": {
+        "type": "boolean",
+        "description": "Enable default anonymization of sensitive data in logs",
+        "x-f5xc-field": {
+          "inputType": "checkbox",
+          "uiLabel": "Default Anonymization",
+          "apiProperty": "spec.default_anonymization",
+          "advanced": true
+        },
+        "default": true,
+        "x-f5xc-ui": {
+          "defaultValue": "true"
+        }
+      },
+      "risk_based_blocking_config": {
+        "type": "object",
+        "description": "Configure AI-powered risk-based blocking with separate actions for high, medium, and low risk requests",
+        "x-f5xc-nested": {
+          "trigger": "security_policy",
+          "value": "Risk-Based Blocking (Powered by AI) - Preview"
+        },
+        "properties": {
+          "high_risk_action": {
+            "type": "string",
+            "description": "Action for high-risk requests as determined by AI analysis. AI_BLOCK to prevent likely malicious requests, AI_REPORT to log only.",
+            "x-f5xc-field": {
+              "inputType": "textbox",
+              "uiLabel": "High Risk",
+              "apiProperty": "spec.ai_risk_based_blocking.high_risk_action",
+              "advanced": false
+            },
+            "default": "AI_BLOCK",
+            "x-f5xc-ui": {
+              "defaultValue": "AI_BLOCK"
+            },
+            "enum": [
+              "AI_BLOCK",
+              "AI_REPORT"
+            ],
+            "x-f5xc-enum-descriptions": {
+              "AI_BLOCK": "Block high-risk requests that AI determines are likely malicious",
+              "AI_REPORT": "Log high-risk requests without blocking for monitoring and analysis"
+            },
+            "minLength": 1
+          },
+          "medium_risk_action": {
+            "type": "string",
+            "description": "Action for medium-risk requests. AI_REPORT recommended during tuning period to analyze traffic patterns.",
+            "x-f5xc-field": {
+              "inputType": "textbox",
+              "uiLabel": "Medium Risk",
+              "apiProperty": "spec.ai_risk_based_blocking.medium_risk_action",
+              "advanced": false
+            },
+            "default": "AI_REPORT",
+            "x-f5xc-ui": {
+              "defaultValue": "AI_REPORT"
+            },
+            "enum": [
+              "AI_BLOCK",
+              "AI_REPORT"
+            ],
+            "x-f5xc-enum-descriptions": {
+              "AI_BLOCK": "Block medium-risk requests for stricter security posture",
+              "AI_REPORT": "Log medium-risk requests without blocking (recommended for tuning)"
+            },
+            "minLength": 1
+          },
+          "low_risk_action": {
+            "type": "string",
+            "description": "Action for low-risk requests. AI_REPORT recommended to avoid blocking legitimate traffic.",
+            "x-f5xc-field": {
+              "inputType": "textbox",
+              "uiLabel": "Low Risk",
+              "apiProperty": "spec.ai_risk_based_blocking.low_risk_action",
+              "advanced": false
+            },
+            "default": "AI_REPORT",
+            "x-f5xc-ui": {
+              "defaultValue": "AI_REPORT"
+            },
+            "enum": [
+              "AI_BLOCK",
+              "AI_REPORT"
+            ],
+            "x-f5xc-enum-descriptions": {
+              "AI_BLOCK": "Block all low-risk requests (most restrictive)",
+              "AI_REPORT": "Log low-risk requests without blocking (recommended)"
+            },
+            "minLength": 1
+          }
+        },
+        "required": [
+          "high_risk_action",
+          "medium_risk_action",
+          "low_risk_action"
+        ]
+      },
+      "custom_security_policy_config": {
+        "type": "object",
+        "description": "Configure custom WAF security policy including attack signatures, signature selection, and automatic tuning",
+        "x-f5xc-nested": {
+          "trigger": "security_policy",
+          "value": "Custom"
+        },
+        "properties": {
+          "attack_types": {
+            "type": "string",
+            "description": "Configure which attack types to detect. Use Default for comprehensive coverage or Custom to select specific attack categories.",
+            "x-f5xc-field": {
+              "inputType": "textbox",
+              "uiLabel": "Attack Types",
+              "apiProperty": "spec.detection_settings.signature_selection_setting.default_attack_type_settings|spec.detection_settings.signature_selection_setting.attack_type_settings",
+              "advanced": false
+            },
+            "default": "Default",
+            "x-f5xc-ui": {
+              "defaultValue": "Default"
+            },
+            "enum": [
+              "Default",
+              "Custom"
+            ],
+            "x-f5xc-enum-descriptions": {
+              "Default": "Use default attack type detection covering all common attack categories",
+              "Custom": "Configure custom list of attack types to detect or exclude"
+            },
+            "minLength": 1
+          },
+          "signature_selection_by_accuracy": {
+            "type": "string",
+            "description": "Select which signature accuracy levels to use. Higher accuracy means fewer false positives but potentially less coverage.",
+            "x-f5xc-field": {
+              "inputType": "textbox",
+              "uiLabel": "Signature Selection by Accuracy",
+              "apiProperty": "spec.detection_settings.signature_selection_setting.only_high_accuracy_signatures|high_medium_accuracy_signatures|high_medium_low_accuracy_signatures",
+              "advanced": false
+            },
+            "default": "High and Medium",
+            "x-f5xc-ui": {
+              "defaultValue": "High and Medium"
+            },
+            "enum": [
+              "High Accuracy Only",
+              "High and Medium",
+              "High, Medium, and Low"
+            ],
+            "x-f5xc-enum-descriptions": {
+              "High Accuracy Only": "Only use high accuracy signatures (fewer false positives)",
+              "High and Medium": "Use high and medium accuracy signatures (balanced)",
+              "High, Medium, and Low": "Use all signatures including low accuracy (maximum coverage, more false positives)"
+            },
+            "minLength": 1
+          },
+          "automatic_attack_signatures_tuning": {
+            "type": "string",
+            "description": "Enable automatic tuning of attack signatures based on traffic patterns and false positive analysis",
+            "x-f5xc-field": {
+              "inputType": "textbox",
+              "uiLabel": "Automatic Attack Signatures Tuning",
+              "apiProperty": "spec.detection_settings.enable_suppression|spec.detection_settings.disable_suppression",
+              "advanced": false
+            },
+            "default": "Enable",
+            "x-f5xc-ui": {
+              "defaultValue": "Enable"
+            },
+            "enum": [
+              "Enable",
+              "Disable"
+            ],
+            "x-f5xc-enum-descriptions": {
+              "Enable": "Automatically tune attack signatures based on traffic patterns and false positive analysis",
+              "Disable": "Use static signature configuration without automatic tuning"
+            },
+            "minLength": 1
+          },
+          "attack_signatures_staging": {
+            "type": "string",
+            "description": "Enable staging of new attack signatures before enforcement to validate and reduce false positives",
+            "x-f5xc-field": {
+              "inputType": "textbox",
+              "uiLabel": "Attack Signatures Staging",
+              "apiProperty": "spec.detection_settings.disable_staging|spec.detection_settings.stage_new_signatures|stage_new_and_updated_signatures",
+              "advanced": false
+            },
+            "default": "Disable",
+            "x-f5xc-ui": {
+              "defaultValue": "Disable"
+            },
+            "enum": [
+              "Disable",
+              "Enable"
+            ],
+            "x-f5xc-enum-descriptions": {
+              "Disable": "Enforce new attack signatures immediately without staging period",
+              "Enable": "Stage new attack signatures before enforcement to reduce false positives"
+            }
+          },
+          "threat_campaigns": {
+            "type": "string",
+            "description": "Enable detection of known threat campaigns based on F5 threat intelligence feeds",
+            "x-f5xc-field": {
+              "inputType": "textbox",
+              "uiLabel": "Threat Campaigns",
+              "apiProperty": "spec.detection_settings.enable_threat_campaigns|spec.detection_settings.disable_threat_campaigns",
+              "advanced": false
+            },
+            "default": "Enable",
+            "x-f5xc-ui": {
+              "defaultValue": "Enable"
+            },
+            "enum": [
+              "Enable",
+              "Disable"
+            ],
+            "x-f5xc-enum-descriptions": {
+              "Enable": "Enable detection of known threat campaigns based on F5 threat intelligence",
+              "Disable": "Disable threat campaign detection"
+            },
+            "minLength": 1
+          },
+          "violations": {
+            "type": "string",
+            "description": "Configure which protocol and request violations to detect. Use Default for comprehensive coverage.",
+            "x-f5xc-field": {
+              "inputType": "textbox",
+              "uiLabel": "Violations",
+              "apiProperty": "spec.detection_settings.default_violation_settings|spec.detection_settings.violation_settings",
+              "advanced": false
+            },
+            "default": "Default",
+            "x-f5xc-ui": {
+              "defaultValue": "Default"
+            },
+            "enum": [
+              "Default",
+              "Custom"
+            ],
+            "x-f5xc-enum-descriptions": {
+              "Default": "Use default violation detection settings covering all common violations",
+              "Custom": "Configure custom violation types and thresholds"
+            },
+            "minLength": 1
+          },
+          "signature_based_bot_protection": {
+            "type": "string",
+            "description": "Configure signature-based bot protection to detect and block known malicious bots",
+            "x-f5xc-field": {
+              "inputType": "textbox",
+              "uiLabel": "Signature-Based Bot Protection",
+              "apiProperty": "spec.detection_settings.default_bot_setting|spec.detection_settings.bot_protection_setting",
+              "advanced": false
+            },
+            "default": "Default",
+            "x-f5xc-ui": {
+              "defaultValue": "Default"
+            },
+            "enum": [
+              "Default",
+              "Custom"
+            ],
+            "x-f5xc-enum-descriptions": {
+              "Default": "Use default signature-based bot protection settings",
+              "Custom": "Configure custom signature-based bot protection rules"
+            },
+            "minLength": 1
+          }
+        },
+        "required": [
+          "attack_types",
+          "signature_selection_by_accuracy",
+          "automatic_attack_signatures_tuning",
+          "threat_campaigns",
+          "violations",
+          "signature_based_bot_protection"
+        ]
+      },
+      "custom_blocking_page_config": {
+        "type": "object",
+        "description": "Configure custom blocking page HTML content",
+        "x-f5xc-nested": {
+          "trigger": "blocking_response_page",
+          "value": "Custom Blocking Page"
+        },
+        "properties": {
+          "blocking_page": {
+            "type": "string",
+            "description": "Custom HTML content to display on the blocking page. Use {{request_id}} placeholder for tracking. Max 4096 bytes after base64 encoding.",
+            "x-f5xc-field": {
+              "inputType": "textbox",
+              "uiLabel": "Blocking Response Page Body",
+              "apiProperty": "spec.blocking_page.blocking_page",
+              "advanced": false
+            },
+            "x-f5xc-ui": {
+              "placeholder": "Enter URL for blocking page (e.g., http://example.com/error.html)"
+            },
+            "minLength": 0,
+            "maxLength": 4096,
+            "format": "uri"
+          },
+          "response_code": {
+            "type": "string",
+            "description": "HTTP response code to return when a request is blocked",
+            "x-f5xc-field": {
+              "inputType": "textbox",
+              "uiLabel": "Response Code",
+              "apiProperty": "spec.blocking_page.response_code",
+              "advanced": false
+            },
+            "default": "Forbidden",
+            "x-f5xc-ui": {
+              "defaultValue": "Forbidden"
+            },
+            "enum": [
+              "Forbidden",
+              "Not Found",
+              "Unauthorized",
+              "Service Unavailable",
+              "OK"
+            ],
+            "x-f5xc-enum-descriptions": {
+              "Forbidden": "HTTP 403 Forbidden",
+              "Not Found": "HTTP 404 Not Found",
+              "Unauthorized": "HTTP 401 Unauthorized",
+              "Service Unavailable": "HTTP 503 Service Unavailable",
+              "OK": "HTTP 200 OK"
+            }
+          }
+        },
+        "required": []
+      },
+      "custom_bot_settings_config": {
+        "type": "object",
+        "description": "Configure custom bot protection settings including JavaScript mode and grace period",
+        "x-f5xc-nested": {
+          "trigger": "bot_protection_setting",
+          "value": "Custom Bot Settings"
+        },
+        "properties": {
+          "good_bot_action": {
+            "type": "string",
+            "description": "Good Bot Action field",
+            "x-f5xc-field": {
+              "inputType": "textbox",
+              "uiLabel": "Good Bot Action",
+              "apiProperty": "spec.detection_settings.bot_protection_setting.good_bot_action",
+              "advanced": false
+            },
+            "default": "REPORT",
+            "x-f5xc-ui": {
+              "defaultValue": "REPORT"
+            },
+            "enum": [
+              "BLOCK",
+              "REPORT",
+              "IGNORE"
+            ],
+            "x-f5xc-enum-descriptions": {
+              "REPORT": "Log good bot traffic without blocking",
+              "BLOCK": "Block requests from known good bots",
+              "IGNORE": "Ignore good bot signatures (disable detection)"
+            }
+          },
+          "malicious_bot_action": {
+            "type": "string",
+            "description": "Malicious Bot Action field",
+            "x-f5xc-field": {
+              "inputType": "textbox",
+              "uiLabel": "Malicious Bot Action",
+              "apiProperty": "spec.detection_settings.bot_protection_setting.malicious_bot_action",
+              "advanced": false
+            },
+            "default": "BLOCK",
+            "x-f5xc-ui": {
+              "defaultValue": "BLOCK"
+            },
+            "enum": [
+              "BLOCK",
+              "REPORT",
+              "IGNORE"
+            ],
+            "x-f5xc-enum-descriptions": {
+              "BLOCK": "Block requests from known malicious bots",
+              "REPORT": "Log malicious bot traffic without blocking",
+              "IGNORE": "Ignore malicious bot signatures (disable detection)"
+            }
+          },
+          "suspicious_bot_action": {
+            "type": "string",
+            "description": "Suspicious Bot Action field",
+            "x-f5xc-field": {
+              "inputType": "textbox",
+              "uiLabel": "Suspicious Bot Action",
+              "apiProperty": "spec.detection_settings.bot_protection_setting.suspicious_bot_action",
+              "advanced": false
+            },
+            "default": "REPORT",
+            "x-f5xc-ui": {
+              "defaultValue": "REPORT"
+            },
+            "enum": [
+              "BLOCK",
+              "REPORT",
+              "IGNORE"
+            ],
+            "x-f5xc-enum-descriptions": {
+              "REPORT": "Log suspicious bot traffic without blocking",
+              "BLOCK": "Block requests from suspicious bots",
+              "IGNORE": "Ignore suspicious bot signatures (disable detection)"
+            }
+          }
+        },
+        "required": []
+      }
+    },
+    "required": [
+      "name",
+      "enforcement_mode",
+      "security_policy"
+    ],
+    "oneOf": [
+      {
+        "properties": {
+          "security_policy": {
+            "const": "Default"
+          }
+        },
+        "required": [
+          "security_policy"
+        ]
+      },
+      {
+        "properties": {
+          "security_policy": {
+            "const": "Risk-Based Blocking (Powered by AI) - Preview"
+          }
+        },
+        "required": [
+          "security_policy"
+        ]
+      },
+      {
+        "properties": {
+          "security_policy": {
+            "const": "Custom"
+          }
+        },
+        "required": [
+          "security_policy"
+        ]
+      },
+      {
+        "properties": {
+          "blocking_response_page": {
+            "const": "Default Blocking Page"
+          }
+        },
+        "required": [
+          "blocking_response_page"
+        ]
+      },
+      {
+        "properties": {
+          "blocking_response_page": {
+            "const": "Custom Blocking Page"
+          }
+        },
+        "required": [
+          "blocking_response_page"
+        ]
+      },
+      {
+        "properties": {
+          "bot_protection_setting": {
+            "const": "Default Bot Settings"
+          }
+        },
+        "required": [
+          "bot_protection_setting"
+        ]
+      },
+      {
+        "properties": {
+          "bot_protection_setting": {
+            "const": "Custom Bot Settings"
+          }
+        },
+        "required": [
+          "bot_protection_setting"
+        ]
+      }
+    ],
+    "x-f5xc-metadata": {
+      "formUrl": "https://f5-amer-ent.console.ves.volterra.io/web/workspaces/web-app-and-api-protection/namespaces/default/manage/app_firewall",
+      "resourceType": "app_firewall",
+      "extractedAt": "2.4.0-stable",
+      "version": "2.4.0",
+      "extractionVersion": "3.0.0-unified",
+      "extractionMethod": "property-builder",
+      "nestedConfigurations": [
+        "risk_based_blocking_config",
+        "custom_security_policy_config",
+        "custom_blocking_page_config",
+        "custom_bot_settings_config"
+      ]
+    }
+  },
+  "selectors": {
+    "resourceType": "app_firewall",
+    "fieldSelectors": {
+      "Name": {
+        "schemaPath": "properties.name",
+        "inputType": "textbox",
+        "required": true,
+        "advanced": false
+      },
+      "Labels": {
+        "schemaPath": "properties.labels",
+        "inputType": "object",
+        "required": false,
+        "advanced": false
+      },
+      "Description": {
+        "schemaPath": "properties.description",
+        "inputType": "textbox",
+        "required": false,
+        "advanced": false
+      },
+      "Enforcement Mode": {
+        "schemaPath": "properties.enforcement_mode",
+        "inputType": "textbox",
+        "required": true,
+        "advanced": false
+      },
+      "Security Policy": {
+        "schemaPath": "properties.security_policy",
+        "inputType": "textbox",
+        "required": true,
+        "advanced": false
+      },
+      "Blocking Response Page": {
+        "schemaPath": "properties.blocking_response_page",
+        "inputType": "textbox",
+        "required": false,
+        "advanced": false
+      },
+      "Bot Protection Setting": {
+        "schemaPath": "properties.bot_protection_setting",
+        "inputType": "textbox",
+        "required": false,
+        "advanced": true
+      },
+      "Allowed Response Status Codes": {
+        "schemaPath": "properties.allowed_response_status_codes",
+        "inputType": "textbox",
+        "required": false,
+        "advanced": false
+      },
+      "Mask Sensitive Parameters in Logs": {
+        "schemaPath": "properties.mask_sensitive_parameters",
+        "inputType": "textbox",
+        "required": false,
+        "advanced": false
+      },
+      "Default Anonymization": {
+        "schemaPath": "properties.default_anonymization",
+        "inputType": "checkbox",
+        "required": false,
+        "advanced": true
+      }
+    },
+    "nestedSelectors": {
+      "risk_based_blocking_config": {
+        "High Risk": {
+          "schemaPath": "properties.risk_based_blocking_config.properties.high_risk_action",
+          "inputType": "textbox",
+          "required": true,
+          "advanced": false
+        },
+        "Medium Risk": {
+          "schemaPath": "properties.risk_based_blocking_config.properties.medium_risk_action",
+          "inputType": "textbox",
+          "required": true,
+          "advanced": false
+        },
+        "Low Risk": {
+          "schemaPath": "properties.risk_based_blocking_config.properties.low_risk_action",
+          "inputType": "textbox",
+          "required": true,
+          "advanced": false
+        }
+      },
+      "custom_security_policy_config": {
+        "Attack Types": {
+          "schemaPath": "properties.custom_security_policy_config.properties.attack_types",
+          "inputType": "textbox",
+          "required": true,
+          "advanced": false
+        },
+        "Signature Selection by Accuracy": {
+          "schemaPath": "properties.custom_security_policy_config.properties.signature_selection_by_accuracy",
+          "inputType": "textbox",
+          "required": true,
+          "advanced": false
+        },
+        "Automatic Attack Signatures Tuning": {
+          "schemaPath": "properties.custom_security_policy_config.properties.automatic_attack_signatures_tuning",
+          "inputType": "textbox",
+          "required": true,
+          "advanced": false
+        },
+        "Attack Signatures Staging": {
+          "schemaPath": "properties.custom_security_policy_config.properties.attack_signatures_staging",
+          "inputType": "textbox",
+          "required": false,
+          "advanced": false
+        },
+        "Threat Campaigns": {
+          "schemaPath": "properties.custom_security_policy_config.properties.threat_campaigns",
+          "inputType": "textbox",
+          "required": true,
+          "advanced": false
+        },
+        "Violations": {
+          "schemaPath": "properties.custom_security_policy_config.properties.violations",
+          "inputType": "textbox",
+          "required": true,
+          "advanced": false
+        },
+        "Signature-Based Bot Protection": {
+          "schemaPath": "properties.custom_security_policy_config.properties.signature_based_bot_protection",
+          "inputType": "textbox",
+          "required": true,
+          "advanced": false
+        }
+      },
+      "custom_blocking_page_config": {
+        "Blocking Response Page Body": {
+          "schemaPath": "properties.custom_blocking_page_config.properties.blocking_page",
+          "inputType": "textbox",
+          "required": false,
+          "advanced": false
+        },
+        "Response Code": {
+          "schemaPath": "properties.custom_blocking_page_config.properties.response_code",
+          "inputType": "textbox",
+          "required": false,
+          "advanced": false
+        }
+      },
+      "custom_bot_settings_config": {
+        "Good Bot Action": {
+          "schemaPath": "properties.custom_bot_settings_config.properties.good_bot_action",
+          "inputType": "textbox",
+          "required": false,
+          "advanced": false
+        },
+        "Malicious Bot Action": {
+          "schemaPath": "properties.custom_bot_settings_config.properties.malicious_bot_action",
+          "inputType": "textbox",
+          "required": false,
+          "advanced": false
+        },
+        "Suspicious Bot Action": {
+          "schemaPath": "properties.custom_bot_settings_config.properties.suspicious_bot_action",
+          "inputType": "textbox",
+          "required": false,
+          "advanced": false
+        }
+      }
+    },
+    "actionSelectors": {
+      "submit": "button:has(generic:text(\"Add App_firewall\"))",
+      "cancel": "button:has(generic:text(\"Cancel\"))",
+      "editRiskBasedBlockingConfig": "link:text(\"Edit Configuration\")",
+      "applyConfig": "button:has(generic:text(\"Apply\"))",
+      "discardConfig": "button:has(generic:text(\"Discard\"))",
+      "editCustomSecurityPolicyConfig": "link:text(\"Edit Configuration\")",
+      "editCustomBlockingPageConfig": "link:text(\"Edit Configuration\")",
+      "editCustomBotSettingsConfig": "link:text(\"Edit Configuration\")"
+    }
+  },
+  "metadata": {
+    "formUrl": "https://f5-amer-ent.console.ves.volterra.io/web/workspaces/web-app-and-api-protection/namespaces/default/manage/app_firewall",
+    "resourceType": "app_firewall",
+    "extractedAt": "2.4.0-stable",
+    "version": "2.4.0",
+    "extractionVersion": "3.0.0-unified",
+    "coverage": {
+      "totalFields": 25,
+      "topLevelFields": 10,
+      "nestedFields": 15,
+      "nestedConfigurations": 4,
+      "fieldsWithSelectors": 25,
+      "fieldsWithTooltips": 25,
+      "fieldsWithDefaults": 21,
+      "percentage": 100
+    },
+    "warnings": []
+  }
+}

@@ -1,0 +1,537 @@
+{
+  "schema": {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "F5 XC Healthcheck Configuration",
+    "description": "JSON Schema for F5 Distributed Cloud healthcheck resource with UI tooltips, defaults, and nested configurations",
+    "type": "object",
+    "properties": {
+      "name": {
+        "type": "string",
+        "description": "The configuration object will be created with name. It has to be unique within the namespace.\nThe value of name has to follow DNS-1035 format.",
+        "x-f5xc-field": {
+          "inputType": "textbox",
+          "uiLabel": "Name",
+          "apiProperty": "name",
+          "advanced": false
+        },
+        "minLength": 0,
+        "maxLength": 63,
+        "pattern": "^[a-z][a-z0-9-]*[a-z0-9]$",
+        "x-f5xc-pattern-description": "Must start with lowercase letter, contain only lowercase letters, numbers, and hyphens, and end with letter or number"
+      },
+      "labels": {
+        "type": "object",
+        "description": "Map of string keys and values that can be used to organize and categorize\n(scope and select) objects as chosen by the user. Values specified here will be used\nby selector expression",
+        "x-f5xc-field": {
+          "inputType": "object",
+          "uiLabel": "Labels",
+          "apiProperty": "labels",
+          "advanced": false
+        },
+        "x-f5xc-ui": {
+          "placeholder": "Add Label"
+        }
+      },
+      "description": {
+        "type": "string",
+        "description": "Human readable description for the object",
+        "x-f5xc-field": {
+          "inputType": "textbox",
+          "uiLabel": "Description",
+          "apiProperty": "description",
+          "advanced": false
+        }
+      },
+      "health_check": {
+        "type": "string",
+        "description": "Specifies whether to perform HTTP Health Check or TCP Health check",
+        "x-f5xc-field": {
+          "inputType": "textbox",
+          "uiLabel": "Health Check",
+          "apiProperty": "health_check",
+          "advanced": false
+        },
+        "default": "HTTP HealthCheck",
+        "x-f5xc-ui": {
+          "defaultValue": "HTTP HealthCheck"
+        },
+        "enum": [
+          "HTTP HealthCheck",
+          "TCP HealthCheck",
+          "ICMP HealthCheck for UDP Loadbalancer"
+        ],
+        "x-f5xc-enum-descriptions": {
+          "HTTP HealthCheck": "Specifies the following details for HTTP health check requests: 1. Host header 2. Path 3. Request headers to add 4. Request headers to remove",
+          "TCP HealthCheck": "Specifies send payload and expected response payload",
+          "ICMP HealthCheck for UDP Loadbalancer": "Specifies ICMP HealthCheck for UDP Loadbalancer"
+        },
+        "minLength": 1
+      },
+      "timeout": {
+        "type": "number",
+        "description": "Timeout in seconds to wait for successful response. In other words, it is\nthe time to wait for a health check response. If the timeout is reached the\nhealth check attempt will be considered a failure.",
+        "x-f5xc-field": {
+          "inputType": "spinbutton",
+          "uiLabel": "Timeout",
+          "apiProperty": "spec.timeout",
+          "advanced": false
+        },
+        "default": 3,
+        "x-f5xc-ui": {
+          "defaultValue": "3",
+          "unit": "seconds"
+        },
+        "minimum": 1,
+        "maximum": 600
+      },
+      "interval": {
+        "type": "number",
+        "description": "Time interval in seconds between two healthcheck requests.",
+        "x-f5xc-field": {
+          "inputType": "spinbutton",
+          "uiLabel": "Interval",
+          "apiProperty": "spec.interval",
+          "advanced": false
+        },
+        "default": 15,
+        "x-f5xc-ui": {
+          "defaultValue": "15",
+          "unit": "seconds"
+        },
+        "minimum": 1,
+        "maximum": 600
+      },
+      "unhealthy_threshold": {
+        "type": "number",
+        "description": "Number of failed responses before declaring unhealthy. In other words, this is\nthe number of unhealthy health checks required before a host is marked\nunhealthy. Note that for http health checking if a host responds with 503\nthis threshold is ignored and the host is considered unhealthy immediately.",
+        "x-f5xc-field": {
+          "inputType": "spinbutton",
+          "uiLabel": "Unhealthy Threshold",
+          "apiProperty": "spec.unhealthy_threshold",
+          "advanced": false
+        },
+        "default": 1,
+        "x-f5xc-ui": {
+          "defaultValue": "1"
+        },
+        "minimum": 1,
+        "maximum": 16
+      },
+      "healthy_threshold": {
+        "type": "number",
+        "description": "Number of successful responses before declaring healthy. In other words, this is\nthe number of healthy health checks required before a host is marked\nhealthy. Note that during startup, only a single successful health check is\nrequired to mark a host healthy.",
+        "x-f5xc-field": {
+          "inputType": "spinbutton",
+          "uiLabel": "Healthy Threshold",
+          "apiProperty": "spec.healthy_threshold",
+          "advanced": false
+        },
+        "default": 3,
+        "x-f5xc-ui": {
+          "defaultValue": "3"
+        },
+        "minimum": 1,
+        "maximum": 16
+      },
+      "jitter_percent": {
+        "type": "number",
+        "description": "Add a random amount of time as a percent value to the interval between successive healthcheck requests.",
+        "x-f5xc-field": {
+          "inputType": "spinbutton",
+          "uiLabel": "Jitter Percent",
+          "apiProperty": "spec.jitter_percent",
+          "advanced": true
+        },
+        "default": 30,
+        "x-f5xc-ui": {
+          "defaultValue": "30",
+          "unit": "percent"
+        },
+        "minimum": 0,
+        "maximum": 50
+      },
+      "http_health_check_config": {
+        "type": "object",
+        "description": "Specifies the following details for HTTP health check requests\n1. Host header\n2. Path\n3. Request headers to add\n4. Request headers to remove",
+        "x-f5xc-nested": {
+          "trigger": "health_check",
+          "value": "HTTP HealthCheck"
+        },
+        "properties": {
+          "specify_host_header": {
+            "type": "string",
+            "description": "Specify the value of host header in the HTTP health check request.",
+            "x-f5xc-field": {
+              "inputType": "textbox",
+              "uiLabel": "Specify Host Header",
+              "apiProperty": "spec.http_health_check",
+              "advanced": false
+            },
+            "default": "Origin Server Name",
+            "x-f5xc-ui": {
+              "defaultValue": "Origin Server Name"
+            },
+            "enum": [
+              "Origin Server Name",
+              "Host Header Value"
+            ],
+            "x-f5xc-enum-descriptions": {
+              "Origin Server Name": "Use the origin server name.",
+              "Host Header Value": "The value of the host header."
+            },
+            "minLength": 1
+          },
+          "host_header_value": {
+            "type": "string",
+            "description": "The value of the host header.",
+            "x-f5xc-field": {
+              "inputType": "textbox",
+              "uiLabel": "Host Header Value",
+              "apiProperty": "spec.http_health_check.host_header",
+              "advanced": false
+            },
+            "x-f5xc-conditional": {
+              "field": "specify_host_header",
+              "value": "Host Header Value"
+            },
+            "maxLength": 262,
+            "format": "hostname"
+          },
+          "path": {
+            "type": "string",
+            "description": "Specifies the HTTP path that will be requested during health checking.",
+            "x-f5xc-field": {
+              "inputType": "textbox",
+              "uiLabel": "Path",
+              "apiProperty": "spec.http_health_check.path",
+              "advanced": false
+            },
+            "default": "/",
+            "x-f5xc-ui": {
+              "defaultValue": "/"
+            },
+            "minLength": 0,
+            "maxLength": 2048,
+            "pattern": "^/.*",
+            "x-f5xc-pattern-description": "Must start with forward slash (/)"
+          },
+          "use_http2": {
+            "type": "boolean",
+            "description": "If set, health checks will be made using http/2.",
+            "x-f5xc-field": {
+              "inputType": "checkbox",
+              "uiLabel": "Use HTTP2",
+              "apiProperty": "spec.http_health_check.use_http2",
+              "advanced": false
+            },
+            "default": false,
+            "x-f5xc-ui": {
+              "defaultValue": "false"
+            }
+          },
+          "request_headers_to_add": {
+            "type": "object",
+            "description": "Additional headers to include in health check requests.",
+            "x-f5xc-field": {
+              "inputType": "object",
+              "uiLabel": "Request Headers to Add",
+              "apiProperty": "spec.http_health_check.headers",
+              "advanced": false
+            },
+            "default": {},
+            "x-f5xc-ui": {
+              "defaultValue": "[object Object]"
+            }
+          },
+          "request_headers_to_remove": {
+            "type": "array",
+            "description": "Headers to remove from health check requests.",
+            "x-f5xc-field": {
+              "inputType": "array",
+              "uiLabel": "Request Headers to Remove",
+              "apiProperty": "spec.http_health_check.request_headers_to_remove",
+              "advanced": true
+            },
+            "default": [],
+            "x-f5xc-ui": {
+              "defaultValue": "[]"
+            },
+            "items": {
+              "type": "string",
+              "maxLength": 256
+            },
+            "maxItems": 16
+          },
+          "expected_status_codes": {
+            "type": "array",
+            "description": "Expected HTTP status codes indicating a healthy response.",
+            "x-f5xc-field": {
+              "inputType": "array",
+              "uiLabel": "Expected Status Codes",
+              "apiProperty": "spec.http_health_check.expected_status_codes",
+              "advanced": false
+            },
+            "default": [
+              "200"
+            ],
+            "x-f5xc-ui": {
+              "defaultValue": "[\"200\"]"
+            },
+            "items": {
+              "type": "string",
+              "minLength": 3,
+              "maxLength": 10
+            },
+            "maxItems": 16
+          }
+        },
+        "required": [
+          "specify_host_header",
+          "path"
+        ]
+      },
+      "tcp_health_check_config": {
+        "type": "object",
+        "description": "Specifies send payload and expected response payload",
+        "x-f5xc-nested": {
+          "trigger": "health_check",
+          "value": "TCP HealthCheck"
+        },
+        "properties": {
+          "send_payload": {
+            "type": "string",
+            "description": "Raw bytes sent in the request. Empty payloads imply a connect-only health check.\nDescribes the encoding of the payload bytes in the payload. Hex encoded payload.",
+            "x-f5xc-field": {
+              "inputType": "textbox",
+              "uiLabel": "Send Payload",
+              "apiProperty": "spec.tcp_health_check.send_payload",
+              "advanced": false
+            },
+            "default": "",
+            "x-f5xc-ui": {
+              "defaultValue": ""
+            },
+            "maxLength": 2048,
+            "pattern": "^([0-9a-fA-F]{2})*$",
+            "x-f5xc-pattern-description": "Hex-encoded bytes (pairs of hex characters)"
+          },
+          "expected_response": {
+            "type": "string",
+            "description": "Raw bytes expected in the response. Describes the encoding of the payload bytes in the payload.\nHex encoded payload.",
+            "x-f5xc-field": {
+              "inputType": "textbox",
+              "uiLabel": "Expected Response",
+              "apiProperty": "spec.tcp_health_check.expected_response",
+              "advanced": false
+            },
+            "default": "",
+            "x-f5xc-ui": {
+              "defaultValue": ""
+            },
+            "maxLength": 2048,
+            "pattern": "^([0-9a-fA-F]{2})*$",
+            "x-f5xc-pattern-description": "Hex-encoded bytes (pairs of hex characters)"
+          }
+        },
+        "required": []
+      }
+    },
+    "required": [
+      "name",
+      "health_check",
+      "timeout",
+      "interval",
+      "unhealthy_threshold",
+      "healthy_threshold"
+    ],
+    "oneOf": [
+      {
+        "properties": {
+          "health_check": {
+            "const": "HTTP HealthCheck"
+          }
+        },
+        "required": [
+          "health_check"
+        ]
+      },
+      {
+        "properties": {
+          "health_check": {
+            "const": "TCP HealthCheck"
+          }
+        },
+        "required": [
+          "health_check"
+        ]
+      },
+      {
+        "properties": {
+          "health_check": {
+            "const": "ICMP HealthCheck for UDP Loadbalancer"
+          }
+        },
+        "required": [
+          "health_check"
+        ]
+      }
+    ],
+    "x-f5xc-metadata": {
+      "formUrl": "https://f5-amer-ent.console.ves.volterra.io/web/workspaces/web-app-and-api-protection/namespaces/default/manage/load_balancers/health_checks",
+      "resourceType": "healthcheck",
+      "extractedAt": "2.3.0-stable",
+      "version": "2.3.0",
+      "extractionVersion": "3.0.0-unified",
+      "extractionMethod": "property-builder",
+      "nestedConfigurations": [
+        "http_health_check_config",
+        "tcp_health_check_config"
+      ]
+    }
+  },
+  "selectors": {
+    "resourceType": "healthcheck",
+    "fieldSelectors": {
+      "Name": {
+        "schemaPath": "properties.name",
+        "inputType": "textbox",
+        "required": true,
+        "advanced": false
+      },
+      "Labels": {
+        "schemaPath": "properties.labels",
+        "inputType": "object",
+        "required": false,
+        "advanced": false
+      },
+      "Description": {
+        "schemaPath": "properties.description",
+        "inputType": "textbox",
+        "required": false,
+        "advanced": false
+      },
+      "Health Check": {
+        "schemaPath": "properties.health_check",
+        "inputType": "textbox",
+        "required": true,
+        "advanced": false
+      },
+      "Timeout": {
+        "schemaPath": "properties.timeout",
+        "inputType": "spinbutton",
+        "required": true,
+        "advanced": false
+      },
+      "Interval": {
+        "schemaPath": "properties.interval",
+        "inputType": "spinbutton",
+        "required": true,
+        "advanced": false
+      },
+      "Unhealthy Threshold": {
+        "schemaPath": "properties.unhealthy_threshold",
+        "inputType": "spinbutton",
+        "required": true,
+        "advanced": false
+      },
+      "Healthy Threshold": {
+        "schemaPath": "properties.healthy_threshold",
+        "inputType": "spinbutton",
+        "required": true,
+        "advanced": false
+      },
+      "Jitter Percent": {
+        "schemaPath": "properties.jitter_percent",
+        "inputType": "spinbutton",
+        "required": false,
+        "advanced": true
+      }
+    },
+    "nestedSelectors": {
+      "http_health_check_config": {
+        "Specify Host Header": {
+          "schemaPath": "properties.http_health_check_config.properties.specify_host_header",
+          "inputType": "textbox",
+          "required": true,
+          "advanced": false
+        },
+        "Host Header Value": {
+          "schemaPath": "properties.http_health_check_config.properties.host_header_value",
+          "inputType": "textbox",
+          "required": false,
+          "advanced": false
+        },
+        "Path": {
+          "schemaPath": "properties.http_health_check_config.properties.path",
+          "inputType": "textbox",
+          "required": true,
+          "advanced": false
+        },
+        "Use HTTP2": {
+          "schemaPath": "properties.http_health_check_config.properties.use_http2",
+          "inputType": "checkbox",
+          "required": false,
+          "advanced": false
+        },
+        "Request Headers to Add": {
+          "schemaPath": "properties.http_health_check_config.properties.request_headers_to_add",
+          "inputType": "object",
+          "required": false,
+          "advanced": false
+        },
+        "Request Headers to Remove": {
+          "schemaPath": "properties.http_health_check_config.properties.request_headers_to_remove",
+          "inputType": "array",
+          "required": false,
+          "advanced": true
+        },
+        "Expected Status Codes": {
+          "schemaPath": "properties.http_health_check_config.properties.expected_status_codes",
+          "inputType": "array",
+          "required": false,
+          "advanced": false
+        }
+      },
+      "tcp_health_check_config": {
+        "Send Payload": {
+          "schemaPath": "properties.tcp_health_check_config.properties.send_payload",
+          "inputType": "textbox",
+          "required": false,
+          "advanced": false
+        },
+        "Expected Response": {
+          "schemaPath": "properties.tcp_health_check_config.properties.expected_response",
+          "inputType": "textbox",
+          "required": false,
+          "advanced": false
+        }
+      }
+    },
+    "actionSelectors": {
+      "submit": "button:has(generic:text(\"Add Healthcheck\"))",
+      "cancel": "button:has(generic:text(\"Cancel\"))",
+      "editHttpHealthCheckConfig": "link:text(\"Edit Configuration\")",
+      "applyConfig": "button:has(generic:text(\"Apply\"))",
+      "discardConfig": "button:has(generic:text(\"Discard\"))",
+      "editTcpHealthCheckConfig": "link:text(\"Edit Configuration\")"
+    }
+  },
+  "metadata": {
+    "formUrl": "https://f5-amer-ent.console.ves.volterra.io/web/workspaces/web-app-and-api-protection/namespaces/default/manage/load_balancers/health_checks",
+    "resourceType": "healthcheck",
+    "extractedAt": "2.3.0-stable",
+    "version": "2.3.0",
+    "extractionVersion": "3.0.0-unified",
+    "coverage": {
+      "totalFields": 18,
+      "topLevelFields": 9,
+      "nestedFields": 9,
+      "nestedConfigurations": 2,
+      "fieldsWithSelectors": 18,
+      "fieldsWithTooltips": 18,
+      "fieldsWithDefaults": 14,
+      "percentage": 100
+    },
+    "warnings": []
+  }
+}

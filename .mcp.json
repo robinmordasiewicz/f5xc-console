@@ -1,9 +1,8 @@
 {
-  "$schema": "https://anthropic.com/claude-code/mcp.schema.json",
   "mcpServers": {
     "chrome-devtools": {
-      "command": "npx",
-      "args": ["-y", "@anthropic/mcp-server-chrome-devtools@latest"]
+      "command": "chrome-devtools-mcp",
+      "args": []
     }
   }
 }

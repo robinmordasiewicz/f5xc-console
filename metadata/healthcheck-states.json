@@ -1,0 +1,294 @@
+[
+  {
+    "id": "baseline-http",
+    "description": "Main form with HTTP HealthCheck selected",
+    "fieldCount": 10,
+    "fields": [
+      {
+        "name": "Name",
+        "type": "textbox",
+        "required": true
+      },
+      {
+        "name": "Labels",
+        "type": "textbox",
+        "required": false
+      },
+      {
+        "name": "Description",
+        "type": "textbox",
+        "required": false
+      },
+      {
+        "name": "Show Advanced Fields",
+        "type": "checkbox",
+        "required": false
+      },
+      {
+        "name": "Health Check",
+        "type": "listbox",
+        "required": true
+      },
+      {
+        "name": "Timeout",
+        "type": "spinbutton",
+        "required": false
+      },
+      {
+        "name": "Interval",
+        "type": "spinbutton",
+        "required": false
+      },
+      {
+        "name": "Unhealthy Threshold",
+        "type": "spinbutton",
+        "required": false
+      },
+      {
+        "name": "Healthy Threshold",
+        "type": "spinbutton",
+        "required": false
+      },
+      {
+        "name": "Jitter Percent",
+        "type": "spinbutton",
+        "required": false
+      }
+    ]
+  },
+  {
+    "id": "http-advanced",
+    "description": "HTTP with Show Advanced Fields enabled",
+    "fieldCount": 10,
+    "fields": [
+      {
+        "name": "Name",
+        "type": "textbox",
+        "required": true
+      },
+      {
+        "name": "Labels",
+        "type": "textbox",
+        "required": false
+      },
+      {
+        "name": "Description",
+        "type": "textbox",
+        "required": false
+      },
+      {
+        "name": "Show Advanced Fields",
+        "type": "checkbox",
+        "required": false
+      },
+      {
+        "name": "Health Check",
+        "type": "listbox",
+        "required": true
+      },
+      {
+        "name": "Timeout",
+        "type": "spinbutton",
+        "required": false
+      },
+      {
+        "name": "Interval",
+        "type": "spinbutton",
+        "required": false
+      },
+      {
+        "name": "Unhealthy Threshold",
+        "type": "spinbutton",
+        "required": false
+      },
+      {
+        "name": "Healthy Threshold",
+        "type": "spinbutton",
+        "required": false
+      },
+      {
+        "name": "Jitter Percent",
+        "type": "spinbutton",
+        "required": false
+      }
+    ]
+  },
+  {
+    "id": "http-nested",
+    "description": "HTTP Configuration dialog (Edit Configuration clicked)",
+    "fieldCount": 4,
+    "fields": [
+      {
+        "name": "Specify Host Header",
+        "type": "listbox",
+        "required": false
+      },
+      {
+        "name": "Path",
+        "type": "listbox",
+        "required": true
+      },
+      {
+        "name": "Use HTTP2",
+        "type": "checkbox",
+        "required": false
+      },
+      {
+        "name": "Expected Status Codes",
+        "type": "textbox",
+        "required": false
+      }
+    ]
+  },
+  {
+    "id": "http-custom-host",
+    "description": "HTTP Config with Custom Value host header",
+    "fieldCount": 5,
+    "fields": [
+      {
+        "name": "Specify Host Header",
+        "type": "listbox",
+        "required": false
+      },
+      {
+        "name": "Path",
+        "type": "listbox",
+        "required": true
+      },
+      {
+        "name": "Use HTTP2",
+        "type": "checkbox",
+        "required": false
+      },
+      {
+        "name": "Expected Status Codes",
+        "type": "textbox",
+        "required": false
+      },
+      {
+        "name": "Custom Host Header Value",
+        "type": "textbox",
+        "required": true
+      }
+    ]
+  },
+  {
+    "id": "tcp",
+    "description": "Main form with TCP HealthCheck selected",
+    "fieldCount": 11,
+    "fields": [
+      {
+        "name": "Name",
+        "type": "textbox",
+        "required": true
+      },
+      {
+        "name": "Labels",
+        "type": "textbox",
+        "required": false
+      },
+      {
+        "name": "Description",
+        "type": "textbox",
+        "required": false
+      },
+      {
+        "name": "Show Advanced Fields",
+        "type": "checkbox",
+        "required": false
+      },
+      {
+        "name": "Health Check",
+        "type": "listbox",
+        "required": true
+      },
+      {
+        "name": "Timeout",
+        "type": "spinbutton",
+        "required": false
+      },
+      {
+        "name": "Interval",
+        "type": "spinbutton",
+        "required": false
+      },
+      {
+        "name": "Unhealthy Threshold",
+        "type": "spinbutton",
+        "required": false
+      },
+      {
+        "name": "Healthy Threshold",
+        "type": "spinbutton",
+        "required": false
+      },
+      {
+        "name": "Jitter Percent",
+        "type": "spinbutton",
+        "required": false
+      },
+      {
+        "name": "Port",
+        "type": "spinbutton",
+        "required": false
+      }
+    ]
+  },
+  {
+    "id": "icmp",
+    "description": "Main form with ICMP HealthCheck selected",
+    "fieldCount": 10,
+    "fields": [
+      {
+        "name": "Name",
+        "type": "textbox",
+        "required": true
+      },
+      {
+        "name": "Labels",
+        "type": "textbox",
+        "required": false
+      },
+      {
+        "name": "Description",
+        "type": "textbox",
+        "required": false
+      },
+      {
+        "name": "Show Advanced Fields",
+        "type": "checkbox",
+        "required": false
+      },
+      {
+        "name": "Health Check",
+        "type": "listbox",
+        "required": true
+      },
+      {
+        "name": "Timeout",
+        "type": "spinbutton",
+        "required": false
+      },
+      {
+        "name": "Interval",
+        "type": "spinbutton",
+        "required": false
+      },
+      {
+        "name": "Unhealthy Threshold",
+        "type": "spinbutton",
+        "required": false
+      },
+      {
+        "name": "Healthy Threshold",
+        "type": "spinbutton",
+        "required": false
+      },
+      {
+        "name": "Jitter Percent",
+        "type": "spinbutton",
+        "required": false
+      }
+    ]
+  }
+]

@@ -398,8 +398,338 @@ Phase 5: Verify Cleanup
   mcp__chrome-devtools__evaluate_script({ /* verify resource gone */ })
 ```
 
+## Pattern 8: Console Error Monitoring
+
+**Use Case**: Detect JavaScript errors during extraction to identify page issues
+
+**New Feature** (as of chrome-devtools migration)
+
+### Basic Error Detection
+
+```javascript
+// After page navigation or action, check console for errors
+mcp__chrome-devtools__list_console_messages({
+  types: ['error', 'warning']
+})
+
+// Returns array of console messages:
+// [
+//   { msgid: 1, type: 'error', text: 'Failed to fetch...', source: 'main.js', line: 42 },
+//   { msgid: 2, type: 'warning', text: 'Deprecated API...', source: 'app.js', line: 156 }
+// ]
+```
+
+### Getting Detailed Message Info
+
+```javascript
+// Get full details for a specific error
+mcp__chrome-devtools__get_console_message({
+  msgid: 1
+})
+
+// Returns complete message with stack trace and additional context
+```
+
+### Usage Pattern
+
+```javascript
+// 1. Navigate to page
+mcp__chrome-devtools__navigate_page({ url: "..." })
+mcp__chrome-devtools__wait_for({ time: 2 })
+
+// 2. Check for errors
+const messages = mcp__chrome-devtools__list_console_messages({ types: ['error'] })
+
+// 3. Process with ConsoleMonitor handler (in TypeScript)
+const monitor = getConsoleMonitor();
+const result = monitor.processMessages(messages);
+
+if (result.hasCriticalErrors) {
+  // Stop extraction - authentication or fatal error detected
+  throw new Error(`Critical error: ${result.summary}`);
+}
+
+if (result.hasErrors) {
+  // Log non-critical errors but continue
+  console.warn(`Errors detected: ${result.summary}`);
+}
+```
+
+### Critical Error Patterns
+
+The following console errors indicate critical issues requiring immediate attention:
+
+| Pattern | Meaning | Action |
+|---------|---------|--------|
+| `authentication failed` | Session expired | Re-authenticate |
+| `unauthorized` / `forbidden` | Access denied | Check permissions |
+| `fatal error` | Unrecoverable error | Stop extraction |
+| `cannot connect` | Network failure | Retry navigation |
+
+### Error Categories
+
+Console errors are automatically categorized:
+
+- **network**: Failed fetch, timeout, connection errors
+- **javascript**: Undefined references, syntax errors, type errors
+- **resource**: 404, failed to load assets
+- **security**: CORS, CSP violations
+- **authentication**: Auth failures, forbidden access
+- **validation**: Form validation errors
+
+## Pattern 9: Network Request Monitoring
+
+**Use Case**: Track API calls and validate responses during extraction
+
+**New Feature** (as of chrome-devtools migration)
+
+### Monitoring API Calls
+
+```javascript
+// After form submission or navigation, check network requests
+mcp__chrome-devtools__list_network_requests({
+  resourceTypes: ['xhr', 'fetch']  // Filter to API calls only
+})
+
+// Returns array of network requests:
+// [
+//   { reqid: 1, url: '/api/config/namespaces/default/origin_pools', method: 'POST', status: 201, resourceType: 'xhr' },
+//   { reqid: 2, url: '/api/data/health_status', method: 'GET', status: 500, resourceType: 'fetch' }
+// ]
+```
+
+### Getting Request Details
+
+```javascript
+// Get full details including headers and body
+mcp__chrome-devtools__get_network_request({
+  reqid: 1
+})
+
+// Returns complete request/response with headers, body, timing
+```
+
+### Usage Pattern
+
+```javascript
+// 1. Submit form
+mcp__chrome-devtools__click({ ref: "save_button_uid" })
+mcp__chrome-devtools__wait_for({ time: 2 })
+
+// 2. Check network requests
+const requests = mcp__chrome-devtools__list_network_requests()
+
+// 3. Process with NetworkHandler (in TypeScript)
+const handler = getNetworkHandler({ apiOnly: true });
+const result = handler.processRequests(requests);
+
+// 4. Validate expected API call was made
+if (!handler.validateApiCall(requests, /POST.*\/origin_pools/)) {
+  console.error('Expected API call not detected - form may not have submitted');
+}
+
+// 5. Check for failures
+if (handler.hasFailures(requests)) {
+  const failed = handler.getFailedRequests(requests);
+  console.error('API failures detected:', failed);
+}
+```
+
+### F5 XC API Patterns
+
+Common API endpoints in F5 XC Console:
+
+```
+/api/config/namespaces/{namespace}/{resource_type}     # CRUD operations
+/api/web/{workspace}/{resource}                        # Web UI APIs
+/api/data/{data_type}                                  # Data queries
+/api/auth/{auth_operation}                             # Authentication
+/public/namespaces/{namespace}/{resource}              # Public APIs
+```
+
+### Detecting Issues
+
+| Status Code | Meaning | Action |
+|-------------|---------|--------|
+| 200-299 | Success | Continue normally |
+| 401 | Unauthorized | Session expired - re-authenticate |
+| 403 | Forbidden | Insufficient permissions |
+| 404 | Not Found | Resource doesn't exist |
+| 429 | Rate Limited | Slow down requests |
+| 500-599 | Server Error | Retry or log error |
+
+### Rate Limiting Detection
+
+```javascript
+const handler = getNetworkHandler();
+
+if (handler.detectRateLimiting(requests)) {
+  console.warn('Rate limiting detected - slowing down');
+  // Wait before next operation
+}
+
+if (handler.detectAuthFailures(requests)) {
+  throw new Error('Authentication failure - session expired');
+}
+```
+
+## Pattern 10: Browser Dialog Handling
+
+**Use Case**: Handle alerts, confirms, and prompts during form operations
+
+**New Feature** (as of chrome-devtools migration)
+
+### Accepting Confirmation Dialogs
+
+```javascript
+// After clicking delete or submit, handle confirmation dialog
+mcp__chrome-devtools__handle_dialog({
+  action: 'accept'
+})
+
+// Accepts the dialog (equivalent to clicking OK/Confirm)
+```
+
+### Dismissing Dialogs
+
+```javascript
+// Dismiss/cancel a dialog
+mcp__chrome-devtools__handle_dialog({
+  action: 'dismiss'
+})
+
+// Dismisses the dialog (equivalent to clicking Cancel)
+```
+
+### Handling Prompt Dialogs
+
+```javascript
+// For prompts that require text input
+mcp__chrome-devtools__handle_dialog({
+  action: 'accept',
+  text: 'my-resource-name'
+})
+
+// Enters text and accepts the prompt
+```
+
+### Usage Pattern
+
+```javascript
+// 1. Submit form that may trigger confirmation
+mcp__chrome-devtools__click({ ref: "delete_button_uid" })
+
+// 2. Handle expected confirmation dialog
+try {
+  mcp__chrome-devtools__handle_dialog({ action: 'accept' })
+} catch (error) {
+  if (!error.message.includes('no dialog')) {
+    throw error; // Re-throw unexpected errors
+  }
+  // No dialog present - continue normally
+}
+
+// 3. Verify action completed
+mcp__chrome-devtools__take_snapshot()
+```
+
+### When to Use
+
+| Scenario | Dialog Type | Action |
+|----------|-------------|--------|
+| Delete resource | Confirm | `accept` to delete, `dismiss` to cancel |
+| Discard changes | Confirm | `accept` to discard, `dismiss` to keep editing |
+| Required input | Prompt | `accept` with text value |
+| Warning message | Alert | `accept` to acknowledge |
+
+### Best Practices
+
+1. **Always wrap in try-catch**: Dialog handling may fail if no dialog is present
+2. **Use after actions**: Only call after operations that may trigger dialogs
+3. **Don't assume dialogs**: Some forms submit without confirmation
+4. **Verify completion**: Take snapshot after dialog to confirm action completed
+
+### Dialog vs Confirmation Pattern
+
+**Browser Dialog** (Pattern 10):
+- Native browser alerts/confirms/prompts
+- Triggered by JavaScript `alert()`, `confirm()`, `prompt()`
+- Use `mcp__chrome-devtools__handle_dialog`
+
+**Angular Material Dialog** (Pattern 3):
+- Custom Angular components
+- Appear in accessibility tree
+- Use standard `mcp__chrome-devtools__take_snapshot` + `click`
+
+### Example: Delete with Confirmation
+
+```javascript
+// Option 1: Angular Material Dialog (visible in snapshot)
+mcp__chrome-devtools__click({ ref: "delete_menu_item_uid" })
+mcp__chrome-devtools__take_snapshot()
+mcp__chrome-devtools__click({ ref: "confirm_delete_button_uid" })
+
+// Option 2: Browser confirm() dialog (not in snapshot)
+mcp__chrome-devtools__click({ ref: "delete_button_uid" })
+mcp__chrome-devtools__handle_dialog({ action: 'accept' })
+```
+
+## Integrated Monitoring Pattern
+
+**Use Case**: Complete extraction workflow with full error and network monitoring
+
+### Full Lifecycle with Monitoring
+
+```javascript
+// 1. Navigate and check for errors
+mcp__chrome-devtools__navigate_page({ url: "..." })
+mcp__chrome-devtools__wait_for({ time: 2 })
+
+// Check console for critical errors
+const consoleMessages = mcp__chrome-devtools__list_console_messages({ types: ['error'] })
+// Process with ConsoleMonitor - stop if critical errors
+
+// 2. Take snapshot and fill form
+mcp__chrome-devtools__take_snapshot()
+mcp__chrome-devtools__fill({ uid: "name_uid", value: "test-resource" })
+mcp__chrome-devtools__fill({ uid: "port_uid", value: "443" })
+
+// 3. Submit with dialog handling
+mcp__chrome-devtools__click({ ref: "save_button_uid" })
+
+try {
+  mcp__chrome-devtools__handle_dialog({ action: 'accept' })
+} catch (error) {
+  // No dialog present - continue
+}
+
+// 4. Wait and monitor network
+mcp__chrome-devtools__wait_for({ time: 2 })
+const networkRequests = mcp__chrome-devtools__list_network_requests()
+// Process with NetworkHandler - validate API calls
+
+// 5. Check console for errors after submission
+const postSubmitMessages = mcp__chrome-devtools__list_console_messages({ types: ['error'] })
+// Process with ConsoleMonitor - log any new errors
+
+// 6. Verify success
+mcp__chrome-devtools__take_snapshot()
+// Verify redirect or success message
+```
+
+### Monitoring Checkpoints
+
+| Checkpoint | Check Console | Check Network | Handle Dialogs |
+|------------|---------------|---------------|----------------|
+| After navigation | ✅ Critical errors only | ❌ | ❌ |
+| After form fill | ❌ | ❌ | ❌ |
+| After submit | ❌ | ❌ | ✅ Confirmation |
+| After wait | ✅ All errors | ✅ API calls | ❌ |
+| After verification | ❌ | ❌ | ❌ |
+
 ## Version History
 
 | Version | Date | Changes |
 |---------|------|---------|
 | 1.0.0 | 2025-01-09 | Initial patterns from E2E test execution |
+| 2.0.0 | 2026-01-21 | Added console monitoring, network debugging, dialog handling patterns |

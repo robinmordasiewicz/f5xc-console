@@ -83,7 +83,7 @@ export interface FormValidationError {
  */
 export interface FormInstruction {
   /** Instruction type */
-  type: 'navigate_tab' | 'expand_section' | 'fill_field' | 'click_button' | 'select_option' | 'toggle_checkbox';
+  type: 'navigate_tab' | 'expand_section' | 'fill_field' | 'click_button' | 'select_option' | 'toggle_checkbox' | 'handle_dialog';
   /** Target element UID (from snapshot) */
   target_uid?: string;
   /** Human-readable description */
@@ -94,6 +94,10 @@ export interface FormInstruction {
   field?: FormField;
   /** Whether instruction is required */
   required: boolean;
+  /** Dialog action (for handle_dialog type) */
+  dialogAction?: 'accept' | 'dismiss';
+  /** Text for prompt dialogs */
+  promptText?: string;
 }
 
 /**
@@ -116,6 +120,22 @@ export interface DetectedFormField {
   placeholder?: string;
   /** Is field disabled */
   disabled: boolean;
+  /** Field description (from aria-describedby or help text) */
+  description?: string;
+  /** Help text (tooltip or adjacent help icon text) */
+  helpText?: string;
+  /** Default value (UI-provided default) */
+  defaultValue?: string;
+  /** Validation pattern (regex) */
+  pattern?: string;
+  /** Minimum value (for numbers) */
+  minimum?: number;
+  /** Maximum value (for numbers) */
+  maximum?: number;
+  /** Minimum length (for strings) */
+  minLength?: number;
+  /** Maximum length (for strings) */
+  maxLength?: number;
 }
 
 /**
@@ -225,7 +245,7 @@ export class FormHandler {
       const fieldType = this.elementRoleToInputType(element.role);
 
       if (fieldType) {
-        fields.push({
+        const field: DetectedFormField = {
           uid: element.uid,
           name: element.name ?? element.placeholder ?? `field_${element.uid}`,
           type: fieldType,
@@ -234,11 +254,153 @@ export class FormHandler {
           options: this.detectOptions(element, snapshot),
           placeholder: element.placeholder,
           disabled: element.disabled ?? false,
-        });
+        };
+
+        // Extract description from accessibility tree
+        field.description = this.extractDescription(element);
+
+        // Extract help text (tooltips, adjacent help icons)
+        field.helpText = this.extractHelpText(element, snapshot);
+
+        // Extract default value (separate from current value)
+        field.defaultValue = this.extractDefaultValue(element);
+
+        // Extract validation constraints
+        const validation = this.extractValidationConstraints(element);
+        if (validation.pattern) field.pattern = validation.pattern;
+        if (validation.minimum !== undefined) field.minimum = validation.minimum;
+        if (validation.maximum !== undefined) field.maximum = validation.maximum;
+        if (validation.minLength !== undefined) field.minLength = validation.minLength;
+        if (validation.maxLength !== undefined) field.maxLength = validation.maxLength;
+
+        fields.push(field);
       }
     }
 
     return fields;
+  }
+
+  /**
+   * Extract description from element (aria-describedby, description property)
+   */
+  private extractDescription(element: ParsedElement): string | undefined {
+    // Check for explicit description property
+    if (element.description && element.description.trim()) {
+      return element.description.trim();
+    }
+
+    // Check for help text in element name (sometimes descriptions are embedded)
+    if (element.name && element.name.includes(' - ')) {
+      const parts = element.name.split(' - ');
+      if (parts.length > 1) {
+        return parts.slice(1).join(' - ').trim();
+      }
+    }
+
+    return undefined;
+  }
+
+  /**
+   * Extract help text from adjacent help icons or tooltips
+   */
+  private extractHelpText(element: ParsedElement, snapshot: ParsedSnapshot): string | undefined {
+    const elementIndex = snapshot.elements.findIndex(e => e.uid === element.uid);
+    if (elementIndex === -1) return undefined;
+
+    // Look for adjacent elements that might be help icons/tooltips
+    // Typically within 2 elements after the field
+    for (let i = elementIndex + 1; i < Math.min(elementIndex + 3, snapshot.elements.length); i++) {
+      const nextElement = snapshot.elements[i];
+
+      // Check if this looks like a help element
+      const isHelpElement =
+        nextElement.role === 'button' &&
+        (nextElement.name?.toLowerCase().includes('help') ||
+          nextElement.name?.toLowerCase().includes('info') ||
+          nextElement.name?.toLowerCase().includes('tooltip'));
+
+      if (isHelpElement && nextElement.description) {
+        return nextElement.description.trim();
+      }
+    }
+
+    return undefined;
+  }
+
+  /**
+   * Extract default value (UI-provided default, separate from current value)
+   */
+  private extractDefaultValue(element: ParsedElement): string | undefined {
+    // For now, treat current value as default if it's a non-empty preset
+    // In a real implementation, would need to distinguish between user-entered and default values
+    if (element.value && element.value.trim() && element.value !== element.placeholder) {
+      return element.value.trim();
+    }
+
+    return undefined;
+  }
+
+  /**
+   * Extract validation constraints from element attributes
+   */
+  private extractValidationConstraints(element: ParsedElement): {
+    pattern?: string;
+    minimum?: number;
+    maximum?: number;
+    minLength?: number;
+    maxLength?: number;
+  } {
+    const constraints: {
+      pattern?: string;
+      minimum?: number;
+      maximum?: number;
+      minLength?: number;
+      maxLength?: number;
+    } = {};
+
+    // Check element description for validation hints
+    const description = element.description ?? element.name ?? '';
+
+    // Extract numeric ranges from description (e.g., "Value between 1 and 100")
+    const rangeMatch = description.match(/between\s+(\d+)\s+and\s+(\d+)/i);
+    if (rangeMatch) {
+      constraints.minimum = parseInt(rangeMatch[1], 10);
+      constraints.maximum = parseInt(rangeMatch[2], 10);
+    }
+
+    // Extract minimum from description (e.g., "Minimum 1", "At least 5")
+    const minMatch = description.match(/(?:minimum|at least)\s+(\d+)/i);
+    if (minMatch) {
+      constraints.minimum = parseInt(minMatch[1], 10);
+    }
+
+    // Extract maximum from description (e.g., "Maximum 255", "Up to 100")
+    const maxMatch = description.match(/(?:maximum|up to|max)\s+(\d+)/i);
+    if (maxMatch) {
+      constraints.maximum = parseInt(maxMatch[1], 10);
+    }
+
+    // Extract length constraints from description
+    const lengthMatch = description.match(/(\d+)\s+characters?/i);
+    if (lengthMatch) {
+      constraints.maxLength = parseInt(lengthMatch[1], 10);
+    }
+
+    // Extract pattern hints (e.g., "Format: xxx-xxx-xxx")
+    const formatMatch = description.match(/format:\s*([^\s,]+)/i);
+    if (formatMatch) {
+      // Convert common format descriptions to regex patterns
+      const format = formatMatch[1].toLowerCase();
+      if (format.includes('email')) {
+        constraints.pattern = '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$';
+      } else if (format.includes('url')) {
+        constraints.pattern = '^https?://';
+      } else if (format.includes('ip')) {
+        constraints.pattern = '^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$';
+      }
+    }
+
+    return constraints;
   }
 
   /**
@@ -492,6 +654,66 @@ export class FormHandler {
       description: `Click "${submitButton.name}" button to submit form`,
       required: true,
     };
+  }
+
+  /**
+   * Generate MCP instruction to handle a browser dialog
+   * Used for alerts, confirms, and prompts that may appear during form operations
+   */
+  generateHandleDialogInstruction(
+    action: 'accept' | 'dismiss',
+    promptText?: string
+  ): Record<string, unknown> {
+    const params: Record<string, unknown> = { action };
+
+    if (promptText) {
+      params.text = promptText;
+    }
+
+    return {
+      tool: 'mcp__chrome-devtools__handle_dialog',
+      params,
+      description: `${action === 'accept' ? 'Accept' : 'Dismiss'} browser dialog${promptText ? ` with text: "${promptText}"` : ''}`,
+      expectedOutcome: 'Dialog handled successfully',
+    };
+  }
+
+  /**
+   * Generate submit with dialog handling
+   * Useful when form submission triggers a confirmation dialog
+   */
+  async generateSubmitWithDialogHandling(
+    snapshot: ParsedSnapshot,
+    expectDialog: boolean = true,
+    acceptDialog: boolean = true,
+    promptText?: string
+  ): Promise<Record<string, unknown>[]> {
+    const instructions: Record<string, unknown>[] = [];
+
+    // First, generate submit instruction
+    const submitInstruction = this.generateSubmitInstruction(snapshot);
+    if (!submitInstruction) {
+      return instructions;
+    }
+
+    // Convert to MCP instruction
+    instructions.push({
+      tool: 'mcp__chrome-devtools__click',
+      params: { uid: submitInstruction.target_uid },
+      description: submitInstruction.description,
+      expectedOutcome: 'Submit button clicked',
+    });
+
+    // If we expect a dialog, add dialog handling
+    if (expectDialog) {
+      const dialogInstruction = this.generateHandleDialogInstruction(
+        acceptDialog ? 'accept' : 'dismiss',
+        promptText
+      );
+      instructions.push(dialogInstruction);
+    }
+
+    return instructions;
   }
 
   /**

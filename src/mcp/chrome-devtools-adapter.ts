@@ -174,13 +174,57 @@ export interface ConsoleMessage {
 /**
  * Chrome DevTools MCP Adapter
  *
- * Note: This adapter provides typed interfaces for MCP calls.
- * The actual MCP calls are made by Claude using the mcp__chrome-devtools__* tools.
- * This class provides structure and validation for the parameters and responses.
+ * Provides typed interfaces and parameter builders for chrome-devtools MCP server operations.
+ *
+ * ## Architecture Notes
+ * - This adapter does NOT make MCP calls directly
+ * - It provides parameter builders that generate correctly-typed inputs for MCP tools
+ * - Claude (the AI assistant) executes the actual MCP calls using mcp__chrome-devtools__* tools
+ * - Tab management is handled automatically by the chrome-devtools MCP server
+ *   (defaults to active tab when tabId not specified)
+ *
+ * ## Key Capabilities
+ * - **Navigation**: Page navigation, forward/back, reload
+ * - **Element Interaction**: Click, fill, hover, select (all use element UIDs from snapshots)
+ * - **Snapshots**: Capture accessibility tree state for analysis
+ * - **Network Monitoring**: Track API requests and responses (NEW)
+ * - **Console Monitoring**: Detect JavaScript errors and warnings (NEW)
+ * - **Dialog Handling**: Accept/dismiss browser alerts and prompts (NEW)
+ *
+ * ## Migration from claude-in-chrome
+ * - All coordinate-based clicks migrated to UID-based element references
+ * - Tab management simplified (server defaults to active tab)
+ * - New capabilities added: network debugging, console monitoring, dialog handling
+ *
+ * @example
+ * // Build navigation parameters
+ * const params = ChromeDevToolsAdapter.buildNavigationParams({
+ *   url: 'https://example.com',
+ *   timeout: 30000
+ * });
+ * // Claude then calls: mcp__chrome-devtools__navigate_page with params
+ *
+ * @example
+ * // Build click parameters using element UID from snapshot
+ * const clickParams = ChromeDevToolsAdapter.buildClickParams({
+ *   uid: '123',
+ *   element: 'Submit button'
+ * });
+ * // Claude then calls: mcp__chrome-devtools__click with clickParams
  */
 export class ChromeDevToolsAdapter {
   /**
-   * Build navigation parameters
+   * Build navigation parameters for mcp__chrome-devtools__navigate_page
+   *
+   * @param options - Navigation options including URL, type, and timeout
+   * @returns Parameter object ready for MCP tool execution
+   *
+   * @example
+   * const params = ChromeDevToolsAdapter.buildNavigationParams({
+   *   url: 'https://f5-console.com/web/workspaces/web-app-and-api-protection',
+   *   type: 'url',
+   *   timeout: 30000
+   * });
    */
   static buildNavigationParams(options: NavigationOptions): Record<string, unknown> {
     return {
@@ -192,7 +236,21 @@ export class ChromeDevToolsAdapter {
   }
 
   /**
-   * Build click parameters
+   * Build click parameters for mcp__chrome-devtools__click
+   *
+   * Prefers element UID references over coordinates for reliability.
+   * UIDs come from accessibility tree snapshots (mcp__chrome-devtools__take_snapshot).
+   *
+   * @param options - Click options with element UID and optional button type
+   * @returns Parameter object for MCP click tool
+   *
+   * @example
+   * const params = ChromeDevToolsAdapter.buildClickParams({
+   *   uid: '42',
+   *   element: 'Save button',
+   *   button: 'left'
+   * });
+   * // Claude calls: mcp__chrome-devtools__click with params
    */
   static buildClickParams(options: ClickOptions): Record<string, unknown> {
     return {
@@ -205,6 +263,12 @@ export class ChromeDevToolsAdapter {
 
   /**
    * Build click parameters from a deterministic selector
+   *
+   * Alternative to UID-based clicks when working with selector-based targeting.
+   *
+   * @param selector - Deterministic selector (name, aria-label, text-match, etc.)
+   * @param description - Human-readable element description
+   * @returns Parameter object for MCP click tool
    */
   static buildClickFromSelector(
     selector: DeterministicSelector,
@@ -217,7 +281,18 @@ export class ChromeDevToolsAdapter {
   }
 
   /**
-   * Build fill parameters
+   * Build fill parameters for mcp__chrome-devtools__fill
+   *
+   * Used to populate text inputs, textareas, and searchboxes.
+   *
+   * @param options - Fill options with element UID and value
+   * @returns Parameter object for MCP fill tool
+   *
+   * @example
+   * const params = ChromeDevToolsAdapter.buildFillParams({
+   *   uid: '15',
+   *   value: 'my-origin-pool'
+   * });
    */
   static buildFillParams(options: FillOptions): Record<string, unknown> {
     return {

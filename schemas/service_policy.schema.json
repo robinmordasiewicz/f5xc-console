@@ -1,0 +1,1456 @@
+{
+  "schema": {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "F5 XC Service Policy Configuration",
+    "description": "JSON Schema for F5 Distributed Cloud service_policy resource with UI tooltips, defaults, and nested configurations",
+    "type": "object",
+    "properties": {
+      "name": {
+        "type": "string",
+        "description": "The configuration object will be created with name. It has to be unique within the namespace.\nThe value of name has to follow DNS-1035 format.",
+        "x-f5xc-field": {
+          "inputType": "textbox",
+          "uiLabel": "Name",
+          "apiProperty": "metadata.name",
+          "advanced": false
+        },
+        "minLength": 0,
+        "maxLength": 16,
+        "pattern": "^[a-z][a-z0-9-]*[a-z0-9]$",
+        "x-f5xc-pattern-description": "Must start with lowercase letter, contain only lowercase letters, numbers, and hyphens, and end with letter or number"
+      },
+      "labels": {
+        "type": "object",
+        "description": "Map of string keys and values that can be used to organize and categorize\n(scope and select) objects as chosen by the user.",
+        "x-f5xc-field": {
+          "inputType": "object",
+          "uiLabel": "Labels",
+          "apiProperty": "metadata.labels",
+          "advanced": false
+        },
+        "x-f5xc-ui": {
+          "placeholder": "Add Label"
+        }
+      },
+      "description": {
+        "type": "string",
+        "description": "Human readable description for the object.",
+        "x-f5xc-field": {
+          "inputType": "textbox",
+          "uiLabel": "Description",
+          "apiProperty": "metadata.description",
+          "advanced": false
+        }
+      },
+      "server_selection": {
+        "type": "string",
+        "description": "Select which servers this policy applies to.\nAny Server matches all servers, or specify specific servers by name or pattern.",
+        "x-f5xc-field": {
+          "inputType": "textbox",
+          "uiLabel": "Server Selection",
+          "apiProperty": "spec.server_choice",
+          "advanced": false
+        },
+        "default": "Any Server",
+        "x-f5xc-ui": {
+          "defaultValue": "Any Server"
+        },
+        "enum": [
+          "Any Server",
+          "Server Name",
+          "Group of Servers by Name"
+        ],
+        "x-f5xc-enum-descriptions": {
+          "Any Server": "Apply policy to any server (default behavior).",
+          "Server Name": "Apply policy to a specific server by name.",
+          "Group of Servers by Name": "Apply policy to servers matching exact values or regex patterns."
+        },
+        "minLength": 1
+      },
+      "select_policy_rules": {
+        "type": "string",
+        "description": "Choose the type of policy rules to apply.\nCustom Rule List allows detailed rule configuration, or use predefined allow/deny behaviors.",
+        "x-f5xc-field": {
+          "inputType": "textbox",
+          "uiLabel": "Select Policy Rules",
+          "apiProperty": "spec.rule_choice",
+          "advanced": false
+        },
+        "default": "Custom Rule List",
+        "x-f5xc-ui": {
+          "defaultValue": "Custom Rule List"
+        },
+        "enum": [
+          "Custom Rule List",
+          "Allowed Sources",
+          "Denied Sources",
+          "Allow All Requests",
+          "Deny All Requests"
+        ],
+        "x-f5xc-enum-descriptions": {
+          "Custom Rule List": "Configure a custom list of policy rules with detailed matching and action configurations.",
+          "Allowed Sources": "Allow requests from specified source IP prefixes.",
+          "Denied Sources": "Deny requests from specified source IP prefixes.",
+          "Allow All Requests": "Allow all requests without any restrictions.",
+          "Deny All Requests": "Deny all requests (block everything)."
+        },
+        "minLength": 1
+      },
+      "server_name_config": {
+        "type": "object",
+        "description": "Specify a single server name to apply the policy to.",
+        "x-f5xc-nested": {
+          "trigger": "server_selection",
+          "value": "Server Name"
+        },
+        "properties": {
+          "server_name": {
+            "type": "string",
+            "description": "Name of the specific server this policy applies to.",
+            "x-f5xc-field": {
+              "inputType": "textbox",
+              "uiLabel": "Server Name",
+              "apiProperty": "spec.server_name",
+              "advanced": false
+            },
+            "x-f5xc-ui": {
+              "placeholder": "example-server"
+            },
+            "minLength": 0,
+            "maxLength": 253
+          }
+        },
+        "required": [
+          "server_name"
+        ]
+      },
+      "server_group_config": {
+        "type": "object",
+        "description": "Specify server names using exact values and/or regex patterns.",
+        "x-f5xc-nested": {
+          "trigger": "server_selection",
+          "value": "Group of Servers by Name"
+        },
+        "properties": {
+          "server_exact_values": {
+            "type": "array",
+            "description": "List of exact server names to match.",
+            "x-f5xc-field": {
+              "inputType": "array",
+              "uiLabel": "Exact Values",
+              "apiProperty": "spec.server_selector.exact_values",
+              "advanced": false
+            },
+            "x-f5xc-ui": {
+              "placeholder": "Add exact server name"
+            }
+          },
+          "server_regex_values": {
+            "type": "array",
+            "description": "List of regex patterns to match server names.",
+            "x-f5xc-field": {
+              "inputType": "array",
+              "uiLabel": "Regex Values",
+              "apiProperty": "spec.server_selector.regex_values",
+              "advanced": false
+            },
+            "x-f5xc-ui": {
+              "placeholder": "Add regex pattern"
+            }
+          }
+        },
+        "required": []
+      },
+      "allowed_sources_config": {
+        "type": "object",
+        "description": "Allow requests from specified source IP prefixes.",
+        "x-f5xc-nested": {
+          "trigger": "select_policy_rules",
+          "value": "Allowed Sources"
+        },
+        "properties": {
+          "allowed_source_prefixes": {
+            "type": "array",
+            "description": "IP prefixes (CIDR notation) from which requests are allowed.",
+            "x-f5xc-field": {
+              "inputType": "array",
+              "uiLabel": "Source IP Prefixes",
+              "apiProperty": "spec.allow_list.prefixes",
+              "advanced": false
+            },
+            "x-f5xc-ui": {
+              "placeholder": "Add IP prefix (e.g., 10.0.0.0/8)"
+            }
+          }
+        },
+        "required": [
+          "allowed_source_prefixes"
+        ]
+      },
+      "denied_sources_config": {
+        "type": "object",
+        "description": "Deny requests from specified source IP prefixes.",
+        "x-f5xc-nested": {
+          "trigger": "select_policy_rules",
+          "value": "Denied Sources"
+        },
+        "properties": {
+          "denied_source_prefixes": {
+            "type": "array",
+            "description": "IP prefixes (CIDR notation) from which requests are denied.",
+            "x-f5xc-field": {
+              "inputType": "array",
+              "uiLabel": "Source IP Prefixes",
+              "apiProperty": "spec.deny_list.prefixes",
+              "advanced": false
+            },
+            "x-f5xc-ui": {
+              "placeholder": "Add IP prefix (e.g., 192.168.0.0/16)"
+            }
+          }
+        },
+        "required": [
+          "denied_source_prefixes"
+        ]
+      },
+      "rules": {
+        "type": "array",
+        "description": "List of custom policy rules. Rules are evaluated in order.\nFirst matching rule determines the action.",
+        "minItems": 1,
+        "maxItems": 256,
+        "items": {
+          "oneOf": [
+            {
+              "type": "object",
+              "properties": {
+                "action": {
+                  "const": "Deny",
+                  "description": "When action is Deny"
+                },
+                "name": {
+                  "type": "string",
+                  "description": "The configuration object will be created with name. It has to be unique within the namespace.\nThe value of name has to follow DNS-1035 format.",
+                  "x-f5xc-field": {
+                    "inputType": "textbox",
+                    "uiLabel": "Name",
+                    "apiProperty": "spec.rules[].metadata.name",
+                    "advanced": false
+                  },
+                  "minLength": 0,
+                  "maxLength": 16,
+                  "pattern": "^[a-z][a-z0-9-]*[a-z0-9]$",
+                  "x-f5xc-pattern-description": "Must start with lowercase letter, contain only lowercase letters, numbers, and hyphens, and end with letter or number"
+                },
+                "rule_description": {
+                  "type": "string",
+                  "description": "Human readable description for this rule.",
+                  "x-f5xc-field": {
+                    "inputType": "textbox",
+                    "uiLabel": "Description",
+                    "apiProperty": "spec.rules[].metadata.description",
+                    "advanced": false
+                  },
+                  "maxLength": 256
+                },
+                "client_selection": {
+                  "type": "string",
+                  "description": "Select which clients this rule applies to.\nAny Client matches all clients, or specify by name, label, or threat category.",
+                  "x-f5xc-field": {
+                    "inputType": "textbox",
+                    "uiLabel": "Client Selection",
+                    "apiProperty": "spec.rules[].spec.client_choice",
+                    "advanced": false
+                  },
+                  "default": "Any Client",
+                  "x-f5xc-ui": {
+                    "defaultValue": "Any Client"
+                  },
+                  "enum": [
+                    "Any Client",
+                    "Client Name",
+                    "Group of Clients by Name",
+                    "List of IP Threat Categories",
+                    "Group of Clients by Label Selector"
+                  ],
+                  "x-f5xc-enum-descriptions": {
+                    "Any Client": "Match any client (default behavior).",
+                    "Client Name": "The expected name of the client invoking the request API. The predicate evaluates to true if any of the actual names is the same as the expected client name.",
+                    "Group of Clients by Name": "A list of exact values and/or regular expressions for the expected name of the client.",
+                    "List of IP Threat Categories": "IP threat categories to choose from.",
+                    "Group of Clients by Label Selector": "Match clients by Kubernetes-style label selector."
+                  }
+                },
+                "client_name": {
+                  "type": "string",
+                  "description": "The expected name of the client invoking the request API. The predicate evaluates to true if any of the actual names is the same as the expected client name.",
+                  "x-f5xc-field": {
+                    "inputType": "textbox",
+                    "uiLabel": "Client Name",
+                    "apiProperty": "spec.rules[].spec.client_name",
+                    "advanced": false
+                  },
+                  "x-f5xc-ui": {
+                    "placeholder": "client-name"
+                  },
+                  "x-f5xc-conditional": {
+                    "field": "client_selection",
+                    "value": "Client Name"
+                  },
+                  "minLength": 0,
+                  "maxLength": 253
+                },
+                "client_name_exact_values": {
+                  "type": "array",
+                  "description": "List of exact client names to match.",
+                  "x-f5xc-field": {
+                    "inputType": "array",
+                    "uiLabel": "Client Name Exact Values",
+                    "apiProperty": "spec.rules[].spec.client_selector.exact_values",
+                    "advanced": false
+                  },
+                  "x-f5xc-ui": {
+                    "placeholder": "Add exact client name"
+                  },
+                  "x-f5xc-conditional": {
+                    "field": "client_selection",
+                    "value": "Group of Clients by Name"
+                  }
+                },
+                "client_name_regex_values": {
+                  "type": "array",
+                  "description": "List of regex patterns to match client names.",
+                  "x-f5xc-field": {
+                    "inputType": "array",
+                    "uiLabel": "Client Name Regex Values",
+                    "apiProperty": "spec.rules[].spec.client_selector.regex_values",
+                    "advanced": false
+                  },
+                  "x-f5xc-ui": {
+                    "placeholder": "Add regex pattern"
+                  },
+                  "x-f5xc-conditional": {
+                    "field": "client_selection",
+                    "value": "Group of Clients by Name"
+                  }
+                },
+                "ip_threat_categories": {
+                  "type": "array",
+                  "description": "IP threat categories to match against client IP addresses.",
+                  "x-f5xc-field": {
+                    "inputType": "array",
+                    "uiLabel": "IP Threat Categories",
+                    "apiProperty": "spec.rules[].spec.ip_threat_categories",
+                    "advanced": false
+                  },
+                  "x-f5xc-ui": {
+                    "placeholder": "Select threat categories"
+                  },
+                  "x-f5xc-conditional": {
+                    "field": "client_selection",
+                    "value": "List of IP Threat Categories"
+                  }
+                },
+                "domain_exact_values": {
+                  "type": "array",
+                  "description": "List of exact domain names to match.",
+                  "x-f5xc-field": {
+                    "inputType": "array",
+                    "uiLabel": "Domain Exact Values",
+                    "apiProperty": "spec.rules[].spec.server_selector.exact_values",
+                    "advanced": false
+                  },
+                  "x-f5xc-ui": {
+                    "placeholder": "Add exact domain"
+                  }
+                },
+                "domain_regex_values": {
+                  "type": "array",
+                  "description": "List of regex patterns to match domain names.",
+                  "x-f5xc-field": {
+                    "inputType": "array",
+                    "uiLabel": "Domain Regex Values",
+                    "apiProperty": "spec.rules[].spec.server_selector.regex_values",
+                    "advanced": false
+                  },
+                  "x-f5xc-ui": {
+                    "placeholder": "Add regex pattern"
+                  }
+                },
+                "http_method": {
+                  "type": "string",
+                  "description": "HTTP method to match. ANY matches all methods.",
+                  "x-f5xc-field": {
+                    "inputType": "textbox",
+                    "uiLabel": "HTTP Method",
+                    "apiProperty": "spec.rules[].spec.http_method",
+                    "advanced": false
+                  },
+                  "default": "ANY",
+                  "x-f5xc-ui": {
+                    "defaultValue": "ANY"
+                  },
+                  "enum": [
+                    "ANY",
+                    "GET",
+                    "HEAD",
+                    "POST",
+                    "PUT",
+                    "DELETE",
+                    "CONNECT",
+                    "OPTIONS",
+                    "TRACE",
+                    "PATCH"
+                  ]
+                },
+                "invert_method_matcher": {
+                  "type": "boolean",
+                  "description": "Invert the HTTP method matcher. When enabled, the rule matches all methods except the selected one.",
+                  "x-f5xc-field": {
+                    "inputType": "checkbox",
+                    "uiLabel": "Invert Method Matcher",
+                    "apiProperty": "spec.rules[].spec.invert_method_matcher",
+                    "advanced": false
+                  },
+                  "default": false,
+                  "x-f5xc-ui": {
+                    "defaultValue": "false"
+                  }
+                },
+                "path_match_type": {
+                  "type": "string",
+                  "description": "Type of path matching to use.\nPrefix matches paths starting with value, Path matches exact path, Regex uses regular expression.",
+                  "x-f5xc-field": {
+                    "inputType": "textbox",
+                    "uiLabel": "Path Match Type",
+                    "apiProperty": "spec.rules[].spec.path.type",
+                    "advanced": false
+                  },
+                  "default": "Any Path",
+                  "x-f5xc-ui": {
+                    "defaultValue": "Any Path"
+                  },
+                  "enum": [
+                    "Any Path",
+                    "Prefix",
+                    "Path",
+                    "Regex"
+                  ],
+                  "x-f5xc-enum-descriptions": {
+                    "Any Path": "Match any path.",
+                    "Prefix": "Match paths starting with the specified prefix.",
+                    "Path": "Match exact path.",
+                    "Regex": "Match paths using regular expression."
+                  }
+                },
+                "path_value": {
+                  "type": "string",
+                  "description": "Path value to match (prefix, exact, or regex pattern depending on match type).",
+                  "x-f5xc-field": {
+                    "inputType": "textbox",
+                    "uiLabel": "Path Value",
+                    "apiProperty": "spec.rules[].spec.path.value",
+                    "advanced": false
+                  },
+                  "x-f5xc-ui": {
+                    "placeholder": "/api/v1/*"
+                  },
+                  "x-f5xc-conditional": {
+                    "field": "path_match_type",
+                    "value": [
+                      "Prefix",
+                      "Path",
+                      "Regex"
+                    ]
+                  },
+                  "maxLength": 2048
+                },
+                "query_parameters": {
+                  "type": "array",
+                  "description": "HTTP query parameters to match.",
+                  "x-f5xc-field": {
+                    "inputType": "array",
+                    "uiLabel": "HTTP Query Parameters",
+                    "apiProperty": "spec.rules[].spec.query_params",
+                    "advanced": true
+                  },
+                  "x-f5xc-ui": {
+                    "placeholder": "Add query parameter match"
+                  }
+                },
+                "headers": {
+                  "type": "array",
+                  "description": "HTTP headers to match.",
+                  "x-f5xc-field": {
+                    "inputType": "array",
+                    "uiLabel": "HTTP Headers",
+                    "apiProperty": "spec.rules[].spec.headers",
+                    "advanced": true
+                  },
+                  "x-f5xc-ui": {
+                    "placeholder": "Add header match"
+                  }
+                },
+                "keys": {
+                  "type": "array",
+                  "description": "Keys for advanced matching criteria.",
+                  "x-f5xc-field": {
+                    "inputType": "array",
+                    "uiLabel": "Keys",
+                    "apiProperty": "spec.rules[].spec.keys",
+                    "advanced": false
+                  },
+                  "x-f5xc-ui": {
+                    "placeholder": "Add key"
+                  }
+                },
+                "api_group_matcher": {
+                  "type": "string",
+                  "description": "API group to match for API discovery integration.",
+                  "x-f5xc-field": {
+                    "inputType": "textbox",
+                    "uiLabel": "API Group Matcher",
+                    "apiProperty": "spec.rules[].spec.api_group_matcher",
+                    "advanced": true
+                  }
+                },
+                "source_segments": {
+                  "type": "string",
+                  "description": "Source segments to match. Any Segment matches all segments, or specify a custom segment list.",
+                  "x-f5xc-field": {
+                    "inputType": "textbox",
+                    "uiLabel": "Source Segments",
+                    "apiProperty": "spec.rules[].spec.source_segments",
+                    "advanced": true
+                  },
+                  "default": "Any Segment",
+                  "x-f5xc-ui": {
+                    "defaultValue": "Any Segment"
+                  },
+                  "enum": [
+                    "Any Segment",
+                    "Custom Segment List"
+                  ]
+                },
+                "user_identity_exact_values": {
+                  "type": "array",
+                  "description": "List of exact user identity values to match.",
+                  "x-f5xc-field": {
+                    "inputType": "array",
+                    "uiLabel": "User Identity Exact Values",
+                    "apiProperty": "spec.rules[].spec.user_identity.exact_values",
+                    "advanced": true
+                  },
+                  "x-f5xc-ui": {
+                    "placeholder": "Add exact user identity"
+                  }
+                },
+                "user_identity_regex_values": {
+                  "type": "array",
+                  "description": "List of regex patterns to match user identities.",
+                  "x-f5xc-field": {
+                    "inputType": "array",
+                    "uiLabel": "User Identity Regex Values",
+                    "apiProperty": "spec.rules[].spec.user_identity.regex_values",
+                    "advanced": true
+                  },
+                  "x-f5xc-ui": {
+                    "placeholder": "Add regex pattern"
+                  }
+                }
+              },
+              "required": [
+                "name"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "action": {
+                  "const": "Allow",
+                  "description": "When action is Allow"
+                },
+                "name": {
+                  "type": "string",
+                  "description": "The configuration object will be created with name. It has to be unique within the namespace.\nThe value of name has to follow DNS-1035 format.",
+                  "x-f5xc-field": {
+                    "inputType": "textbox",
+                    "uiLabel": "Name",
+                    "apiProperty": "spec.rules[].metadata.name",
+                    "advanced": false
+                  },
+                  "minLength": 0,
+                  "maxLength": 16,
+                  "pattern": "^[a-z][a-z0-9-]*[a-z0-9]$",
+                  "x-f5xc-pattern-description": "Must start with lowercase letter, contain only lowercase letters, numbers, and hyphens, and end with letter or number"
+                },
+                "rule_description": {
+                  "type": "string",
+                  "description": "Human readable description for this rule.",
+                  "x-f5xc-field": {
+                    "inputType": "textbox",
+                    "uiLabel": "Description",
+                    "apiProperty": "spec.rules[].metadata.description",
+                    "advanced": false
+                  },
+                  "maxLength": 256
+                },
+                "client_selection": {
+                  "type": "string",
+                  "description": "Select which clients this rule applies to.\nAny Client matches all clients, or specify by name, label, or threat category.",
+                  "x-f5xc-field": {
+                    "inputType": "textbox",
+                    "uiLabel": "Client Selection",
+                    "apiProperty": "spec.rules[].spec.client_choice",
+                    "advanced": false
+                  },
+                  "default": "Any Client",
+                  "x-f5xc-ui": {
+                    "defaultValue": "Any Client"
+                  },
+                  "enum": [
+                    "Any Client",
+                    "Client Name",
+                    "Group of Clients by Name",
+                    "List of IP Threat Categories",
+                    "Group of Clients by Label Selector"
+                  ],
+                  "x-f5xc-enum-descriptions": {
+                    "Any Client": "Match any client (default behavior).",
+                    "Client Name": "The expected name of the client invoking the request API. The predicate evaluates to true if any of the actual names is the same as the expected client name.",
+                    "Group of Clients by Name": "A list of exact values and/or regular expressions for the expected name of the client.",
+                    "List of IP Threat Categories": "IP threat categories to choose from.",
+                    "Group of Clients by Label Selector": "Match clients by Kubernetes-style label selector."
+                  }
+                },
+                "client_name": {
+                  "type": "string",
+                  "description": "The expected name of the client invoking the request API. The predicate evaluates to true if any of the actual names is the same as the expected client name.",
+                  "x-f5xc-field": {
+                    "inputType": "textbox",
+                    "uiLabel": "Client Name",
+                    "apiProperty": "spec.rules[].spec.client_name",
+                    "advanced": false
+                  },
+                  "x-f5xc-ui": {
+                    "placeholder": "client-name"
+                  },
+                  "x-f5xc-conditional": {
+                    "field": "client_selection",
+                    "value": "Client Name"
+                  },
+                  "minLength": 0,
+                  "maxLength": 253
+                },
+                "client_name_exact_values": {
+                  "type": "array",
+                  "description": "List of exact client names to match.",
+                  "x-f5xc-field": {
+                    "inputType": "array",
+                    "uiLabel": "Client Name Exact Values",
+                    "apiProperty": "spec.rules[].spec.client_selector.exact_values",
+                    "advanced": false
+                  },
+                  "x-f5xc-ui": {
+                    "placeholder": "Add exact client name"
+                  },
+                  "x-f5xc-conditional": {
+                    "field": "client_selection",
+                    "value": "Group of Clients by Name"
+                  }
+                },
+                "client_name_regex_values": {
+                  "type": "array",
+                  "description": "List of regex patterns to match client names.",
+                  "x-f5xc-field": {
+                    "inputType": "array",
+                    "uiLabel": "Client Name Regex Values",
+                    "apiProperty": "spec.rules[].spec.client_selector.regex_values",
+                    "advanced": false
+                  },
+                  "x-f5xc-ui": {
+                    "placeholder": "Add regex pattern"
+                  },
+                  "x-f5xc-conditional": {
+                    "field": "client_selection",
+                    "value": "Group of Clients by Name"
+                  }
+                },
+                "ip_threat_categories": {
+                  "type": "array",
+                  "description": "IP threat categories to match against client IP addresses.",
+                  "x-f5xc-field": {
+                    "inputType": "array",
+                    "uiLabel": "IP Threat Categories",
+                    "apiProperty": "spec.rules[].spec.ip_threat_categories",
+                    "advanced": false
+                  },
+                  "x-f5xc-ui": {
+                    "placeholder": "Select threat categories"
+                  },
+                  "x-f5xc-conditional": {
+                    "field": "client_selection",
+                    "value": "List of IP Threat Categories"
+                  }
+                },
+                "domain_exact_values": {
+                  "type": "array",
+                  "description": "List of exact domain names to match.",
+                  "x-f5xc-field": {
+                    "inputType": "array",
+                    "uiLabel": "Domain Exact Values",
+                    "apiProperty": "spec.rules[].spec.server_selector.exact_values",
+                    "advanced": false
+                  },
+                  "x-f5xc-ui": {
+                    "placeholder": "Add exact domain"
+                  }
+                },
+                "domain_regex_values": {
+                  "type": "array",
+                  "description": "List of regex patterns to match domain names.",
+                  "x-f5xc-field": {
+                    "inputType": "array",
+                    "uiLabel": "Domain Regex Values",
+                    "apiProperty": "spec.rules[].spec.server_selector.regex_values",
+                    "advanced": false
+                  },
+                  "x-f5xc-ui": {
+                    "placeholder": "Add regex pattern"
+                  }
+                },
+                "http_method": {
+                  "type": "string",
+                  "description": "HTTP method to match. ANY matches all methods.",
+                  "x-f5xc-field": {
+                    "inputType": "textbox",
+                    "uiLabel": "HTTP Method",
+                    "apiProperty": "spec.rules[].spec.http_method",
+                    "advanced": false
+                  },
+                  "default": "ANY",
+                  "x-f5xc-ui": {
+                    "defaultValue": "ANY"
+                  },
+                  "enum": [
+                    "ANY",
+                    "GET",
+                    "HEAD",
+                    "POST",
+                    "PUT",
+                    "DELETE",
+                    "CONNECT",
+                    "OPTIONS",
+                    "TRACE",
+                    "PATCH"
+                  ]
+                },
+                "invert_method_matcher": {
+                  "type": "boolean",
+                  "description": "Invert the HTTP method matcher. When enabled, the rule matches all methods except the selected one.",
+                  "x-f5xc-field": {
+                    "inputType": "checkbox",
+                    "uiLabel": "Invert Method Matcher",
+                    "apiProperty": "spec.rules[].spec.invert_method_matcher",
+                    "advanced": false
+                  },
+                  "default": false,
+                  "x-f5xc-ui": {
+                    "defaultValue": "false"
+                  }
+                },
+                "path_match_type": {
+                  "type": "string",
+                  "description": "Type of path matching to use.\nPrefix matches paths starting with value, Path matches exact path, Regex uses regular expression.",
+                  "x-f5xc-field": {
+                    "inputType": "textbox",
+                    "uiLabel": "Path Match Type",
+                    "apiProperty": "spec.rules[].spec.path.type",
+                    "advanced": false
+                  },
+                  "default": "Any Path",
+                  "x-f5xc-ui": {
+                    "defaultValue": "Any Path"
+                  },
+                  "enum": [
+                    "Any Path",
+                    "Prefix",
+                    "Path",
+                    "Regex"
+                  ],
+                  "x-f5xc-enum-descriptions": {
+                    "Any Path": "Match any path.",
+                    "Prefix": "Match paths starting with the specified prefix.",
+                    "Path": "Match exact path.",
+                    "Regex": "Match paths using regular expression."
+                  }
+                },
+                "path_value": {
+                  "type": "string",
+                  "description": "Path value to match (prefix, exact, or regex pattern depending on match type).",
+                  "x-f5xc-field": {
+                    "inputType": "textbox",
+                    "uiLabel": "Path Value",
+                    "apiProperty": "spec.rules[].spec.path.value",
+                    "advanced": false
+                  },
+                  "x-f5xc-ui": {
+                    "placeholder": "/api/v1/*"
+                  },
+                  "x-f5xc-conditional": {
+                    "field": "path_match_type",
+                    "value": [
+                      "Prefix",
+                      "Path",
+                      "Regex"
+                    ]
+                  },
+                  "maxLength": 2048
+                },
+                "query_parameters": {
+                  "type": "array",
+                  "description": "HTTP query parameters to match.",
+                  "x-f5xc-field": {
+                    "inputType": "array",
+                    "uiLabel": "HTTP Query Parameters",
+                    "apiProperty": "spec.rules[].spec.query_params",
+                    "advanced": true
+                  },
+                  "x-f5xc-ui": {
+                    "placeholder": "Add query parameter match"
+                  }
+                },
+                "headers": {
+                  "type": "array",
+                  "description": "HTTP headers to match.",
+                  "x-f5xc-field": {
+                    "inputType": "array",
+                    "uiLabel": "HTTP Headers",
+                    "apiProperty": "spec.rules[].spec.headers",
+                    "advanced": true
+                  },
+                  "x-f5xc-ui": {
+                    "placeholder": "Add header match"
+                  }
+                },
+                "keys": {
+                  "type": "array",
+                  "description": "Keys for advanced matching criteria.",
+                  "x-f5xc-field": {
+                    "inputType": "array",
+                    "uiLabel": "Keys",
+                    "apiProperty": "spec.rules[].spec.keys",
+                    "advanced": false
+                  },
+                  "x-f5xc-ui": {
+                    "placeholder": "Add key"
+                  }
+                },
+                "api_group_matcher": {
+                  "type": "string",
+                  "description": "API group to match for API discovery integration.",
+                  "x-f5xc-field": {
+                    "inputType": "textbox",
+                    "uiLabel": "API Group Matcher",
+                    "apiProperty": "spec.rules[].spec.api_group_matcher",
+                    "advanced": true
+                  }
+                },
+                "source_segments": {
+                  "type": "string",
+                  "description": "Source segments to match. Any Segment matches all segments, or specify a custom segment list.",
+                  "x-f5xc-field": {
+                    "inputType": "textbox",
+                    "uiLabel": "Source Segments",
+                    "apiProperty": "spec.rules[].spec.source_segments",
+                    "advanced": true
+                  },
+                  "default": "Any Segment",
+                  "x-f5xc-ui": {
+                    "defaultValue": "Any Segment"
+                  },
+                  "enum": [
+                    "Any Segment",
+                    "Custom Segment List"
+                  ]
+                },
+                "user_identity_exact_values": {
+                  "type": "array",
+                  "description": "List of exact user identity values to match.",
+                  "x-f5xc-field": {
+                    "inputType": "array",
+                    "uiLabel": "User Identity Exact Values",
+                    "apiProperty": "spec.rules[].spec.user_identity.exact_values",
+                    "advanced": true
+                  },
+                  "x-f5xc-ui": {
+                    "placeholder": "Add exact user identity"
+                  }
+                },
+                "user_identity_regex_values": {
+                  "type": "array",
+                  "description": "List of regex patterns to match user identities.",
+                  "x-f5xc-field": {
+                    "inputType": "array",
+                    "uiLabel": "User Identity Regex Values",
+                    "apiProperty": "spec.rules[].spec.user_identity.regex_values",
+                    "advanced": true
+                  },
+                  "x-f5xc-ui": {
+                    "placeholder": "Add regex pattern"
+                  }
+                }
+              },
+              "required": [
+                "name"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "action": {
+                  "const": "Next Policy",
+                  "description": "When action is Next Policy"
+                },
+                "name": {
+                  "type": "string",
+                  "description": "The configuration object will be created with name. It has to be unique within the namespace.\nThe value of name has to follow DNS-1035 format.",
+                  "x-f5xc-field": {
+                    "inputType": "textbox",
+                    "uiLabel": "Name",
+                    "apiProperty": "spec.rules[].metadata.name",
+                    "advanced": false
+                  },
+                  "minLength": 0,
+                  "maxLength": 16,
+                  "pattern": "^[a-z][a-z0-9-]*[a-z0-9]$",
+                  "x-f5xc-pattern-description": "Must start with lowercase letter, contain only lowercase letters, numbers, and hyphens, and end with letter or number"
+                },
+                "rule_description": {
+                  "type": "string",
+                  "description": "Human readable description for this rule.",
+                  "x-f5xc-field": {
+                    "inputType": "textbox",
+                    "uiLabel": "Description",
+                    "apiProperty": "spec.rules[].metadata.description",
+                    "advanced": false
+                  },
+                  "maxLength": 256
+                },
+                "client_selection": {
+                  "type": "string",
+                  "description": "Select which clients this rule applies to.\nAny Client matches all clients, or specify by name, label, or threat category.",
+                  "x-f5xc-field": {
+                    "inputType": "textbox",
+                    "uiLabel": "Client Selection",
+                    "apiProperty": "spec.rules[].spec.client_choice",
+                    "advanced": false
+                  },
+                  "default": "Any Client",
+                  "x-f5xc-ui": {
+                    "defaultValue": "Any Client"
+                  },
+                  "enum": [
+                    "Any Client",
+                    "Client Name",
+                    "Group of Clients by Name",
+                    "List of IP Threat Categories",
+                    "Group of Clients by Label Selector"
+                  ],
+                  "x-f5xc-enum-descriptions": {
+                    "Any Client": "Match any client (default behavior).",
+                    "Client Name": "The expected name of the client invoking the request API. The predicate evaluates to true if any of the actual names is the same as the expected client name.",
+                    "Group of Clients by Name": "A list of exact values and/or regular expressions for the expected name of the client.",
+                    "List of IP Threat Categories": "IP threat categories to choose from.",
+                    "Group of Clients by Label Selector": "Match clients by Kubernetes-style label selector."
+                  }
+                },
+                "client_name": {
+                  "type": "string",
+                  "description": "The expected name of the client invoking the request API. The predicate evaluates to true if any of the actual names is the same as the expected client name.",
+                  "x-f5xc-field": {
+                    "inputType": "textbox",
+                    "uiLabel": "Client Name",
+                    "apiProperty": "spec.rules[].spec.client_name",
+                    "advanced": false
+                  },
+                  "x-f5xc-ui": {
+                    "placeholder": "client-name"
+                  },
+                  "x-f5xc-conditional": {
+                    "field": "client_selection",
+                    "value": "Client Name"
+                  },
+                  "minLength": 0,
+                  "maxLength": 253
+                },
+                "client_name_exact_values": {
+                  "type": "array",
+                  "description": "List of exact client names to match.",
+                  "x-f5xc-field": {
+                    "inputType": "array",
+                    "uiLabel": "Client Name Exact Values",
+                    "apiProperty": "spec.rules[].spec.client_selector.exact_values",
+                    "advanced": false
+                  },
+                  "x-f5xc-ui": {
+                    "placeholder": "Add exact client name"
+                  },
+                  "x-f5xc-conditional": {
+                    "field": "client_selection",
+                    "value": "Group of Clients by Name"
+                  }
+                },
+                "client_name_regex_values": {
+                  "type": "array",
+                  "description": "List of regex patterns to match client names.",
+                  "x-f5xc-field": {
+                    "inputType": "array",
+                    "uiLabel": "Client Name Regex Values",
+                    "apiProperty": "spec.rules[].spec.client_selector.regex_values",
+                    "advanced": false
+                  },
+                  "x-f5xc-ui": {
+                    "placeholder": "Add regex pattern"
+                  },
+                  "x-f5xc-conditional": {
+                    "field": "client_selection",
+                    "value": "Group of Clients by Name"
+                  }
+                },
+                "ip_threat_categories": {
+                  "type": "array",
+                  "description": "IP threat categories to match against client IP addresses.",
+                  "x-f5xc-field": {
+                    "inputType": "array",
+                    "uiLabel": "IP Threat Categories",
+                    "apiProperty": "spec.rules[].spec.ip_threat_categories",
+                    "advanced": false
+                  },
+                  "x-f5xc-ui": {
+                    "placeholder": "Select threat categories"
+                  },
+                  "x-f5xc-conditional": {
+                    "field": "client_selection",
+                    "value": "List of IP Threat Categories"
+                  }
+                },
+                "domain_exact_values": {
+                  "type": "array",
+                  "description": "List of exact domain names to match.",
+                  "x-f5xc-field": {
+                    "inputType": "array",
+                    "uiLabel": "Domain Exact Values",
+                    "apiProperty": "spec.rules[].spec.server_selector.exact_values",
+                    "advanced": false
+                  },
+                  "x-f5xc-ui": {
+                    "placeholder": "Add exact domain"
+                  }
+                },
+                "domain_regex_values": {
+                  "type": "array",
+                  "description": "List of regex patterns to match domain names.",
+                  "x-f5xc-field": {
+                    "inputType": "array",
+                    "uiLabel": "Domain Regex Values",
+                    "apiProperty": "spec.rules[].spec.server_selector.regex_values",
+                    "advanced": false
+                  },
+                  "x-f5xc-ui": {
+                    "placeholder": "Add regex pattern"
+                  }
+                },
+                "http_method": {
+                  "type": "string",
+                  "description": "HTTP method to match. ANY matches all methods.",
+                  "x-f5xc-field": {
+                    "inputType": "textbox",
+                    "uiLabel": "HTTP Method",
+                    "apiProperty": "spec.rules[].spec.http_method",
+                    "advanced": false
+                  },
+                  "default": "ANY",
+                  "x-f5xc-ui": {
+                    "defaultValue": "ANY"
+                  },
+                  "enum": [
+                    "ANY",
+                    "GET",
+                    "HEAD",
+                    "POST",
+                    "PUT",
+                    "DELETE",
+                    "CONNECT",
+                    "OPTIONS",
+                    "TRACE",
+                    "PATCH"
+                  ]
+                },
+                "invert_method_matcher": {
+                  "type": "boolean",
+                  "description": "Invert the HTTP method matcher. When enabled, the rule matches all methods except the selected one.",
+                  "x-f5xc-field": {
+                    "inputType": "checkbox",
+                    "uiLabel": "Invert Method Matcher",
+                    "apiProperty": "spec.rules[].spec.invert_method_matcher",
+                    "advanced": false
+                  },
+                  "default": false,
+                  "x-f5xc-ui": {
+                    "defaultValue": "false"
+                  }
+                },
+                "path_match_type": {
+                  "type": "string",
+                  "description": "Type of path matching to use.\nPrefix matches paths starting with value, Path matches exact path, Regex uses regular expression.",
+                  "x-f5xc-field": {
+                    "inputType": "textbox",
+                    "uiLabel": "Path Match Type",
+                    "apiProperty": "spec.rules[].spec.path.type",
+                    "advanced": false
+                  },
+                  "default": "Any Path",
+                  "x-f5xc-ui": {
+                    "defaultValue": "Any Path"
+                  },
+                  "enum": [
+                    "Any Path",
+                    "Prefix",
+                    "Path",
+                    "Regex"
+                  ],
+                  "x-f5xc-enum-descriptions": {
+                    "Any Path": "Match any path.",
+                    "Prefix": "Match paths starting with the specified prefix.",
+                    "Path": "Match exact path.",
+                    "Regex": "Match paths using regular expression."
+                  }
+                },
+                "path_value": {
+                  "type": "string",
+                  "description": "Path value to match (prefix, exact, or regex pattern depending on match type).",
+                  "x-f5xc-field": {
+                    "inputType": "textbox",
+                    "uiLabel": "Path Value",
+                    "apiProperty": "spec.rules[].spec.path.value",
+                    "advanced": false
+                  },
+                  "x-f5xc-ui": {
+                    "placeholder": "/api/v1/*"
+                  },
+                  "x-f5xc-conditional": {
+                    "field": "path_match_type",
+                    "value": [
+                      "Prefix",
+                      "Path",
+                      "Regex"
+                    ]
+                  },
+                  "maxLength": 2048
+                },
+                "query_parameters": {
+                  "type": "array",
+                  "description": "HTTP query parameters to match.",
+                  "x-f5xc-field": {
+                    "inputType": "array",
+                    "uiLabel": "HTTP Query Parameters",
+                    "apiProperty": "spec.rules[].spec.query_params",
+                    "advanced": true
+                  },
+                  "x-f5xc-ui": {
+                    "placeholder": "Add query parameter match"
+                  }
+                },
+                "headers": {
+                  "type": "array",
+                  "description": "HTTP headers to match.",
+                  "x-f5xc-field": {
+                    "inputType": "array",
+                    "uiLabel": "HTTP Headers",
+                    "apiProperty": "spec.rules[].spec.headers",
+                    "advanced": true
+                  },
+                  "x-f5xc-ui": {
+                    "placeholder": "Add header match"
+                  }
+                },
+                "keys": {
+                  "type": "array",
+                  "description": "Keys for advanced matching criteria.",
+                  "x-f5xc-field": {
+                    "inputType": "array",
+                    "uiLabel": "Keys",
+                    "apiProperty": "spec.rules[].spec.keys",
+                    "advanced": false
+                  },
+                  "x-f5xc-ui": {
+                    "placeholder": "Add key"
+                  }
+                },
+                "api_group_matcher": {
+                  "type": "string",
+                  "description": "API group to match for API discovery integration.",
+                  "x-f5xc-field": {
+                    "inputType": "textbox",
+                    "uiLabel": "API Group Matcher",
+                    "apiProperty": "spec.rules[].spec.api_group_matcher",
+                    "advanced": true
+                  }
+                },
+                "source_segments": {
+                  "type": "string",
+                  "description": "Source segments to match. Any Segment matches all segments, or specify a custom segment list.",
+                  "x-f5xc-field": {
+                    "inputType": "textbox",
+                    "uiLabel": "Source Segments",
+                    "apiProperty": "spec.rules[].spec.source_segments",
+                    "advanced": true
+                  },
+                  "default": "Any Segment",
+                  "x-f5xc-ui": {
+                    "defaultValue": "Any Segment"
+                  },
+                  "enum": [
+                    "Any Segment",
+                    "Custom Segment List"
+                  ]
+                },
+                "user_identity_exact_values": {
+                  "type": "array",
+                  "description": "List of exact user identity values to match.",
+                  "x-f5xc-field": {
+                    "inputType": "array",
+                    "uiLabel": "User Identity Exact Values",
+                    "apiProperty": "spec.rules[].spec.user_identity.exact_values",
+                    "advanced": true
+                  },
+                  "x-f5xc-ui": {
+                    "placeholder": "Add exact user identity"
+                  }
+                },
+                "user_identity_regex_values": {
+                  "type": "array",
+                  "description": "List of regex patterns to match user identities.",
+                  "x-f5xc-field": {
+                    "inputType": "array",
+                    "uiLabel": "User Identity Regex Values",
+                    "apiProperty": "spec.rules[].spec.user_identity.regex_values",
+                    "advanced": true
+                  },
+                  "x-f5xc-ui": {
+                    "placeholder": "Add regex pattern"
+                  }
+                }
+              },
+              "required": [
+                "name"
+              ]
+            }
+          ]
+        },
+        "x-f5xc-array": {
+          "addButtonLabel": "Add Item",
+          "itemDiscriminator": "action"
+        }
+      }
+    },
+    "required": [
+      "name",
+      "server_selection",
+      "select_policy_rules"
+    ],
+    "oneOf": [
+      {
+        "properties": {
+          "server_selection": {
+            "const": "Any Server"
+          }
+        },
+        "required": [
+          "server_selection"
+        ]
+      },
+      {
+        "properties": {
+          "server_selection": {
+            "const": "Server Name"
+          }
+        },
+        "required": [
+          "server_selection"
+        ]
+      },
+      {
+        "properties": {
+          "server_selection": {
+            "const": "Group of Servers by Name"
+          }
+        },
+        "required": [
+          "server_selection"
+        ]
+      },
+      {
+        "properties": {
+          "select_policy_rules": {
+            "const": "Custom Rule List"
+          }
+        },
+        "required": [
+          "select_policy_rules"
+        ]
+      },
+      {
+        "properties": {
+          "select_policy_rules": {
+            "const": "Allowed Sources"
+          }
+        },
+        "required": [
+          "select_policy_rules"
+        ]
+      },
+      {
+        "properties": {
+          "select_policy_rules": {
+            "const": "Denied Sources"
+          }
+        },
+        "required": [
+          "select_policy_rules"
+        ]
+      },
+      {
+        "properties": {
+          "select_policy_rules": {
+            "const": "Allow All Requests"
+          }
+        },
+        "required": [
+          "select_policy_rules"
+        ]
+      },
+      {
+        "properties": {
+          "select_policy_rules": {
+            "const": "Deny All Requests"
+          }
+        },
+        "required": [
+          "select_policy_rules"
+        ]
+      }
+    ],
+    "x-f5xc-metadata": {
+      "formUrl": "https://f5-amer-ent.console.ves.volterra.io/web/workspaces/web-app-and-api-protection/namespaces/default/manage/service_policies",
+      "resourceType": "service_policy",
+      "extractedAt": "2.2.0-stable",
+      "version": "2.2.0",
+      "extractionVersion": "3.0.0-unified",
+      "extractionMethod": "property-builder",
+      "nestedConfigurations": [
+        "server_name_config",
+        "server_group_config",
+        "allowed_sources_config",
+        "denied_sources_config"
+      ]
+    }
+  },
+  "selectors": {
+    "resourceType": "service_policy",
+    "fieldSelectors": {
+      "Name": {
+        "schemaPath": "properties.name",
+        "inputType": "textbox",
+        "required": true,
+        "advanced": false
+      },
+      "Labels": {
+        "schemaPath": "properties.labels",
+        "inputType": "object",
+        "required": false,
+        "advanced": false
+      },
+      "Description": {
+        "schemaPath": "properties.description",
+        "inputType": "textbox",
+        "required": false,
+        "advanced": false
+      },
+      "Server Selection": {
+        "schemaPath": "properties.server_selection",
+        "inputType": "textbox",
+        "required": true,
+        "advanced": false
+      },
+      "Select Policy Rules": {
+        "schemaPath": "properties.select_policy_rules",
+        "inputType": "textbox",
+        "required": true,
+        "advanced": false
+      }
+    },
+    "nestedSelectors": {
+      "server_name_config": {
+        "Server Name": {
+          "schemaPath": "properties.server_name_config.properties.server_name",
+          "inputType": "textbox",
+          "required": true,
+          "advanced": false
+        }
+      },
+      "server_group_config": {
+        "Exact Values": {
+          "schemaPath": "properties.server_group_config.properties.server_exact_values",
+          "inputType": "array",
+          "required": false,
+          "advanced": false
+        },
+        "Regex Values": {
+          "schemaPath": "properties.server_group_config.properties.server_regex_values",
+          "inputType": "array",
+          "required": false,
+          "advanced": false
+        }
+      },
+      "allowed_sources_config": {
+        "Source IP Prefixes": {
+          "schemaPath": "properties.allowed_sources_config.properties.allowed_source_prefixes",
+          "inputType": "array",
+          "required": true,
+          "advanced": false
+        }
+      },
+      "denied_sources_config": {
+        "Source IP Prefixes": {
+          "schemaPath": "properties.denied_sources_config.properties.denied_source_prefixes",
+          "inputType": "array",
+          "required": true,
+          "advanced": false
+        }
+      }
+    },
+    "actionSelectors": {
+      "submit": "button:has(generic:text(\"Add Service_policy\"))",
+      "cancel": "button:has(generic:text(\"Cancel\"))"
+    }
+  },
+  "metadata": {
+    "formUrl": "https://f5-amer-ent.console.ves.volterra.io/web/workspaces/web-app-and-api-protection/namespaces/default/manage/service_policies",
+    "resourceType": "service_policy",
+    "extractedAt": "2.2.0-stable",
+    "version": "2.2.0",
+    "extractionVersion": "3.0.0-unified",
+    "coverage": {
+      "totalFields": 70,
+      "topLevelFields": 5,
+      "nestedFields": 65,
+      "nestedConfigurations": 4,
+      "fieldsWithSelectors": 70,
+      "fieldsWithTooltips": 31,
+      "fieldsWithDefaults": 2,
+      "percentage": 100
+    },
+    "warnings": []
+  }
+}
