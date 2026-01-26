@@ -21,6 +21,9 @@ import {
   SelectorMetadata,
 } from '../types/schema-extractor';
 import { FieldMapper } from '../bridge/field-mapper';
+import { ArrayFieldHandler, ArrayFieldInfo, ArrayItemTemplate } from '../handlers/array-field-handler';
+import { ApiDiscoveryService, ReferenceOption } from '../bridge/api-discovery-service';
+import { LoggerService } from '../logging/logger-service';
 
 /**
  * Schema Generator class
@@ -44,6 +47,10 @@ import { FieldMapper } from '../bridge/field-mapper';
  */
 export class SchemaGenerator {
   private fieldMapper: FieldMapper | null = null;
+  private arrayFieldHandler: ArrayFieldHandler = new ArrayFieldHandler();
+  private apiDiscovery: ApiDiscoveryService | null = null;
+  private logger: LoggerService = LoggerService.getInstance();
+
 
   /**
    * Load field mappings from YAML file
@@ -66,9 +73,18 @@ export class SchemaGenerator {
   }
 
   /**
+   * Set API discovery service for live enum population (Phase 3)
+   *
+   * @param apiDiscovery - API discovery service instance
+   */
+  setApiDiscovery(apiDiscovery: ApiDiscoveryService): void {
+    this.apiDiscovery = apiDiscovery;
+  }
+
+  /**
    * Generate JSON Schema from form fields and relationships
    */
-  generate(input: SchemaGenerationInput): SchemaGenerationOutput {
+  async generate(input: SchemaGenerationInput): Promise<SchemaGenerationOutput> {
     const warnings: string[] = [];
 
     // Build base schema
@@ -155,8 +171,34 @@ export class SchemaGenerator {
       }
     }
 
-    // Add F5 XC metadata
-    schema['x-f5xc-metadata'] = input.metadata;
+    // Detect and apply enums for API reference fields (Phase 1 MVP, Phase 3 API discovery)
+    const apiRefs = this.detectAPIReferenceFields(input.formFields, input.metadata.resourceType);
+    let apiDiscoveryStatus: import('../types/schema-extractor').ApiDiscoveryStatus | undefined;
+    if (apiRefs.length > 0) {
+      const namespace = input.metadata.namespace ?? 'default';
+      apiDiscoveryStatus = await this.applyApiEnums(schema, apiRefs, namespace, warnings);
+    }
+
+    // Handle array fields (Phase 2)
+    if (this.fieldMapper && this.fieldMapper.isLoaded()) {
+      const mappings = this.fieldMapper.getMappings();
+      const resourceMappings = mappings[input.metadata.resourceType];
+      if (resourceMappings && resourceMappings.array_fields) {
+        this.handleArrayFields(schema, resourceMappings.array_fields, input.oneOfRelationships);
+        warnings.push(
+          `${Object.keys(resourceMappings.array_fields).length} array field(s) modeled with item schemas (Phase 2).`
+        );
+      }
+    }
+
+    // Add F5 XC metadata with API discovery status
+    const enhancedMetadata: SchemaMetadata = {
+      ...input.metadata,
+      extractedAt: new Date().toISOString(),
+      extractionVersion: '1.0.0',
+      apiDiscovery: apiDiscoveryStatus,
+    };
+    schema['x-f5xc-metadata'] = enhancedMetadata;
 
     // Generate selector metadata
     const selectorMetadata = this.extractSelectorMetadata(input, schema);
@@ -644,6 +686,278 @@ export class SchemaGenerator {
         // Add to exclusive fields
         option.exclusiveFields.push(...Object.keys(nestedProperties));
       }
+    }
+  }
+
+  /**
+   * Generate placeholder enum for fields requiring API lookup (Phase 1 MVP)
+   * Phase 3 will replace with actual API integration
+   *
+   * @param fieldName - Name of the field requiring placeholder enum
+   * @param resourceType - Type of referenced resource (e.g., "healthcheck")
+   * @returns Array of placeholder values
+   */
+  private generatePlaceholderEnum(
+    fieldName: string,
+    resourceType: string
+  ): string[] {
+    const placeholders: Record<string, string[]> = {
+      healthcheck: ['healthcheck-1', 'healthcheck-2', 'example-healthcheck'],
+      origin_pool: ['pool-1', 'pool-2', 'example-pool'],
+      certificate: ['cert-1', 'cert-2', 'example-cert'],
+      service_policy: ['policy-1', 'policy-2', 'example-policy'],
+    };
+
+    return placeholders[resourceType] || [`${resourceType}-placeholder-1`, `${resourceType}-placeholder-2`];
+  }
+
+  /**
+   * Detect fields that reference other API resources (Phase 1 MVP)
+   * These fields will use placeholder enums until Phase 3 API integration
+   *
+   * @param fields - All detected form fields
+   * @param resourceType - Current resource type being extracted
+   * @returns Array of API reference field information
+   */
+  private detectAPIReferenceFields(
+    fields: DetectedFormField[],
+    resourceType: string
+  ): Array<{
+    fieldName: string;
+    resourceType: string;
+    placeholderValues: string[];
+  }> {
+    const apiRefs: Array<{
+      fieldName: string;
+      resourceType: string;
+      placeholderValues: string[];
+    }> = [];
+
+    // Detection patterns for API reference fields
+    const referencePatterns: Record<string, RegExp> = {
+      healthcheck: /health.*check|hc.*ref/i,
+      origin_pool: /origin.*pool|pool.*ref/i,
+      certificate: /cert|tls.*cert|ssl.*cert/i,
+      service_policy: /service.*policy|policy.*ref/i,
+    };
+
+    for (const field of fields) {
+      // Only check combobox fields (dropdowns)
+      if (field.type !== 'combobox') continue;
+
+      // Check if field name matches any reference pattern
+      for (const [refType, pattern] of Object.entries(referencePatterns)) {
+        if (pattern.test(field.name)) {
+          const placeholders = this.generatePlaceholderEnum(field.name, refType);
+          apiRefs.push({
+            fieldName: field.name,
+            resourceType: refType,
+            placeholderValues: placeholders,
+          });
+          break; // Only match once per field
+        }
+      }
+    }
+
+    return apiRefs;
+  }
+
+  /**
+   * Apply API or placeholder enums to schema properties (Phase 1 MVP, Phase 3 API discovery)
+   *
+   * @param schema - Schema being generated
+   * @param apiRefs - Detected API reference fields
+   * @param namespace - F5 XC namespace for API lookups
+   * @param warnings - Array to append warnings to
+   * @returns API discovery status for metadata tracking
+   */
+  private async applyApiEnums(
+    schema: JSONSchema,
+    apiRefs: Array<{
+      fieldName: string;
+      resourceType: string;
+      placeholderValues: string[];
+    }>,
+    namespace: string,
+    warnings: string[]
+  ): Promise<import('../types/schema-extractor').ApiDiscoveryStatus> {
+    // Initialize API discovery status tracking
+    const apiDiscoveryStatus: import('../types/schema-extractor').ApiDiscoveryStatus = {
+      enabled: this.apiDiscovery?.isEnabled() ?? false,
+      references: [],
+    };
+
+    if (!schema.properties) return apiDiscoveryStatus;
+
+    let apiSuccess = 0;
+    let placeholderFallback = 0;
+
+    for (const ref of apiRefs) {
+      const propertyName = this.fieldNameToPropertyName(ref.fieldName);
+      const property = schema.properties[propertyName];
+
+      if (!property) continue;
+
+      let enumValues: string[] = ref.placeholderValues;
+      let usesPlaceholder = true;
+      let lastFetched: string | undefined;
+      let resolved = false;
+      let fallbackUsed = false;
+
+      // Phase 3: Try API discovery if available
+      if (this.apiDiscovery && this.apiDiscovery.isEnabled()) {
+        try {
+          const options = await this.apiDiscovery.fetchReferenceOptions(ref.resourceType, namespace);
+          if (options.length > 0 && !options[0].metadata?.isPlaceholder) {
+            enumValues = options.map(opt => opt.value);
+            usesPlaceholder = false;
+            lastFetched = new Date().toISOString();
+            resolved = true;
+            apiSuccess++;
+          } else {
+            placeholderFallback++;
+            fallbackUsed = true;
+          }
+        } catch (error) {
+          this.logger.warn(`API discovery failed for ${ref.resourceType}, using placeholders: ${error instanceof Error ? error.message : String(error)}`);
+          placeholderFallback++;
+          fallbackUsed = true;
+        }
+      } else {
+        placeholderFallback++;
+        fallbackUsed = true;
+      }
+
+      // Track reference resolution status
+      apiDiscoveryStatus.references.push({
+        field: ref.fieldName,
+        resourceType: ref.resourceType,
+        resolved,
+        lastFetched,
+        fallbackUsed,
+      });
+
+      // Set enum values (from API or placeholders)
+      property.enum = enumValues;
+
+      // Mark as API reference
+      if (!property['x-f5xc-api']) {
+        property['x-f5xc-api'] = {};
+      }
+
+      property['x-f5xc-api']!.isAPIReference = true;
+      property['x-f5xc-api']!.referencedResourceType = ref.resourceType;
+      property['x-f5xc-api']!.usesPlaceholder = usesPlaceholder;
+      if (lastFetched) {
+        property['x-f5xc-api']!.lastFetched = lastFetched;
+      }
+
+      // Add note to description
+      const note = usesPlaceholder
+        ? `Uses placeholder values. Enable API discovery for live data.`
+        : `Populated from F5 XC API at ${lastFetched}.`;
+      property.description = property.description
+        ? `${property.description}. ${note}`
+        : note;
+    }
+
+    // Add summary warning
+    if (apiSuccess > 0) {
+      warnings.push(`${apiSuccess} API reference field(s) populated from live F5 XC API.`);
+    }
+    if (placeholderFallback > 0) {
+      warnings.push(`${placeholderFallback} API reference field(s) using placeholder enums.`);
+    }
+
+    return apiDiscoveryStatus;
+  }
+
+  /**
+   * Handle array fields by converting them to proper array schemas (Phase 2)
+   *
+   * @param schema - Schema being generated
+   * @param arrayFieldsConfig - Array field configuration from field mappings
+   * @param oneOfRelationships - OneOf relationships for array item discriminators
+   */
+  private handleArrayFields(
+    schema: JSONSchema,
+    arrayFieldsConfig: any,
+    oneOfRelationships: OneOfRelationship[]
+  ): void {
+    if (!schema.properties || !arrayFieldsConfig) return;
+
+    for (const [arrayName, config] of Object.entries<any>(arrayFieldsConfig)) {
+      const propertyName = this.fieldNameToPropertyName(arrayName);
+
+      // Phase 2: Create array property even if it doesn't exist yet
+      // Array fields are conceptually different from their item fields
+
+      // Build array item schema with oneOf for discriminated types
+      const arraySchema: any = {
+        type: 'array',
+        description: `Array of ${arrayName}`,
+        minItems: config.min_items ?? 1,
+      };
+
+      if (config.max_items) {
+        arraySchema.maxItems = config.max_items;
+      }
+
+      // Build oneOf for item types if discriminator exists
+      if (config.item_discriminator && config.item_types) {
+        const itemOneOfSchemas: any[] = [];
+
+        for (const [typeName, typeConfig] of Object.entries<any>(config.item_types)) {
+          const itemSchema: any = {
+            type: 'object',
+            properties: {},
+            required: typeConfig.required || [],
+          };
+
+          // Add discriminator constraint
+          const discriminatorProp = this.fieldNameToPropertyName(config.item_discriminator);
+          itemSchema.properties[discriminatorProp] = {
+            const: typeName.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase()),
+            description: `When ${config.item_discriminator} is ${typeName}`,
+          };
+
+          // Add type-specific fields
+          if (typeConfig.fields) {
+            for (const [fieldName, apiPath] of Object.entries<string>(typeConfig.fields)) {
+              const fieldProp = this.fieldNameToPropertyName(fieldName);
+              itemSchema.properties[fieldProp] = {
+                type: fieldName.includes('port') || fieldName.includes('timeout') ? 'number' : 'string',
+                description: fieldName,
+                'x-f5xc-field': {
+                  inputType: 'textbox',
+                  apiProperty: apiPath,
+                },
+              };
+            }
+          }
+
+          itemOneOfSchemas.push(itemSchema);
+        }
+
+        arraySchema.items = {
+          oneOf: itemOneOfSchemas,
+        };
+      } else {
+        // Simple array without discriminator
+        arraySchema.items = {
+          type: 'object',
+          properties: {},
+        };
+      }
+
+      // Add array metadata
+      arraySchema['x-f5xc-array'] = {
+        addButtonLabel: config.add_button_text,
+        itemDiscriminator: config.item_discriminator,
+      };
+
+      // Replace property with array schema
+      schema.properties[propertyName] = arraySchema;
     }
   }
 

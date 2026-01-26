@@ -1,0 +1,243 @@
+{
+  "schema": {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "F5 XC Sensitive Data Discovery Configuration",
+    "description": "JSON Schema for F5 Distributed Cloud Sensitive Data Discovery resource with UI tooltips, defaults, and nested configurations",
+    "type": "object",
+    "properties": {
+      "name": {
+        "type": "string",
+        "description": "The configuration object will be created with name. It has to be unique within the namespace.\nThe value of name has to follow DNS-1035 format.",
+        "x-f5xc-field": {
+          "inputType": "textbox",
+          "uiLabel": "Name",
+          "apiProperty": "name",
+          "advanced": false
+        },
+        "minLength": 1,
+        "maxLength": 63,
+        "pattern": "^[a-z][a-z0-9-]*[a-z0-9]$",
+        "x-f5xc-pattern-description": "Must start with lowercase letter, contain only lowercase letters, numbers, and hyphens, and end with letter or number"
+      },
+      "labels": {
+        "type": "object",
+        "description": "Map of string keys and values that can be used to organize and categorize\n(scope and select) objects as chosen by the user. Values specified here will be used\nby selector expression",
+        "x-f5xc-field": {
+          "inputType": "object",
+          "uiLabel": "Labels",
+          "apiProperty": "labels",
+          "advanced": false
+        },
+        "x-f5xc-ui": {
+          "placeholder": "Add Label"
+        }
+      },
+      "description": {
+        "type": "string",
+        "description": "Human readable description for the object",
+        "x-f5xc-field": {
+          "inputType": "textbox",
+          "uiLabel": "Description",
+          "apiProperty": "description",
+          "advanced": false
+        }
+      },
+      "compliance_frameworks": {
+        "type": "array",
+        "description": "Select relevant compliance frameworks, such as GDPR, HIPAA, or PCI-DSS, to ensure sensitive data handling meets regulatory requirements.",
+        "x-f5xc-field": {
+          "inputType": "array",
+          "uiLabel": "Compliance Frameworks",
+          "apiProperty": "spec.compliance_frameworks",
+          "advanced": false
+        },
+        "default": [
+          "PCI-DSS"
+        ],
+        "x-f5xc-ui": {
+          "defaultValue": "[\"PCI-DSS\"]"
+        },
+        "items": {
+          "type": "string",
+          "enum": [
+            "PCI-DSS",
+            "GDPR",
+            "HIPAA",
+            "CCPA"
+          ],
+          "enumDescriptions": {
+            "PCI-DSS": "Payment Card Industry Data Security Standard",
+            "GDPR": "General Data Protection Regulation (EU)",
+            "HIPAA": "Health Insurance Portability and Accountability Act",
+            "CCPA": "California Consumer Privacy Act"
+          }
+        }
+      },
+      "disabled_built_in_sensitive_data_types": {
+        "type": "array",
+        "description": "List of built-in sensitive data types to disable. These patterns will not be detected when analyzing API traffic.",
+        "x-f5xc-field": {
+          "inputType": "array",
+          "uiLabel": "Disabled Built-In Sensitive Data Types",
+          "apiProperty": "spec.disabled_built_in_rules",
+          "advanced": false
+        },
+        "items": {
+          "type": "string",
+          "enum": [
+            "order-details",
+            "date-in-dd-mm-yyyy-format",
+            "device-id",
+            "date-of-birth",
+            "postal-code",
+            "uk-postal-code",
+            "full-name",
+            "salary-wage",
+            "us-canadian-zip-postal-code",
+            "state-province",
+            "currency",
+            "price",
+            "time-in-24-hour-format"
+          ],
+          "enumDescriptions": {
+            "order-details": "Order details and transaction information",
+            "date-in-dd-mm-yyyy-format": "Dates in DD-MM-YYYY format",
+            "device-id": "Device identifiers",
+            "date-of-birth": "Date of birth information",
+            "postal-code": "Postal/ZIP codes",
+            "uk-postal-code": "UK-specific postal codes",
+            "full-name": "Full person names",
+            "salary-wage": "Salary and wage information",
+            "us-canadian-zip-postal-code": "US and Canadian postal codes",
+            "state-province": "State or province names",
+            "currency": "Currency values and codes",
+            "price": "Price and monetary amounts",
+            "time-in-24-hour-format": "Time in 24-hour format"
+          }
+        }
+      },
+      "defined_custom_sensitive_data_types": {
+        "type": "object",
+        "description": "Configure custom sensitive data types to monitor. References custom data_type resources defined in the namespace.",
+        "x-f5xc-nested": {
+          "trigger": "defined_custom_sensitive_data_types",
+          "value": "configured"
+        },
+        "properties": {
+          "custom_data_types": {
+            "type": "array",
+            "description": "Custom Data Types field",
+            "x-f5xc-field": {
+              "inputType": "array",
+              "uiLabel": "Custom Data Types",
+              "apiProperty": "spec.custom_sensitive_data_type",
+              "advanced": false
+            },
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "label": "Name",
+                  "description": "Name of the custom data_type resource",
+                  "required": true
+                },
+                "namespace": {
+                  "type": "string",
+                  "label": "Namespace",
+                  "description": "Namespace of the custom data_type resource",
+                  "required": false
+                }
+              }
+            }
+          }
+        },
+        "required": []
+      }
+    },
+    "required": [
+      "name"
+    ],
+    "x-f5xc-metadata": {
+      "formUrl": "https://f5-amer-ent.console.ves.volterra.io/web/workspaces/web-app-and-api-protection/namespaces/default/manage/api_security/sensitive_data_policy",
+      "resourceType": "sensitive_data_policy",
+      "extractedAt": "1.0.0-stable",
+      "version": "1.0.0",
+      "extractionVersion": "3.0.0-unified",
+      "extractionMethod": "property-builder",
+      "nestedConfigurations": [
+        "defined_custom_sensitive_data_types"
+      ]
+    }
+  },
+  "selectors": {
+    "resourceType": "sensitive_data_policy",
+    "fieldSelectors": {
+      "Name": {
+        "schemaPath": "properties.name",
+        "inputType": "textbox",
+        "required": true,
+        "advanced": false
+      },
+      "Labels": {
+        "schemaPath": "properties.labels",
+        "inputType": "object",
+        "required": false,
+        "advanced": false
+      },
+      "Description": {
+        "schemaPath": "properties.description",
+        "inputType": "textbox",
+        "required": false,
+        "advanced": false
+      },
+      "Compliance Frameworks": {
+        "schemaPath": "properties.compliance_frameworks",
+        "inputType": "array",
+        "required": false,
+        "advanced": false
+      },
+      "Disabled Built-In Sensitive Data Types": {
+        "schemaPath": "properties.disabled_built_in_sensitive_data_types",
+        "inputType": "array",
+        "required": false,
+        "advanced": false
+      }
+    },
+    "nestedSelectors": {
+      "defined_custom_sensitive_data_types": {
+        "Custom Data Types": {
+          "schemaPath": "properties.defined_custom_sensitive_data_types.properties.custom_data_types",
+          "inputType": "array",
+          "required": false,
+          "advanced": false
+        }
+      }
+    },
+    "actionSelectors": {
+      "submit": "button:has(generic:text(\"Add Sensitive_data_policy\"))",
+      "cancel": "button:has(generic:text(\"Cancel\"))",
+      "editDefinedCustomSensitiveDataTypes": "link:text(\"Configure\")",
+      "applyConfig": "button:has(generic:text(\"Apply\"))",
+      "discardConfig": "button:has(generic:text(\"Discard\"))"
+    }
+  },
+  "metadata": {
+    "formUrl": "https://f5-amer-ent.console.ves.volterra.io/web/workspaces/web-app-and-api-protection/namespaces/default/manage/api_security/sensitive_data_policy",
+    "resourceType": "sensitive_data_policy",
+    "extractedAt": "1.0.0-stable",
+    "version": "1.0.0",
+    "extractionVersion": "3.0.0-unified",
+    "coverage": {
+      "totalFields": 6,
+      "topLevelFields": 5,
+      "nestedFields": 1,
+      "nestedConfigurations": 1,
+      "fieldsWithSelectors": 6,
+      "fieldsWithTooltips": 6,
+      "fieldsWithDefaults": 1,
+      "percentage": 100
+    },
+    "warnings": []
+  }
+}

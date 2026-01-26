@@ -21,7 +21,7 @@ describe('Nested Configuration Detection', () => {
   });
 
   describe('detectNestedConfigButtons', () => {
-    it('should detect Edit Configuration buttons for configuration fields', () => {
+    it('should detect Edit Configuration buttons for configuration fields', async () => {
       const fields: DetectedFormField[] = [
         {
           uid: 'field1',
@@ -54,7 +54,7 @@ describe('Nested Configuration Detection', () => {
       expect(triggers[1].fieldName).toBe('Security Settings');
     });
 
-    it('should not detect nested config buttons for simple fields', () => {
+    it('should not detect nested config buttons for simple fields', async () => {
       const fields: DetectedFormField[] = [
         {
           uid: 'field1',
@@ -79,7 +79,7 @@ describe('Nested Configuration Detection', () => {
   });
 
   describe('recordNestedConfigFields', () => {
-    it('should record nested dialog fields correctly', () => {
+    it('should record nested dialog fields correctly', async () => {
       const dialogFields: DetectedFormField[] = [
         {
           uid: 'nested1',
@@ -113,7 +113,7 @@ describe('Nested Configuration Detection', () => {
       expect(nestedConfigs[0].dialogTitle).toBe('Edit HTTP Configuration');
     });
 
-    it('should create snapshots for nested configurations', () => {
+    it('should create snapshots for nested configurations', async () => {
       const dialogFields: DetectedFormField[] = [
         {
           uid: 'nested1',
@@ -136,7 +136,7 @@ describe('Nested Configuration Detection', () => {
   });
 
   describe('analyzeNestedOneOf', () => {
-    it('should detect nested oneOf within HTTP configuration', () => {
+    it('should detect nested oneOf within HTTP configuration', async () => {
       // Simulate HTTP config with Host Header dropdown (oneOf inside oneOf)
       const httpFields: DetectedFormField[] = [
         {
@@ -184,7 +184,7 @@ describe('Nested Configuration Detection', () => {
   });
 
   describe('SchemaGenerator - Nested Configurations', () => {
-    it('should generate hierarchical schema for nested configurations', () => {
+    it('should generate hierarchical schema for nested configurations', async () => {
       const formFields: DetectedFormField[] = [
         {
           uid: 'field1',
@@ -236,6 +236,7 @@ describe('Nested Configuration Detection', () => {
           resourceType: 'healthcheck',
           extractedAt: new Date().toISOString(),
           version: '1.0.0',
+          extractionVersion: '1.0.0',
           nestedConfigurations: [
             {
               trigger: 'HTTP Configuration',
@@ -247,7 +248,7 @@ describe('Nested Configuration Detection', () => {
         formUrl: 'https://test.example.com',
       };
 
-      const output = generator.generate(input);
+      const output = await generator.generate(input);
 
       expect(output.schema.properties).toBeDefined();
 
@@ -265,7 +266,7 @@ describe('Nested Configuration Detection', () => {
       expect(nestedConfig.properties!['use_http2']).toBeDefined();
     });
 
-    it('should include nested config metadata in x-f5xc-field', () => {
+    it('should include nested config metadata in x-f5xc-field', async () => {
       const formFields: DetectedFormField[] = [
         {
           uid: 'trigger1',
@@ -291,6 +292,7 @@ describe('Nested Configuration Detection', () => {
           resourceType: 'healthcheck',
           extractedAt: new Date().toISOString(),
           version: '1.0.0',
+          extractionVersion: '1.0.0',
           nestedConfigurations: [
             {
               trigger: 'HTTP Configuration',
@@ -301,7 +303,7 @@ describe('Nested Configuration Detection', () => {
         formUrl: 'https://test.example.com',
       };
 
-      const output = generator.generate(input);
+      const output = await generator.generate(input);
 
       // Find the nested config property
       const nestedConfigKey = Object.keys(output.schema.properties!).find(key =>
@@ -316,7 +318,7 @@ describe('Nested Configuration Detection', () => {
   });
 
   describe('Enhanced Field Metadata', () => {
-    it('should extract validation constraints into x-f5xc-validation', () => {
+    it('should extract validation constraints into x-f5xc-validation', async () => {
       const formFields: DetectedFormField[] = [
         {
           uid: 'field1',
@@ -337,11 +339,12 @@ describe('Nested Configuration Detection', () => {
           resourceType: 'healthcheck',
           extractedAt: new Date().toISOString(),
           version: '1.0.0',
+          extractionVersion: '1.0.0',
         },
         formUrl: 'https://test.example.com',
       };
 
-      const output = generator.generate(input);
+      const output = await generator.generate(input);
 
       const timeoutField = output.schema.properties!['timeout'];
       expect(timeoutField['x-f5xc-validation']).toBeDefined();
@@ -349,7 +352,7 @@ describe('Nested Configuration Detection', () => {
       expect(timeoutField['x-f5xc-validation']!.maximum).toBe(300);
     });
 
-    it('should extract UI metadata into x-f5xc-ui', () => {
+    it('should extract UI metadata into x-f5xc-ui', async () => {
       const formFields: DetectedFormField[] = [
         {
           uid: 'field1',
@@ -371,11 +374,12 @@ describe('Nested Configuration Detection', () => {
           resourceType: 'healthcheck',
           extractedAt: new Date().toISOString(),
           version: '1.0.0',
+          extractionVersion: '1.0.0',
         },
         formUrl: 'https://test.example.com',
       };
 
-      const output = generator.generate(input);
+      const output = await generator.generate(input);
 
       const nameField = output.schema.properties!['name'];
       expect(nameField['x-f5xc-ui']).toBeDefined();
@@ -384,7 +388,7 @@ describe('Nested Configuration Detection', () => {
       expect(nameField['x-f5xc-ui']!.helpText).toBe('Enter a unique name for this healthcheck');
     });
 
-    it('should include uiLabel in x-f5xc-field', () => {
+    it('should include uiLabel in x-f5xc-field', async () => {
       const formFields: DetectedFormField[] = [
         {
           uid: 'field1',
@@ -403,11 +407,12 @@ describe('Nested Configuration Detection', () => {
           resourceType: 'healthcheck',
           extractedAt: new Date().toISOString(),
           version: '1.0.0',
+          extractionVersion: '1.0.0',
         },
         formUrl: 'https://test.example.com',
       };
 
-      const output = generator.generate(input);
+      const output = await generator.generate(input);
 
       const typeField = output.schema.properties!['health_check_type'];
       expect(typeField['x-f5xc-field']).toBeDefined();

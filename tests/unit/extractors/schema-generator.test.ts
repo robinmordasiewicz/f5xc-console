@@ -22,7 +22,7 @@ describe('SchemaGenerator', () => {
   });
 
   describe('generate - basic schema', () => {
-    it('should generate schema with simple fields', () => {
+    it('should generate schema with simple fields', async () => {
       const fields: DetectedFormField[] = [
         {
           uid: 'ref_1',
@@ -52,6 +52,7 @@ describe('SchemaGenerator', () => {
         resourceType: 'test_resource',
         extractedAt: '2026-01-21T00:00:00Z',
         version: '1.0.0',
+        extractionVersion: '1.0.0',
       };
 
       const input: SchemaGenerationInput = {
@@ -61,7 +62,7 @@ describe('SchemaGenerator', () => {
         formUrl: 'https://test.com/form',
       };
 
-      const output = generator.generate(input);
+      const output = await generator.generate(input);
 
       expect(output.schema.$schema).toBe('http://json-schema.org/draft-07/schema#');
       expect(output.schema.type).toBe('object');
@@ -72,7 +73,7 @@ describe('SchemaGenerator', () => {
       expect(output.schema.properties!.enabled.type).toBe('boolean');
     });
 
-    it('should include F5 XC metadata', () => {
+    it('should include F5 XC metadata', async () => {
       const fields: DetectedFormField[] = [
         {
           uid: 'ref_1',
@@ -88,6 +89,7 @@ describe('SchemaGenerator', () => {
         resourceType: 'healthcheck',
         extractedAt: '2026-01-21T00:00:00Z',
         version: '1.0.0',
+        extractionVersion: '1.0.0',
         advancedFields: ['jitter_percent'],
       };
 
@@ -98,14 +100,14 @@ describe('SchemaGenerator', () => {
         formUrl: metadata.formUrl,
       };
 
-      const output = generator.generate(input);
+      const output = await generator.generate(input);
 
       expect(output.schema['x-f5xc-metadata']).toBeDefined();
       expect(output.schema['x-f5xc-metadata']!.resourceType).toBe('healthcheck');
       expect(output.schema['x-f5xc-metadata']!.advancedFields).toContain('jitter_percent');
     });
 
-    it('should handle fields with options (enum)', () => {
+    it('should handle fields with options (enum)', async () => {
       const fields: DetectedFormField[] = [
         {
           uid: 'ref_1',
@@ -122,6 +124,7 @@ describe('SchemaGenerator', () => {
         resourceType: 'test',
         extractedAt: '2026-01-21T00:00:00Z',
         version: '1.0.0',
+        extractionVersion: '1.0.0',
       };
 
       const input: SchemaGenerationInput = {
@@ -131,12 +134,12 @@ describe('SchemaGenerator', () => {
         formUrl: metadata.formUrl,
       };
 
-      const output = generator.generate(input);
+      const output = await generator.generate(input);
 
       expect(output.schema.properties!.protocol.enum).toEqual(['HTTP', 'HTTPS', 'TCP']);
     });
 
-    it('should handle default values', () => {
+    it('should handle default values', async () => {
       const fields: DetectedFormField[] = [
         {
           uid: 'ref_1',
@@ -161,6 +164,7 @@ describe('SchemaGenerator', () => {
         resourceType: 'test',
         extractedAt: '2026-01-21T00:00:00Z',
         version: '1.0.0',
+        extractionVersion: '1.0.0',
       };
 
       const input: SchemaGenerationInput = {
@@ -170,7 +174,7 @@ describe('SchemaGenerator', () => {
         formUrl: metadata.formUrl,
       };
 
-      const output = generator.generate(input);
+      const output = await generator.generate(input);
 
       expect(output.schema.properties!.port.default).toBe(80);
       expect(output.schema.properties!.enabled.default).toBe(true);
@@ -178,7 +182,7 @@ describe('SchemaGenerator', () => {
   });
 
   describe('generate - oneOf relationships', () => {
-    it('should generate oneOf blocks for Health Check type', () => {
+    it('should generate oneOf blocks for Health Check type', async () => {
       const fields: DetectedFormField[] = [
         {
           uid: 'ref_1',
@@ -234,6 +238,7 @@ describe('SchemaGenerator', () => {
         resourceType: 'healthcheck',
         extractedAt: '2026-01-21T00:00:00Z',
         version: '1.0.0',
+        extractionVersion: '1.0.0',
       };
 
       const input: SchemaGenerationInput = {
@@ -243,7 +248,7 @@ describe('SchemaGenerator', () => {
         formUrl: metadata.formUrl,
       };
 
-      const output = generator.generate(input);
+      const output = await generator.generate(input);
 
       expect(output.schema.oneOf).toBeDefined();
       expect(output.schema.oneOf).toHaveLength(2);
@@ -261,7 +266,7 @@ describe('SchemaGenerator', () => {
       expect(tcpOption.required).toContain('tcp_port');
     });
 
-    it('should handle nested oneOf relationships', () => {
+    it('should handle nested oneOf relationships', async () => {
       const fields: DetectedFormField[] = [
         {
           uid: 'ref_1',
@@ -321,6 +326,7 @@ describe('SchemaGenerator', () => {
         resourceType: 'test',
         extractedAt: '2026-01-21T00:00:00Z',
         version: '1.0.0',
+        extractionVersion: '1.0.0',
       };
 
       const input: SchemaGenerationInput = {
@@ -330,7 +336,7 @@ describe('SchemaGenerator', () => {
         formUrl: metadata.formUrl,
       };
 
-      const output = generator.generate(input);
+      const output = await generator.generate(input);
 
       expect(output.schema.oneOf).toBeDefined();
       const httpOption = output.schema.oneOf![0];
@@ -340,7 +346,7 @@ describe('SchemaGenerator', () => {
   });
 
   describe('extractSelectorMetadata', () => {
-    it('should generate selector metadata for form automation', () => {
+    it('should generate selector metadata for form automation', async () => {
       const fields: DetectedFormField[] = [
         {
           uid: 'ref_1',
@@ -363,6 +369,7 @@ describe('SchemaGenerator', () => {
         resourceType: 'origin_pool',
         extractedAt: '2026-01-21T00:00:00Z',
         version: '1.0.0',
+        extractionVersion: '1.0.0',
       };
 
       const input: SchemaGenerationInput = {
@@ -372,7 +379,7 @@ describe('SchemaGenerator', () => {
         formUrl: metadata.formUrl,
       };
 
-      const output = generator.generate(input);
+      const output = await generator.generate(input);
 
       expect(output.selectorMetadata.resourceType).toBe('origin_pool');
       expect(output.selectorMetadata.fieldSelectors).toBeDefined();
@@ -383,7 +390,7 @@ describe('SchemaGenerator', () => {
       expect(output.selectorMetadata.fieldSelectors.Name.required).toBe(true);
     });
 
-    it('should include action button selectors', () => {
+    it('should include action button selectors', async () => {
       const fields: DetectedFormField[] = [
         {
           uid: 'ref_1',
@@ -399,6 +406,7 @@ describe('SchemaGenerator', () => {
         resourceType: 'test',
         extractedAt: '2026-01-21T00:00:00Z',
         version: '1.0.0',
+        extractionVersion: '1.0.0',
       };
 
       const input: SchemaGenerationInput = {
@@ -408,7 +416,7 @@ describe('SchemaGenerator', () => {
         formUrl: metadata.formUrl,
       };
 
-      const output = generator.generate(input);
+      const output = await generator.generate(input);
 
       expect(output.selectorMetadata.actionSelectors).toBeDefined();
       expect(output.selectorMetadata.actionSelectors.submit).toBeDefined();
@@ -417,7 +425,7 @@ describe('SchemaGenerator', () => {
   });
 
   describe('coverage calculation', () => {
-    it('should calculate field coverage correctly', () => {
+    it('should calculate field coverage correctly', async () => {
       const fields: DetectedFormField[] = [
         {
           uid: 'ref_1',
@@ -447,6 +455,7 @@ describe('SchemaGenerator', () => {
         resourceType: 'test',
         extractedAt: '2026-01-21T00:00:00Z',
         version: '1.0.0',
+        extractionVersion: '1.0.0',
       };
 
       const input: SchemaGenerationInput = {
@@ -456,7 +465,7 @@ describe('SchemaGenerator', () => {
         formUrl: metadata.formUrl,
       };
 
-      const output = generator.generate(input);
+      const output = await generator.generate(input);
 
       expect(output.coverage.totalFields).toBe(3);
       expect(output.coverage.schemaFields).toBe(3);
@@ -466,7 +475,7 @@ describe('SchemaGenerator', () => {
   });
 
   describe('validateSchema', () => {
-    it('should validate a correct schema', () => {
+    it('should validate a correct schema', async () => {
       const fields: DetectedFormField[] = [
         {
           uid: 'ref_1',
@@ -482,6 +491,7 @@ describe('SchemaGenerator', () => {
         resourceType: 'test',
         extractedAt: '2026-01-21T00:00:00Z',
         version: '1.0.0',
+        extractionVersion: '1.0.0',
       };
 
       const input: SchemaGenerationInput = {
@@ -491,14 +501,14 @@ describe('SchemaGenerator', () => {
         formUrl: metadata.formUrl,
       };
 
-      const output = generator.generate(input);
+      const output = await generator.generate(input);
       const validation = generator.validateSchema(output.schema);
 
       expect(validation.valid).toBe(true);
       expect(validation.errors).toHaveLength(0);
     });
 
-    it('should detect missing $schema', () => {
+    it('should detect missing $schema', async () => {
       const schema = {
         type: 'object' as const,
         properties: {},
@@ -510,7 +520,7 @@ describe('SchemaGenerator', () => {
       expect(validation.errors).toContain('Missing $schema property');
     });
 
-    it('should detect invalid oneOf', () => {
+    it('should detect invalid oneOf', async () => {
       const schema = {
         $schema: 'http://json-schema.org/draft-07/schema#',
         type: 'object' as const,
@@ -529,7 +539,7 @@ describe('SchemaGenerator', () => {
   });
 
   describe('field name sanitization', () => {
-    it('should convert field names to snake_case property names', () => {
+    it('should convert field names to snake_case property names', async () => {
       const fields: DetectedFormField[] = [
         {
           uid: 'ref_1',
@@ -552,6 +562,7 @@ describe('SchemaGenerator', () => {
         resourceType: 'test',
         extractedAt: '2026-01-21T00:00:00Z',
         version: '1.0.0',
+        extractionVersion: '1.0.0',
       };
 
       const input: SchemaGenerationInput = {
@@ -561,7 +572,7 @@ describe('SchemaGenerator', () => {
         formUrl: metadata.formUrl,
       };
 
-      const output = generator.generate(input);
+      const output = await generator.generate(input);
 
       expect(output.schema.properties!.health_check_type).toBeDefined();
       expect(output.schema.properties!.use_http_2).toBeDefined();
@@ -569,7 +580,7 @@ describe('SchemaGenerator', () => {
   });
 
   describe('error handling', () => {
-    it('should capture warnings for problematic fields', () => {
+    it('should capture warnings for problematic fields', async () => {
       const fields: DetectedFormField[] = [
         {
           uid: 'ref_1',
@@ -585,6 +596,7 @@ describe('SchemaGenerator', () => {
         resourceType: 'test',
         extractedAt: '2026-01-21T00:00:00Z',
         version: '1.0.0',
+        extractionVersion: '1.0.0',
       };
 
       const input: SchemaGenerationInput = {
@@ -594,7 +606,7 @@ describe('SchemaGenerator', () => {
         formUrl: metadata.formUrl,
       };
 
-      const output = generator.generate(input);
+      const output = await generator.generate(input);
 
       // Should still generate schema but with warnings
       expect(output.schema).toBeDefined();

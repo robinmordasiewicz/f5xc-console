@@ -14,8 +14,47 @@
 #       trigger_field_name:
 #         ui_field_name: "api.property.path"
 
-version: "1.0.0"
-last_updated: "2026-01-21"
+version: "3.0"
+last_updated: "2026-01-25"
+
+# ==============================================================================
+# Global Defaults Configuration
+# ==============================================================================
+defaults:
+  extraction:
+    maxNestingDepth: 3
+    domStabilizationTimeout: 500
+    captureScreenshots: false
+    validateSchema: true
+    expandAdvancedFields: true
+    extractNestedConfigs: true
+
+  export:
+    outputDir: "./schemas"
+    includeSelectors: true
+    includeReport: true
+
+# ==============================================================================
+# Global API References Configuration
+# ==============================================================================
+# Top-level API reference configuration shared across resources
+# Defines how to fetch dynamic enum values from F5 XC API with fallback to placeholders
+api_references:
+  healthcheck:
+    api_path: "/api/config/namespaces/{namespace}/healthchecks"
+    value_field: "name"
+    cacheable: true
+    cache_ttl: 300  # 5 minutes in seconds
+    placeholder_fallback: ["healthcheck-1", "healthcheck-2", "example-hc"]
+    description: "Health Check resource references for origin pools"
+
+  app_firewall:
+    api_path: "/api/config/namespaces/{namespace}/app_firewalls"
+    value_field: "name"
+    cacheable: true
+    cache_ttl: 300  # 5 minutes in seconds
+    placeholder_fallback: ["app-firewall-1", "app-firewall-2", "example-waf"]
+    description: "App Firewall policy references for HTTP load balancers"
 
 # ==============================================================================
 # HEALTHCHECK Resource Mappings
@@ -105,31 +144,137 @@ healthcheck:
       - ["http_health_check", "tcp_health_check", "icmp_ping_health_check"]
 
 # ==============================================================================
-# ORIGIN_POOL Resource Mappings (Example for future expansion)
+# ORIGIN_POOL Resource Mappings (Unified Comprehensive Implementation)
 # ==============================================================================
 origin_pool:
-  description: "F5 XC Origin Pool resource"
+  description: "F5 XC Origin Pool resource - unified comprehensive schema extraction"
   api_type: "ves.io.schema.views.origin_pool.Object"
+  formUrl: "/web/app/namespaces/{namespace}/origin_pools/create"
+  formTitle: "Create Origin Pool"
 
+  # Common fields (always present regardless of discriminator selections)
   common_fields:
+    # Metadata fields
     name: "metadata.name"
     labels: "metadata.labels"
     description: "metadata.description"
 
     # Origin pool specific fields
     port: "port"
-    no_tls: "no_tls"
-    use_tls: "use_tls"
 
+  # Discriminator fields for oneOf detection
+  # These create mutually exclusive configuration options
   discriminator_fields:
-    origin_servers:
-      "Public DNS Name of Origin Server": "origin_servers.public_name"
-      "DNS Name of Origin Server on given Sites": "origin_servers.k8s_service"
-      "IP Address of Origin Server on given Sites": "origin_servers.private_name"
+    # TLS configuration (no_tls ↔ use_tls)
+    tls_configuration:
+      "Disable TLS": "no_tls"
+      "Enable TLS": "use_tls"
 
+    # Load balancer algorithm options
+    loadbalancer_algorithm:
+      "Round Robin": "loadbalancer_algorithm.round_robin"
+      "Least Active": "loadbalancer_algorithm.least_active"
+      "Ring Hash": "loadbalancer_algorithm.ring_hash"
+      "Random": "loadbalancer_algorithm.random"
+
+  # Array fields (repeating configuration blocks)
+  # Origin servers are a dynamic table with "Add Item" button
+  array_fields:
+    origin_servers:
+      api_property: "origin_servers"
+      min_items: 1
+      max_items: 100
+      add_button_text: "Add Item"
+      item_discriminator: "origin_server_type"
+      description: "Repeating origin server configuration blocks with type-specific fields"
+
+      # Item types with discriminated union (triple nesting: Pool → Servers → Type Config)
+      item_types:
+        public_dns_name:
+          api_path: "origin_servers[].public_name"
+          fields:
+            dns_name: "dns_name"
+          required: ["dns_name"]
+          description: "Public DNS name configuration"
+
+        k8s_service:
+          api_path: "origin_servers[].k8s_service"
+          fields:
+            service_name: "service_name"
+            site_locator: "site_locator"
+            vk8s_networks: "vk8s_networks"
+          required: ["service_name"]
+          description: "Kubernetes service configuration"
+
+        private_ip:
+          api_path: "origin_servers[].private_name"
+          fields:
+            ip_address: "ip"
+            site_locator: "site_locator"
+            inside_network: "inside_network"
+            outside_network: "outside_network"
+          required: ["ip_address"]
+          description: "Private IP address configuration"
+
+  # API reference fields (dynamic enums from F5 XC API)
+  # These fields fetch their dropdown options from the API at extraction time
+  reference_fields:
+    health_check:
+      type: "api_reference"
+      api_property: "healthcheck"
+      reference_type: "healthcheck"
+      required: false
+      description: "Reference to existing Health Check resource"
+      fallback_behavior: "use_placeholder"  # Use global api_references.healthcheck.placeholder_fallback
+
+  # Nested configurations for discriminator options
   nested_configs:
-    # Placeholder for origin pool nested configurations
-    load_balancer_algorithm: {}
+    # Load balancer algorithm nested configurations
+    round_robin:
+      # No additional config for round robin
+      {}
+
+    least_active:
+      # No additional config for least active
+      {}
+
+    ring_hash:
+      hash_policy: "loadbalancer_algorithm.ring_hash.hash_policy"
+
+    random:
+      # No additional config for random
+      {}
+
+    # TLS configuration nested settings
+    use_tls:
+      tls_config: "use_tls.tls_config"
+      sni: "use_tls.sni"
+      skip_server_verification: "use_tls.skip_server_verification"
+
+    no_tls:
+      # No additional config for no_tls
+      {}
+
+  # Validation rules for API property paths
+  validation:
+    required_api_fields:
+      - "metadata.name"
+      - "port"
+      - "origin_servers"  # At least one origin server required
+
+    mutually_exclusive:
+      - ["no_tls", "use_tls"]
+      - ["loadbalancer_algorithm.round_robin", "loadbalancer_algorithm.least_active", "loadbalancer_algorithm.ring_hash", "loadbalancer_algorithm.random"]
+
+    # Field-level validation
+    field_constraints:
+      port:
+        type: "integer"
+        min: 1
+        max: 65535
+      origin_servers:
+        min_items: 1
+        max_items: 100
 
 # ==============================================================================
 # LOAD_BALANCER Resource Mappings (Example for future expansion)
@@ -148,6 +293,248 @@ load_balancer:
     advertise_on_public_default_vip:
       "Advertise": "advertise_on_public_default_vip"
       "Do not Advertise": "do_not_advertise"
+
+# ==============================================================================
+# APP_FIREWALL Resource Mappings
+# ==============================================================================
+app_firewall:
+  description: "F5 XC App Firewall (WAF) policy resource"
+  api_type: "ves.io.schema.app_firewall.Object"
+  formUrl: "/web/workspaces/web-app-and-api-protection/namespaces/{namespace}/manage/app_firewall"
+  formTitle: "Create App Firewall"
+
+  # Common fields (always present regardless of discriminator selections)
+  common_fields:
+    # Metadata fields
+    name: "metadata.name"
+    labels: "metadata.labels"
+    description: "metadata.description"
+
+  # Discriminator fields for oneOf detection
+  discriminator_fields:
+    # Detection settings mode
+    detection_settings:
+      "Default Detection Settings": "default_detection_settings"
+      "Custom Detection Settings": "detection_settings"
+
+    # Blocking mode
+    blocking:
+      "Block": "blocking"
+      "Disable": "disable_blocking"
+
+    # Bot defense mode
+    bot_defense:
+      "Disable Bot Defense": "bot_defense_basic"
+      "Enable Bot Defense": "bot_defense_config"
+
+  # Nested configurations for discriminator options
+  nested_configs:
+    # Custom detection settings
+    detection_settings:
+      signature_selection: "detection_settings.signature_selection"
+      violation_settings: "detection_settings.violation_settings"
+      attack_type_settings: "detection_settings.attack_type_settings"
+      threat_campaign_settings: "detection_settings.threat_campaign_settings"
+
+    # Blocking page customization
+    blocking_page:
+      custom_blocking_page: "blocking_page.custom_blocking_page"
+      blocking_page_body: "blocking_page.blocking_page_body"
+
+    # Bot defense configuration
+    bot_defense_config:
+      bot_javascript_mode: "bot_defense_config.bot_javascript_mode"
+      bot_grace_period: "bot_defense_config.bot_grace_period"
+
+  # Validation rules for API property paths
+  validation:
+    required_api_fields:
+      - "metadata.name"
+
+    mutually_exclusive:
+      - ["default_detection_settings", "detection_settings"]
+      - ["blocking", "disable_blocking"]
+      - ["bot_defense_basic", "bot_defense_config"]
+
+# ==============================================================================
+# SERVICE_POLICY Resource Mappings
+# ==============================================================================
+service_policy:
+  description: "F5 XC Service Policy resource"
+  api_type: "ves.io.schema.service_policy.Object"
+  formUrl: "/web/workspaces/web-app-and-api-protection/namespaces/{namespace}/manage/service_policy"
+  formTitle: "Create Service Policy"
+
+  common_fields:
+    name: "metadata.name"
+    labels: "metadata.labels"
+    description: "metadata.description"
+    policy_set_version: "spec.policy_set_version"
+
+  discriminator_fields:
+    rules:
+      "Allow All Requests": "allow_all_requests"
+      "Deny All Requests": "deny_all_requests"
+      "Custom Rule List": "rule_list"
+
+  nested_configs:
+    rule_list:
+      rules: "spec.rule_list.rules"
+
+# ==============================================================================
+# API_DEFINITION Resource Mappings
+# ==============================================================================
+api_definition:
+  description: "F5 XC API Definition resource for OpenAPI spec management"
+  api_type: "ves.io.schema.api_definition.Object"
+  formUrl: "/web/workspaces/web-app-and-api-protection/namespaces/{namespace}/manage/api_security/api_definition"
+  formTitle: "Create API Definition"
+
+  common_fields:
+    name: "metadata.name"
+    labels: "metadata.labels"
+    description: "metadata.description"
+    swagger_specs: "spec.swagger_specs"
+
+  nested_configs:
+    api_inventory_inclusion_list:
+      api_groups: "spec.api_inventory_inclusion_list.api_groups"
+
+# ==============================================================================
+# API_DISCOVERY Resource Mappings
+# ==============================================================================
+api_discovery:
+  description: "F5 XC API Discovery resource for API learning configuration"
+  api_type: "ves.io.schema.api_discovery.Object"
+  formUrl: "/web/workspaces/web-app-and-api-protection/namespaces/{namespace}/manage/api_security/api_discovery"
+  formTitle: "Create API Discovery"
+
+  common_fields:
+    name: "metadata.name"
+    labels: "metadata.labels"
+    description: "metadata.description"
+
+  nested_configs:
+    custom_authentication_types:
+      custom_auth_type: "spec.custom_auth_config.custom_auth_type"
+
+# ==============================================================================
+# API_GROUPS Resource Mappings
+# ==============================================================================
+api_groups:
+  description: "F5 XC API Groups resource for API endpoint grouping"
+  api_type: "ves.io.schema.api_groups.Object"
+  formUrl: "/web/workspaces/web-app-and-api-protection/namespaces/{namespace}/manage/api_security/api_groups"
+  formTitle: "Create API Groups"
+
+  common_fields:
+    name: "metadata.name"
+    description: "metadata.description"
+    scope: "spec.elements"
+    http_load_balancer: "spec.elements[].http_loadbalancer"
+
+  discriminator_fields:
+    scope:
+      "HTTP Load Balancer": "http_loadbalancer"
+
+# ==============================================================================
+# CODE_BASE_INTEGRATION Resource Mappings
+# ==============================================================================
+code_base_integration:
+  description: "F5 XC Code Base Integration for source control connections"
+  api_type: "ves.io.schema.code_base_integration.Object"
+  formUrl: "/web/workspaces/web-app-and-api-protection/namespaces/{namespace}/manage/api_security/code_base_integration"
+  formTitle: "Create Code Base Integration"
+
+  common_fields:
+    name: "metadata.name"
+    labels: "metadata.labels"
+    description: "metadata.description"
+
+  discriminator_fields:
+    code_base:
+      "GitHub Integration": "github"
+      "GitHub Enterprise Integration": "github_enterprise"
+      "GitLab Cloud Integration": "gitlab_cloud"
+      "GitLab Enterprise Integration": "gitlab_enterprise"
+      "BitBucket Cloud Integration": "bitbucket_cloud"
+      "BitBucket Server Integration": "bitbucket_server"
+      "Azure Repos Integration": "azure_repos"
+
+  nested_configs:
+    github:
+      username: "spec.github.username"
+      verify_ssl: "spec.github.verify_ssl"
+      access_token: "spec.github.access_token"
+
+    github_enterprise:
+      hostname: "spec.github_enterprise.hostname"
+      username: "spec.github_enterprise.username"
+      access_token: "spec.github_enterprise.access_token"
+
+    gitlab_cloud:
+      access_token: "spec.gitlab_cloud.access_token"
+
+    gitlab_enterprise:
+      url: "spec.gitlab_enterprise.url"
+      access_token: "spec.gitlab_enterprise.access_token"
+
+    bitbucket_cloud:
+      username: "spec.bitbucket_cloud.username"
+      password: "spec.bitbucket_cloud.password"
+
+    bitbucket_server:
+      url: "spec.bitbucket_server.url"
+      username: "spec.bitbucket_server.username"
+      verify_ssl: "spec.bitbucket_server.verify_ssl"
+      password: "spec.bitbucket_server.password"
+
+    azure_repos:
+      access_token: "spec.azure_repos.access_token"
+
+# ==============================================================================
+# DATA_TYPE Resource Mappings
+# ==============================================================================
+data_type:
+  description: "F5 XC Data Type resource for custom detection patterns"
+  api_type: "ves.io.schema.data_type.Object"
+  formUrl: "/web/workspaces/web-app-and-api-protection/namespaces/{namespace}/manage/api_security/data_type"
+  formTitle: "Create Data Type"
+
+  common_fields:
+    name: "metadata.name"
+    labels: "metadata.labels"
+    description: "metadata.description"
+    mark_as_sensitive_data: "spec.mark_as_sensitive_data"
+    mark_as_pii: "spec.mark_as_pii"
+    relevant_compliances: "spec.relevant_compliances"
+
+  nested_configs:
+    data_type_rules:
+      pattern_choice: "spec.rules[].pattern_choice"
+      pattern: "spec.rules[].pattern_type"
+      regex_value: "spec.rules[].regex_value"
+      exact_value: "spec.rules[].exact_value"
+
+# ==============================================================================
+# SENSITIVE_DATA_POLICY Resource Mappings
+# ==============================================================================
+sensitive_data_policy:
+  description: "F5 XC Sensitive Data Policy for compliance and data protection"
+  api_type: "ves.io.schema.sensitive_data_policy.Object"
+  formUrl: "/web/workspaces/web-app-and-api-protection/namespaces/{namespace}/manage/api_security/sensitive_data_policy"
+  formTitle: "Create Sensitive Data Policy"
+
+  common_fields:
+    name: "metadata.name"
+    labels: "metadata.labels"
+    description: "metadata.description"
+    compliance_frameworks: "spec.compliance_frameworks"
+    disabled_built_in_sensitive_data_types: "spec.disabled_built_in_rules"
+
+  nested_configs:
+    defined_custom_sensitive_data_types:
+      custom_data_types: "spec.custom_sensitive_data_type"
 
 # ==============================================================================
 # Global Mapping Patterns

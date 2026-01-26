@@ -1,0 +1,993 @@
+{
+  "generatedAt": "2026-01-25T17:17:22.756Z",
+  "apiVersion": "v2.0.46",
+  "resources": {
+    "app_firewall": {
+      "resourceType": "app_firewall",
+      "apiVersion": "v2.0.46",
+      "fields": {
+        "fields.name": {
+          "apiProperty": "metadata.name",
+          "definitionConstraints": {
+            "minLength": 1,
+            "maxLength": 63,
+            "pattern": "^[a-z][a-z0-9-]*[a-z0-9]$"
+          },
+          "apiConstraints": {},
+          "discrepancies": []
+        },
+        "fields.description": {
+          "apiProperty": "metadata.description",
+          "definitionConstraints": {
+            "maxLength": 256
+          },
+          "apiConstraints": {},
+          "discrepancies": []
+        },
+        "fields.enforcement_mode": {
+          "apiProperty": "spec.monitoring|spec.blocking",
+          "definitionConstraints": {
+            "enum": [
+              "Monitoring",
+              "Blocking"
+            ]
+          },
+          "apiConstraints": {},
+          "discrepancies": []
+        },
+        "fields.security_policy": {
+          "apiProperty": "spec.default_detection_settings|spec.ai_risk_based_blocking|spec.detection_settings",
+          "definitionConstraints": {
+            "enum": [
+              "Default",
+              "Risk-Based Blocking (Powered by AI) - Preview",
+              "Custom"
+            ]
+          },
+          "apiConstraints": {},
+          "discrepancies": []
+        },
+        "fields.blocking_response_page": {
+          "apiProperty": "spec.use_default_blocking_page|spec.blocking_page",
+          "definitionConstraints": {
+            "enum": [
+              "Default Blocking Page",
+              "Custom Blocking Page"
+            ]
+          },
+          "apiConstraints": {},
+          "discrepancies": []
+        },
+        "fields.bot_protection_setting": {
+          "apiProperty": "spec.detection_settings.default_bot_setting|spec.bot_protection_setting",
+          "definitionConstraints": {
+            "enum": [
+              "Default Bot Settings",
+              "Custom Bot Settings"
+            ]
+          },
+          "apiConstraints": {},
+          "discrepancies": []
+        },
+        "fields.allowed_response_status_codes": {
+          "apiProperty": "spec.allow_all_response_codes|spec.allowed_response_codes",
+          "definitionConstraints": {
+            "enum": [
+              "Default Allowed Response Status Codes",
+              "Allow All Response Status Codes",
+              "Custom Allowed Response Status Codes"
+            ]
+          },
+          "apiConstraints": {},
+          "discrepancies": []
+        },
+        "fields.mask_sensitive_parameters": {
+          "apiProperty": "spec.default_anonymization|spec.disable_anonymization|spec.custom_anonymization",
+          "definitionConstraints": {
+            "enum": [
+              "Default Masked Parameters",
+              "Custom Masked Parameters",
+              "Disable Masking"
+            ]
+          },
+          "apiConstraints": {},
+          "discrepancies": []
+        },
+        "nestedConfigs.risk_based_blocking_config.fields.high_risk_action": {
+          "apiProperty": "spec.ai_risk_based_blocking.high_risk_action",
+          "definitionConstraints": {
+            "enum": [
+              "AI_BLOCK",
+              "AI_REPORT"
+            ]
+          },
+          "apiConstraints": {},
+          "discrepancies": []
+        },
+        "nestedConfigs.risk_based_blocking_config.fields.medium_risk_action": {
+          "apiProperty": "spec.ai_risk_based_blocking.medium_risk_action",
+          "definitionConstraints": {
+            "enum": [
+              "AI_BLOCK",
+              "AI_REPORT"
+            ]
+          },
+          "apiConstraints": {},
+          "discrepancies": []
+        },
+        "nestedConfigs.risk_based_blocking_config.fields.low_risk_action": {
+          "apiProperty": "spec.ai_risk_based_blocking.low_risk_action",
+          "definitionConstraints": {
+            "enum": [
+              "AI_BLOCK",
+              "AI_REPORT"
+            ]
+          },
+          "apiConstraints": {},
+          "discrepancies": []
+        },
+        "nestedConfigs.custom_security_policy_config.fields.attack_types": {
+          "apiProperty": "spec.detection_settings.signature_selection_setting.default_attack_type_settings|spec.detection_settings.signature_selection_setting.attack_type_settings",
+          "definitionConstraints": {
+            "enum": [
+              "Default",
+              "Custom"
+            ]
+          },
+          "apiConstraints": {},
+          "discrepancies": []
+        },
+        "nestedConfigs.custom_security_policy_config.fields.signature_selection_by_accuracy": {
+          "apiProperty": "spec.detection_settings.signature_selection_setting.only_high_accuracy_signatures|high_medium_accuracy_signatures|high_medium_low_accuracy_signatures",
+          "definitionConstraints": {
+            "enum": [
+              "High Accuracy Only",
+              "High and Medium",
+              "High, Medium, and Low"
+            ]
+          },
+          "apiConstraints": {},
+          "discrepancies": []
+        },
+        "nestedConfigs.custom_security_policy_config.fields.automatic_attack_signatures_tuning": {
+          "apiProperty": "spec.detection_settings.enable_suppression|spec.detection_settings.disable_suppression",
+          "definitionConstraints": {
+            "enum": [
+              "Enable",
+              "Disable"
+            ]
+          },
+          "apiConstraints": {},
+          "discrepancies": []
+        },
+        "nestedConfigs.custom_security_policy_config.fields.attack_signatures_staging": {
+          "apiProperty": "spec.detection_settings.disable_staging|spec.detection_settings.stage_new_signatures|stage_new_and_updated_signatures",
+          "definitionConstraints": {
+            "enum": [
+              "Disable",
+              "Enable"
+            ]
+          },
+          "apiConstraints": {},
+          "discrepancies": []
+        },
+        "nestedConfigs.custom_security_policy_config.fields.threat_campaigns": {
+          "apiProperty": "spec.detection_settings.enable_threat_campaigns|spec.detection_settings.disable_threat_campaigns",
+          "definitionConstraints": {
+            "enum": [
+              "Enable",
+              "Disable"
+            ]
+          },
+          "apiConstraints": {},
+          "discrepancies": []
+        },
+        "nestedConfigs.custom_security_policy_config.fields.violations": {
+          "apiProperty": "spec.detection_settings.default_violation_settings|spec.detection_settings.violation_settings",
+          "definitionConstraints": {
+            "enum": [
+              "Default",
+              "Custom"
+            ]
+          },
+          "apiConstraints": {},
+          "discrepancies": []
+        },
+        "nestedConfigs.custom_security_policy_config.fields.signature_based_bot_protection": {
+          "apiProperty": "spec.detection_settings.default_bot_setting|spec.detection_settings.bot_protection_setting",
+          "definitionConstraints": {
+            "enum": [
+              "Default",
+              "Custom"
+            ]
+          },
+          "apiConstraints": {},
+          "discrepancies": []
+        },
+        "nestedConfigs.custom_blocking_page_config.fields.blocking_page": {
+          "apiProperty": "spec.blocking_page.blocking_page",
+          "definitionConstraints": {
+            "minLength": 0,
+            "maxLength": 4096
+          },
+          "apiConstraints": {
+            "maxLength": 4096,
+            "minLength": 0
+          },
+          "discrepancies": []
+        },
+        "nestedConfigs.custom_blocking_page_config.fields.response_code": {
+          "apiProperty": "spec.blocking_page.response_code",
+          "definitionConstraints": {
+            "enum": [
+              "Forbidden",
+              "Not Found",
+              "Unauthorized",
+              "Service Unavailable",
+              "OK"
+            ]
+          },
+          "apiConstraints": {},
+          "discrepancies": []
+        },
+        "nestedConfigs.custom_bot_settings_config.fields.good_bot_action": {
+          "apiProperty": "spec.detection_settings.bot_protection_setting.good_bot_action",
+          "definitionConstraints": {
+            "enum": [
+              "BLOCK",
+              "REPORT",
+              "IGNORE"
+            ]
+          },
+          "apiConstraints": {},
+          "discrepancies": []
+        },
+        "nestedConfigs.custom_bot_settings_config.fields.malicious_bot_action": {
+          "apiProperty": "spec.detection_settings.bot_protection_setting.malicious_bot_action",
+          "definitionConstraints": {
+            "enum": [
+              "BLOCK",
+              "REPORT",
+              "IGNORE"
+            ]
+          },
+          "apiConstraints": {},
+          "discrepancies": []
+        },
+        "nestedConfigs.custom_bot_settings_config.fields.suspicious_bot_action": {
+          "apiProperty": "spec.detection_settings.bot_protection_setting.suspicious_bot_action",
+          "definitionConstraints": {
+            "enum": [
+              "BLOCK",
+              "REPORT",
+              "IGNORE"
+            ]
+          },
+          "apiConstraints": {},
+          "discrepancies": []
+        }
+      }
+    },
+    "healthcheck": {
+      "resourceType": "healthcheck",
+      "apiVersion": "v2.0.46",
+      "fields": {
+        "fields.timeout": {
+          "apiProperty": "spec.timeout",
+          "definitionConstraints": {
+            "minimum": 1,
+            "maximum": 600
+          },
+          "apiConstraints": {
+            "minimum": 1,
+            "maximum": 600
+          },
+          "discrepancies": []
+        },
+        "fields.interval": {
+          "apiProperty": "spec.interval",
+          "definitionConstraints": {
+            "minimum": 1,
+            "maximum": 600
+          },
+          "apiConstraints": {
+            "minimum": 1,
+            "maximum": 600
+          },
+          "discrepancies": []
+        },
+        "fields.unhealthy_threshold": {
+          "apiProperty": "spec.unhealthy_threshold",
+          "definitionConstraints": {
+            "minimum": 1,
+            "maximum": 16
+          },
+          "apiConstraints": {
+            "minimum": 1,
+            "maximum": 16
+          },
+          "discrepancies": []
+        },
+        "fields.healthy_threshold": {
+          "apiProperty": "spec.healthy_threshold",
+          "definitionConstraints": {
+            "minimum": 1,
+            "maximum": 16
+          },
+          "apiConstraints": {
+            "minimum": 1,
+            "maximum": 16
+          },
+          "discrepancies": []
+        },
+        "fields.jitter_percent": {
+          "apiProperty": "spec.jitter_percent",
+          "definitionConstraints": {
+            "minimum": 0,
+            "maximum": 50
+          },
+          "apiConstraints": {},
+          "discrepancies": []
+        },
+        "nestedConfigs.http_health_check_config.fields.specify_host_header": {
+          "apiProperty": "spec.http_health_check",
+          "definitionConstraints": {
+            "enum": [
+              "Origin Server Name",
+              "Host Header Value"
+            ]
+          },
+          "apiConstraints": {},
+          "discrepancies": []
+        },
+        "nestedConfigs.http_health_check_config.fields.host_header_value": {
+          "apiProperty": "spec.http_health_check.host_header",
+          "definitionConstraints": {
+            "maxLength": 262
+          },
+          "apiConstraints": {
+            "maxLength": 262,
+            "minLength": 0
+          },
+          "discrepancies": []
+        },
+        "nestedConfigs.http_health_check_config.fields.path": {
+          "apiProperty": "spec.http_health_check.path",
+          "definitionConstraints": {
+            "minLength": 1,
+            "maxLength": 2048,
+            "pattern": "^/.*"
+          },
+          "apiConstraints": {
+            "maxLength": 2048,
+            "minLength": 0
+          },
+          "discrepancies": [
+            "minLength: 1 → 0"
+          ]
+        },
+        "nestedConfigs.http_health_check_config.fields.request_headers_to_add": {
+          "apiProperty": "spec.http_health_check.headers",
+          "definitionConstraints": {},
+          "apiConstraints": {
+            "minLength": 1,
+            "maxLength": 2048,
+            "maxItems": 16
+          },
+          "discrepancies": []
+        },
+        "nestedConfigs.http_health_check_config.fields.request_headers_to_remove": {
+          "apiProperty": "spec.http_health_check.request_headers_to_remove",
+          "definitionConstraints": {
+            "maxItems": 16
+          },
+          "apiConstraints": {
+            "maxLength": 256,
+            "maxItems": 16
+          },
+          "discrepancies": []
+        },
+        "nestedConfigs.http_health_check_config.fields.expected_status_codes": {
+          "apiProperty": "spec.http_health_check.expected_status_codes",
+          "definitionConstraints": {
+            "maxItems": 16
+          },
+          "apiConstraints": {
+            "minLength": 3,
+            "maxLength": 10,
+            "maxItems": 16
+          },
+          "discrepancies": []
+        },
+        "nestedConfigs.tcp_health_check_config.fields.send_payload": {
+          "apiProperty": "spec.tcp_health_check.send_payload",
+          "definitionConstraints": {
+            "maxLength": 2048,
+            "pattern": "^([0-9a-fA-F]{2})*$"
+          },
+          "apiConstraints": {
+            "maxLength": 2048,
+            "minLength": 0
+          },
+          "discrepancies": []
+        },
+        "nestedConfigs.tcp_health_check_config.fields.expected_response": {
+          "apiProperty": "spec.tcp_health_check.expected_response",
+          "definitionConstraints": {
+            "maxLength": 2048,
+            "pattern": "^([0-9a-fA-F]{2})*$"
+          },
+          "apiConstraints": {
+            "maxLength": 2048,
+            "minLength": 0
+          },
+          "discrepancies": []
+        }
+      }
+    },
+    "origin_pool": {
+      "resourceType": "origin_pool",
+      "apiVersion": "v2.0.46",
+      "fields": {
+        "fields.name": {
+          "apiProperty": "metadata.name",
+          "definitionConstraints": {
+            "minLength": 1,
+            "maxLength": 63,
+            "pattern": "^[a-z][a-z0-9-]*[a-z0-9]$"
+          },
+          "apiConstraints": {},
+          "discrepancies": []
+        },
+        "fields.description": {
+          "apiProperty": "metadata.description",
+          "definitionConstraints": {
+            "maxLength": 256
+          },
+          "apiConstraints": {},
+          "discrepancies": []
+        },
+        "arrayFields.origin_servers.itemTypes.Public DNS Name.fields.dns_name": {
+          "apiProperty": "origin_servers[].public_name.dns_name",
+          "definitionConstraints": {
+            "minLength": 1,
+            "maxLength": 256
+          },
+          "apiConstraints": {},
+          "discrepancies": []
+        },
+        "arrayFields.origin_servers.itemTypes.Public DNS Name.fields.dns_refresh_interval": {
+          "apiProperty": "origin_servers[].public_name.refresh_interval",
+          "definitionConstraints": {
+            "minimum": 0,
+            "maximum": 604800
+          },
+          "apiConstraints": {},
+          "discrepancies": []
+        },
+        "arrayFields.origin_servers.itemTypes.K8s Service.fields.service_name": {
+          "apiProperty": "origin_servers[].k8s_service.service_name",
+          "definitionConstraints": {
+            "minLength": 1,
+            "maxLength": 1024,
+            "pattern": "^[a-zA-Z][a-zA-Z0-9.-]*(:.*)?$"
+          },
+          "apiConstraints": {},
+          "discrepancies": []
+        },
+        "arrayFields.origin_servers.itemTypes.K8s Service.fields.site_locator": {
+          "apiProperty": "origin_servers[].k8s_service.site_locator.site.name",
+          "definitionConstraints": {
+            "minLength": 1,
+            "maxLength": 63
+          },
+          "apiConstraints": {},
+          "discrepancies": []
+        },
+        "arrayFields.origin_servers.itemTypes.K8s Service.fields.vk8s_networks": {
+          "apiProperty": "origin_servers[].k8s_service",
+          "definitionConstraints": {
+            "enum": [
+              "Site Local Network",
+              "Site Local Inside Network",
+              "Outside Network"
+            ]
+          },
+          "apiConstraints": {},
+          "discrepancies": []
+        },
+        "arrayFields.origin_servers.itemTypes.K8s Service.fields.service_port": {
+          "apiProperty": "origin_servers[].k8s_service.service_port",
+          "definitionConstraints": {
+            "minimum": 1,
+            "maximum": 65535
+          },
+          "apiConstraints": {},
+          "discrepancies": []
+        },
+        "arrayFields.origin_servers.itemTypes.Private IP.fields.ip_address": {
+          "apiProperty": "origin_servers[].private_ip.ip",
+          "definitionConstraints": {
+            "maxLength": 1024
+          },
+          "apiConstraints": {},
+          "discrepancies": []
+        },
+        "arrayFields.origin_servers.itemTypes.Private IP.fields.site_locator": {
+          "apiProperty": "origin_servers[].private_ip.site_locator.site.name",
+          "definitionConstraints": {
+            "minLength": 1,
+            "maxLength": 63
+          },
+          "apiConstraints": {},
+          "discrepancies": []
+        },
+        "arrayFields.origin_servers.itemTypes.Private IP.fields.network_choice": {
+          "apiProperty": "origin_servers[].private_ip",
+          "definitionConstraints": {
+            "enum": [
+              "Inside Network",
+              "Outside Network"
+            ]
+          },
+          "apiConstraints": {},
+          "discrepancies": []
+        },
+        "arrayFields.origin_servers.itemTypes.Consul Service.fields.service_name": {
+          "apiProperty": "origin_servers[].consul_service.service_name",
+          "definitionConstraints": {
+            "minLength": 1,
+            "maxLength": 256,
+            "pattern": "^[a-zA-Z][a-zA-Z0-9_-]*$"
+          },
+          "apiConstraints": {},
+          "discrepancies": []
+        },
+        "arrayFields.origin_servers.itemTypes.Consul Service.fields.site_locator": {
+          "apiProperty": "origin_servers[].consul_service.site_locator.site.name",
+          "definitionConstraints": {
+            "minLength": 1,
+            "maxLength": 63
+          },
+          "apiConstraints": {},
+          "discrepancies": []
+        },
+        "arrayFields.origin_servers.itemTypes.Consul Service.fields.network_type": {
+          "apiProperty": "origin_servers[].consul_service.network",
+          "definitionConstraints": {
+            "enum": [
+              "Site Local Network",
+              "Site Local Inside Network"
+            ]
+          },
+          "apiConstraints": {},
+          "discrepancies": []
+        }
+      }
+    },
+    "service_policy": {
+      "resourceType": "service_policy",
+      "apiVersion": "v2.0.46",
+      "fields": {
+        "fields.name": {
+          "apiProperty": "metadata.name",
+          "definitionConstraints": {
+            "minLength": 1,
+            "maxLength": 63,
+            "pattern": "^[a-z][a-z0-9-]*[a-z0-9]$"
+          },
+          "apiConstraints": {
+            "minLength": 0,
+            "maxLength": 16
+          },
+          "discrepancies": [
+            "minLength: 1 → 0",
+            "maxLength: 63 → 16"
+          ]
+        },
+        "fields.description": {
+          "apiProperty": "metadata.description",
+          "definitionConstraints": {},
+          "apiConstraints": {
+            "minLength": 0,
+            "maxLength": 0
+          },
+          "discrepancies": []
+        },
+        "fields.server_selection": {
+          "apiProperty": "spec.server_choice",
+          "definitionConstraints": {
+            "enum": [
+              "Any Server",
+              "Server Name",
+              "Group of Servers by Name"
+            ]
+          },
+          "apiConstraints": {},
+          "discrepancies": []
+        },
+        "fields.select_policy_rules": {
+          "apiProperty": "spec.rule_choice",
+          "definitionConstraints": {
+            "enum": [
+              "Custom Rule List",
+              "Allowed Sources",
+              "Denied Sources",
+              "Allow All Requests",
+              "Deny All Requests"
+            ]
+          },
+          "apiConstraints": {},
+          "discrepancies": []
+        },
+        "nestedConfigs.server_name_config.fields.server_name": {
+          "apiProperty": "spec.server_name",
+          "definitionConstraints": {
+            "minLength": 1,
+            "maxLength": 253
+          },
+          "apiConstraints": {},
+          "discrepancies": []
+        },
+        "arrayFields.rules.itemTypes.Deny.fields.name": {
+          "apiProperty": "spec.rules[].metadata.name",
+          "definitionConstraints": {
+            "minLength": 1,
+            "maxLength": 63,
+            "pattern": "^[a-z][a-z0-9-]*[a-z0-9]$"
+          },
+          "apiConstraints": {},
+          "discrepancies": []
+        },
+        "arrayFields.rules.itemTypes.Deny.fields.rule_description": {
+          "apiProperty": "spec.rules[].metadata.description",
+          "definitionConstraints": {
+            "maxLength": 256
+          },
+          "apiConstraints": {},
+          "discrepancies": []
+        },
+        "arrayFields.rules.itemTypes.Deny.fields.client_selection": {
+          "apiProperty": "spec.rules[].spec.client_choice",
+          "definitionConstraints": {
+            "enum": [
+              "Any Client",
+              "Client Name",
+              "Group of Clients by Name",
+              "List of IP Threat Categories",
+              "Group of Clients by Label Selector"
+            ]
+          },
+          "apiConstraints": {},
+          "discrepancies": []
+        },
+        "arrayFields.rules.itemTypes.Deny.fields.client_name": {
+          "apiProperty": "spec.rules[].spec.client_name",
+          "definitionConstraints": {
+            "minLength": 1,
+            "maxLength": 253
+          },
+          "apiConstraints": {},
+          "discrepancies": []
+        },
+        "arrayFields.rules.itemTypes.Deny.fields.http_method": {
+          "apiProperty": "spec.rules[].spec.http_method",
+          "definitionConstraints": {
+            "enum": [
+              "ANY",
+              "GET",
+              "HEAD",
+              "POST",
+              "PUT",
+              "DELETE",
+              "CONNECT",
+              "OPTIONS",
+              "TRACE",
+              "PATCH"
+            ]
+          },
+          "apiConstraints": {},
+          "discrepancies": []
+        },
+        "arrayFields.rules.itemTypes.Deny.fields.path_match_type": {
+          "apiProperty": "spec.rules[].spec.path.type",
+          "definitionConstraints": {
+            "enum": [
+              "Any Path",
+              "Prefix",
+              "Path",
+              "Regex"
+            ]
+          },
+          "apiConstraints": {},
+          "discrepancies": []
+        },
+        "arrayFields.rules.itemTypes.Deny.fields.path_value": {
+          "apiProperty": "spec.rules[].spec.path.value",
+          "definitionConstraints": {
+            "maxLength": 2048
+          },
+          "apiConstraints": {},
+          "discrepancies": []
+        },
+        "arrayFields.rules.itemTypes.Deny.fields.source_segments": {
+          "apiProperty": "spec.rules[].spec.source_segments",
+          "definitionConstraints": {
+            "enum": [
+              "Any Segment",
+              "Custom Segment List"
+            ]
+          },
+          "apiConstraints": {},
+          "discrepancies": []
+        },
+        "arrayFields.rules.itemTypes.Allow.fields.name": {
+          "apiProperty": "spec.rules[].metadata.name",
+          "definitionConstraints": {
+            "minLength": 1,
+            "maxLength": 63,
+            "pattern": "^[a-z][a-z0-9-]*[a-z0-9]$"
+          },
+          "apiConstraints": {},
+          "discrepancies": []
+        },
+        "arrayFields.rules.itemTypes.Allow.fields.rule_description": {
+          "apiProperty": "spec.rules[].metadata.description",
+          "definitionConstraints": {
+            "maxLength": 256
+          },
+          "apiConstraints": {},
+          "discrepancies": []
+        },
+        "arrayFields.rules.itemTypes.Allow.fields.client_selection": {
+          "apiProperty": "spec.rules[].spec.client_choice",
+          "definitionConstraints": {
+            "enum": [
+              "Any Client",
+              "Client Name",
+              "Group of Clients by Name",
+              "List of IP Threat Categories",
+              "Group of Clients by Label Selector"
+            ]
+          },
+          "apiConstraints": {},
+          "discrepancies": []
+        },
+        "arrayFields.rules.itemTypes.Allow.fields.client_name": {
+          "apiProperty": "spec.rules[].spec.client_name",
+          "definitionConstraints": {
+            "minLength": 1,
+            "maxLength": 253
+          },
+          "apiConstraints": {},
+          "discrepancies": []
+        },
+        "arrayFields.rules.itemTypes.Allow.fields.http_method": {
+          "apiProperty": "spec.rules[].spec.http_method",
+          "definitionConstraints": {
+            "enum": [
+              "ANY",
+              "GET",
+              "HEAD",
+              "POST",
+              "PUT",
+              "DELETE",
+              "CONNECT",
+              "OPTIONS",
+              "TRACE",
+              "PATCH"
+            ]
+          },
+          "apiConstraints": {},
+          "discrepancies": []
+        },
+        "arrayFields.rules.itemTypes.Allow.fields.path_match_type": {
+          "apiProperty": "spec.rules[].spec.path.type",
+          "definitionConstraints": {
+            "enum": [
+              "Any Path",
+              "Prefix",
+              "Path",
+              "Regex"
+            ]
+          },
+          "apiConstraints": {},
+          "discrepancies": []
+        },
+        "arrayFields.rules.itemTypes.Allow.fields.path_value": {
+          "apiProperty": "spec.rules[].spec.path.value",
+          "definitionConstraints": {
+            "maxLength": 2048
+          },
+          "apiConstraints": {},
+          "discrepancies": []
+        },
+        "arrayFields.rules.itemTypes.Allow.fields.source_segments": {
+          "apiProperty": "spec.rules[].spec.source_segments",
+          "definitionConstraints": {
+            "enum": [
+              "Any Segment",
+              "Custom Segment List"
+            ]
+          },
+          "apiConstraints": {},
+          "discrepancies": []
+        },
+        "arrayFields.rules.itemTypes.Next Policy.fields.name": {
+          "apiProperty": "spec.rules[].metadata.name",
+          "definitionConstraints": {
+            "minLength": 1,
+            "maxLength": 63,
+            "pattern": "^[a-z][a-z0-9-]*[a-z0-9]$"
+          },
+          "apiConstraints": {},
+          "discrepancies": []
+        },
+        "arrayFields.rules.itemTypes.Next Policy.fields.rule_description": {
+          "apiProperty": "spec.rules[].metadata.description",
+          "definitionConstraints": {
+            "maxLength": 256
+          },
+          "apiConstraints": {},
+          "discrepancies": []
+        },
+        "arrayFields.rules.itemTypes.Next Policy.fields.client_selection": {
+          "apiProperty": "spec.rules[].spec.client_choice",
+          "definitionConstraints": {
+            "enum": [
+              "Any Client",
+              "Client Name",
+              "Group of Clients by Name",
+              "List of IP Threat Categories",
+              "Group of Clients by Label Selector"
+            ]
+          },
+          "apiConstraints": {},
+          "discrepancies": []
+        },
+        "arrayFields.rules.itemTypes.Next Policy.fields.client_name": {
+          "apiProperty": "spec.rules[].spec.client_name",
+          "definitionConstraints": {
+            "minLength": 1,
+            "maxLength": 253
+          },
+          "apiConstraints": {},
+          "discrepancies": []
+        },
+        "arrayFields.rules.itemTypes.Next Policy.fields.http_method": {
+          "apiProperty": "spec.rules[].spec.http_method",
+          "definitionConstraints": {
+            "enum": [
+              "ANY",
+              "GET",
+              "HEAD",
+              "POST",
+              "PUT",
+              "DELETE",
+              "CONNECT",
+              "OPTIONS",
+              "TRACE",
+              "PATCH"
+            ]
+          },
+          "apiConstraints": {},
+          "discrepancies": []
+        },
+        "arrayFields.rules.itemTypes.Next Policy.fields.path_match_type": {
+          "apiProperty": "spec.rules[].spec.path.type",
+          "definitionConstraints": {
+            "enum": [
+              "Any Path",
+              "Prefix",
+              "Path",
+              "Regex"
+            ]
+          },
+          "apiConstraints": {},
+          "discrepancies": []
+        },
+        "arrayFields.rules.itemTypes.Next Policy.fields.path_value": {
+          "apiProperty": "spec.rules[].spec.path.value",
+          "definitionConstraints": {
+            "maxLength": 2048
+          },
+          "apiConstraints": {},
+          "discrepancies": []
+        },
+        "arrayFields.rules.itemTypes.Next Policy.fields.source_segments": {
+          "apiProperty": "spec.rules[].spec.source_segments",
+          "definitionConstraints": {
+            "enum": [
+              "Any Segment",
+              "Custom Segment List"
+            ]
+          },
+          "apiConstraints": {},
+          "discrepancies": []
+        }
+      }
+    },
+    "api_definition": {
+      "resourceType": "api_definition",
+      "apiVersion": "v2.0.46",
+      "fields": {}
+    },
+    "api_discovery": {
+      "resourceType": "api_discovery",
+      "apiVersion": "v2.0.46",
+      "fields": {}
+    },
+    "api_groups": {
+      "resourceType": "api_groups",
+      "apiVersion": "v2.0.46",
+      "fields": {
+        "fields.scope": {
+          "apiProperty": "spec.elements",
+          "definitionConstraints": {
+            "enum": [
+              "HTTP Load Balancer"
+            ]
+          },
+          "apiConstraints": {},
+          "discrepancies": []
+        }
+      }
+    },
+    "code_base_integration": {
+      "resourceType": "code_base_integration",
+      "apiVersion": "v2.0.46",
+      "fields": {
+        "fields.code_base": {
+          "apiProperty": "spec.code_base_type",
+          "definitionConstraints": {
+            "enum": [
+              "GitHub Integration",
+              "GitHub Enterprise Integration",
+              "GitLab Cloud Integration",
+              "GitLab Enterprise Integration",
+              "BitBucket Cloud Integration",
+              "BitBucket Server Integration",
+              "Azure Repos Integration"
+            ]
+          },
+          "apiConstraints": {},
+          "discrepancies": []
+        }
+      }
+    },
+    "data_type": {
+      "resourceType": "data_type",
+      "apiVersion": "v2.0.46",
+      "fields": {
+        "nestedConfigs.data_type_rules.fields.pattern_choice": {
+          "apiProperty": "spec.rules[].pattern_choice",
+          "definitionConstraints": {
+            "enum": [
+              "KEY_PATTERN",
+              "VALUE_PATTERN",
+              "KEY_VALUE_PATTERN"
+            ]
+          },
+          "apiConstraints": {},
+          "discrepancies": []
+        },
+        "nestedConfigs.data_type_rules.fields.pattern": {
+          "apiProperty": "spec.rules[].pattern_type",
+          "definitionConstraints": {
+            "enum": [
+              "REGEX_VALUE",
+              "EXACT_VALUE"
+            ]
+          },
+          "apiConstraints": {},
+          "discrepancies": []
+        }
+      }
+    },
+    "sensitive_data_policy": {
+      "resourceType": "sensitive_data_policy",
+      "apiVersion": "v2.0.46",
+      "fields": {}
+    }
+  }
+}

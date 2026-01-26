@@ -1,0 +1,300 @@
+{
+  "schema": {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "F5 XC Data Type Configuration",
+    "description": "JSON Schema for F5 Distributed Cloud Data Type resource with UI tooltips, defaults, and nested configurations",
+    "type": "object",
+    "properties": {
+      "name": {
+        "type": "string",
+        "description": "The configuration object will be created with name. It has to be unique within the namespace.\nThe value of name has to follow DNS-1035 format.",
+        "x-f5xc-field": {
+          "inputType": "textbox",
+          "uiLabel": "Name",
+          "apiProperty": "name",
+          "advanced": false
+        },
+        "minLength": 1,
+        "maxLength": 63,
+        "pattern": "^[a-z][a-z0-9-]*[a-z0-9]$",
+        "x-f5xc-pattern-description": "Must start with lowercase letter, contain only lowercase letters, numbers, and hyphens, and end with letter or number"
+      },
+      "labels": {
+        "type": "object",
+        "description": "Map of string keys and values that can be used to organize and categorize\n(scope and select) objects as chosen by the user. Values specified here will be used\nby selector expression",
+        "x-f5xc-field": {
+          "inputType": "object",
+          "uiLabel": "Labels",
+          "apiProperty": "labels",
+          "advanced": false
+        },
+        "x-f5xc-ui": {
+          "placeholder": "Add Label"
+        }
+      },
+      "description": {
+        "type": "string",
+        "description": "Human readable description for the object",
+        "x-f5xc-field": {
+          "inputType": "textbox",
+          "uiLabel": "Description",
+          "apiProperty": "description",
+          "advanced": false
+        }
+      },
+      "mark_as_sensitive_data": {
+        "type": "boolean",
+        "description": "Mark this data type as sensitive data. Sensitive data will be masked in logs and reports.",
+        "x-f5xc-field": {
+          "inputType": "checkbox",
+          "uiLabel": "Mark as Sensitive Data",
+          "apiProperty": "spec.mark_as_sensitive_data",
+          "advanced": false
+        },
+        "default": true,
+        "x-f5xc-ui": {
+          "defaultValue": "true"
+        }
+      },
+      "mark_as_pii": {
+        "type": "boolean",
+        "description": "Mark this data type as Personally Identifiable Information (PII). PII requires special handling under various compliance regulations.",
+        "x-f5xc-field": {
+          "inputType": "checkbox",
+          "uiLabel": "Mark as PII",
+          "apiProperty": "spec.mark_as_pii",
+          "advanced": false
+        },
+        "default": false,
+        "x-f5xc-ui": {
+          "defaultValue": "false"
+        }
+      },
+      "relevant_compliances": {
+        "type": "array",
+        "description": "Select the compliance standards that this data type is relevant to (GDPR, PCI/DSS, CCPA).",
+        "x-f5xc-field": {
+          "inputType": "array",
+          "uiLabel": "Relevant Compliances",
+          "apiProperty": "spec.relevant_compliances",
+          "advanced": false
+        },
+        "items": {
+          "type": "string",
+          "enum": [
+            "GDPR",
+            "PCI_DSS",
+            "CCPA"
+          ],
+          "enumDescriptions": {
+            "GDPR": "General Data Protection Regulation - EU data protection law",
+            "PCI_DSS": "Payment Card Industry Data Security Standard",
+            "CCPA": "California Consumer Privacy Act"
+          }
+        }
+      },
+      "data_type_rules": {
+        "type": "object",
+        "description": "Configure detection rules for identifying this data type. Each rule specifies how to search for and detect the data pattern.",
+        "x-f5xc-nested": {
+          "trigger": "data_type_rules",
+          "value": "configured"
+        },
+        "properties": {
+          "pattern_choice": {
+            "type": "string",
+            "description": "Search the data type in the key, value or both",
+            "x-f5xc-field": {
+              "inputType": "textbox",
+              "uiLabel": "Pattern Choice",
+              "apiProperty": "spec.rules[].pattern_choice",
+              "advanced": false
+            },
+            "default": "KEY_PATTERN",
+            "x-f5xc-ui": {
+              "defaultValue": "KEY_PATTERN"
+            },
+            "enum": [
+              "KEY_PATTERN",
+              "VALUE_PATTERN",
+              "KEY_VALUE_PATTERN"
+            ],
+            "x-f5xc-enum-descriptions": {
+              "KEY_PATTERN": "Key Pattern - Search for the data type in the key only",
+              "VALUE_PATTERN": "Value Pattern - Search for the data type in the value only",
+              "KEY_VALUE_PATTERN": "Key Value Pattern - Search for the data type in both key and value"
+            },
+            "minLength": 1
+          },
+          "pattern": {
+            "type": "string",
+            "description": "How to detect the current rule. by regex/exact value or substring",
+            "x-f5xc-field": {
+              "inputType": "textbox",
+              "uiLabel": "Pattern",
+              "apiProperty": "spec.rules[].pattern_type",
+              "advanced": false
+            },
+            "default": "REGEX_VALUE",
+            "x-f5xc-ui": {
+              "defaultValue": "REGEX_VALUE"
+            },
+            "enum": [
+              "REGEX_VALUE",
+              "EXACT_VALUE"
+            ],
+            "x-f5xc-enum-descriptions": {
+              "REGEX_VALUE": "Regex Value - Detect using a regular expression pattern",
+              "EXACT_VALUE": "Exact Value - Detect using an exact string match"
+            },
+            "minLength": 1
+          },
+          "regex_value": {
+            "type": "string",
+            "description": "Regular expression pattern to match against the selected target (key, value, or both)",
+            "x-f5xc-field": {
+              "inputType": "textbox",
+              "uiLabel": "Regex Value",
+              "apiProperty": "spec.rules[].regex_value",
+              "advanced": false
+            },
+            "x-f5xc-conditional": {
+              "field": "pattern",
+              "value": "REGEX_VALUE"
+            },
+            "minLength": 1
+          },
+          "exact_value": {
+            "type": "string",
+            "description": "Exact string value to match against the selected target (key, value, or both)",
+            "x-f5xc-field": {
+              "inputType": "textbox",
+              "uiLabel": "Exact Value",
+              "apiProperty": "spec.rules[].exact_value",
+              "advanced": false
+            },
+            "x-f5xc-conditional": {
+              "field": "pattern",
+              "value": "EXACT_VALUE"
+            },
+            "minLength": 1
+          }
+        },
+        "required": [
+          "pattern_choice",
+          "pattern",
+          "regex_value",
+          "exact_value"
+        ]
+      }
+    },
+    "required": [
+      "name"
+    ],
+    "x-f5xc-metadata": {
+      "formUrl": "https://f5-amer-ent.console.ves.volterra.io/web/workspaces/web-app-and-api-protection/namespaces/default/manage/api_security/data_type",
+      "resourceType": "data_type",
+      "extractedAt": "1.0.0-stable",
+      "version": "1.0.0",
+      "extractionVersion": "3.0.0-unified",
+      "extractionMethod": "property-builder",
+      "nestedConfigurations": [
+        "data_type_rules"
+      ]
+    }
+  },
+  "selectors": {
+    "resourceType": "data_type",
+    "fieldSelectors": {
+      "Name": {
+        "schemaPath": "properties.name",
+        "inputType": "textbox",
+        "required": true,
+        "advanced": false
+      },
+      "Labels": {
+        "schemaPath": "properties.labels",
+        "inputType": "object",
+        "required": false,
+        "advanced": false
+      },
+      "Description": {
+        "schemaPath": "properties.description",
+        "inputType": "textbox",
+        "required": false,
+        "advanced": false
+      },
+      "Mark as Sensitive Data": {
+        "schemaPath": "properties.mark_as_sensitive_data",
+        "inputType": "checkbox",
+        "required": false,
+        "advanced": false
+      },
+      "Mark as PII": {
+        "schemaPath": "properties.mark_as_pii",
+        "inputType": "checkbox",
+        "required": false,
+        "advanced": false
+      },
+      "Relevant Compliances": {
+        "schemaPath": "properties.relevant_compliances",
+        "inputType": "array",
+        "required": false,
+        "advanced": false
+      }
+    },
+    "nestedSelectors": {
+      "data_type_rules": {
+        "Pattern Choice": {
+          "schemaPath": "properties.data_type_rules.properties.pattern_choice",
+          "inputType": "textbox",
+          "required": true,
+          "advanced": false
+        },
+        "Pattern": {
+          "schemaPath": "properties.data_type_rules.properties.pattern",
+          "inputType": "textbox",
+          "required": true,
+          "advanced": false
+        },
+        "Regex Value": {
+          "schemaPath": "properties.data_type_rules.properties.regex_value",
+          "inputType": "textbox",
+          "required": true,
+          "advanced": false
+        },
+        "Exact Value": {
+          "schemaPath": "properties.data_type_rules.properties.exact_value",
+          "inputType": "textbox",
+          "required": true,
+          "advanced": false
+        }
+      }
+    },
+    "actionSelectors": {
+      "submit": "button:has(generic:text(\"Add Data_type\"))",
+      "cancel": "button:has(generic:text(\"Cancel\"))",
+      "editDataTypeRules": "button:text(\"Add Item\")",
+      "applyConfig": "button:has(generic:text(\"Apply\"))",
+      "discardConfig": "button:has(generic:text(\"Cancel\"))"
+    }
+  },
+  "metadata": {
+    "formUrl": "https://f5-amer-ent.console.ves.volterra.io/web/workspaces/web-app-and-api-protection/namespaces/default/manage/api_security/data_type",
+    "resourceType": "data_type",
+    "extractedAt": "1.0.0-stable",
+    "version": "1.0.0",
+    "extractionVersion": "3.0.0-unified",
+    "coverage": {
+      "totalFields": 10,
+      "topLevelFields": 6,
+      "nestedFields": 4,
+      "nestedConfigurations": 1,
+      "fieldsWithSelectors": 10,
+      "fieldsWithTooltips": 10,
+      "fieldsWithDefaults": 4,
+      "percentage": 100
+    },
+    "warnings": []
+  }
+}

@@ -19,18 +19,31 @@ import {
 
 describe('Health Check Schema Extraction Integration', () => {
   /**
+   * Helper to create a properly structured ParsedSnapshot from elements
+   */
+  const createParsedSnapshot = (elements: Array<Omit<import('../../../src/mcp/snapshot-parser').ParsedElement, 'raw'>>): ParsedSnapshot => {
+    const fullElements = elements.map(e => ({ ...e, raw: `[${e.uid}] ${e.role} "${e.name || ''}"` }));
+    const byUid = new Map(fullElements.map(e => [e.uid, e]));
+    const byRole = new Map<string, import('../../../src/mcp/snapshot-parser').ParsedElement[]>();
+    for (const el of fullElements) {
+      const existing = byRole.get(el.role) || [];
+      existing.push(el);
+      byRole.set(el.role, existing);
+    }
+    return { elements: fullElements, byUid, byRole };
+  };
+
+  /**
    * Simulate a baseline health check form snapshot with all three types available
    */
   const createBaselineSnapshot = (): ParsedSnapshot => {
-    return {
-      elements: [
+    return createParsedSnapshot([
         {
           uid: 'ref_1',
           role: 'textbox',
           name: 'Name',
           level: 0,
           disabled: false,
-          required: true,
         },
         {
           uid: 'ref_2',
@@ -38,7 +51,6 @@ describe('Health Check Schema Extraction Integration', () => {
           name: 'Health Check Type',
           level: 0,
           disabled: false,
-          required: true,
         },
         {
           uid: 'ref_3',
@@ -98,17 +110,16 @@ describe('Health Check Schema Extraction Integration', () => {
           disabled: false,
           value: '0',
         },
-      ],
-    };
+      ]);
   };
 
   /**
    * Simulate HTTP health check state with exclusive fields
    */
   const createHTTPSnapshot = (): ParsedSnapshot => {
-    return {
-      elements: [
-        ...createBaselineSnapshot().elements.filter(e => e.role !== 'option'),
+    const baseElements = createBaselineSnapshot().elements.filter(e => e.role !== 'option');
+    return createParsedSnapshot([
+        ...baseElements.map(e => ({ uid: e.uid, role: e.role, name: e.name, level: e.level, disabled: e.disabled, value: e.value, placeholder: e.placeholder })),
         {
           uid: 'ref_11',
           role: 'textbox',
@@ -143,17 +154,16 @@ describe('Health Check Schema Extraction Integration', () => {
           name: 'Custom Value',
           level: 1,
         },
-      ],
-    };
+      ]);
   };
 
   /**
    * Simulate TCP health check state with exclusive fields
    */
   const createTCPSnapshot = (): ParsedSnapshot => {
-    return {
-      elements: [
-        ...createBaselineSnapshot().elements.filter(e => e.role !== 'option'),
+    const baseElements = createBaselineSnapshot().elements.filter(e => e.role !== 'option');
+    return createParsedSnapshot([
+        ...baseElements.map(e => ({ uid: e.uid, role: e.role, name: e.name, level: e.level, disabled: e.disabled, value: e.value, placeholder: e.placeholder })),
         {
           uid: 'ref_16',
           role: 'spinbutton',
@@ -162,36 +172,34 @@ describe('Health Check Schema Extraction Integration', () => {
           disabled: false,
           value: '80',
         },
-      ],
-    };
+      ]);
   };
 
   /**
    * Simulate ICMP health check state (no exclusive fields)
    */
   const createICMPSnapshot = (): ParsedSnapshot => {
-    return {
-      elements: [...createBaselineSnapshot().elements.filter(e => e.role !== 'option')],
-    };
+    const baseElements = createBaselineSnapshot().elements.filter(e => e.role !== 'option');
+    return createParsedSnapshot(
+      baseElements.map(e => ({ uid: e.uid, role: e.role, name: e.name, level: e.level, disabled: e.disabled, value: e.value, placeholder: e.placeholder }))
+    );
   };
 
   /**
    * Simulate HTTP Host Header = Custom Value state
    */
   const createHTTPCustomHostHeaderSnapshot = (): ParsedSnapshot => {
-    return {
-      elements: [
-        ...createHTTPSnapshot().elements.filter(e => e.role !== 'option'),
+    const httpElements = createHTTPSnapshot().elements.filter(e => e.role !== 'option');
+    return createParsedSnapshot([
+        ...httpElements.map(e => ({ uid: e.uid, role: e.role, name: e.name, level: e.level, disabled: e.disabled, value: e.value, placeholder: e.placeholder })),
         {
           uid: 'ref_17',
           role: 'textbox',
           name: 'Custom Value',
           level: 0,
           disabled: false,
-          required: true,
         },
-      ],
-    };
+      ]);
   };
 
   it('should extract complete health check schema with oneOf relationships', async () => {
@@ -249,6 +257,7 @@ describe('Health Check Schema Extraction Integration', () => {
       resourceType: 'healthcheck',
       extractedAt: new Date().toISOString(),
       version: '1.0.0',
+      extractionVersion: '3.0.0-unified',
       advancedFields: ['Jitter Percent'],
     };
 
@@ -259,7 +268,7 @@ describe('Health Check Schema Extraction Integration', () => {
       formUrl: metadata.formUrl,
     };
 
-    const output = generator.generate(generationInput);
+    const output = await generator.generate(generationInput);
 
     // Step 5: Validate generated schema
     expect(output.schema.$schema).toBe('http://json-schema.org/draft-07/schema#');
@@ -393,7 +402,7 @@ describe('Health Check Schema Extraction Integration', () => {
     expect(disappeared.length).toBeGreaterThan(0);
   });
 
-  it('should generate valid JSON Schema that can be used for validation', () => {
+  it('should generate valid JSON Schema that can be used for validation', async () => {
     // This test simulates using the generated schema for validation
     const generator = new SchemaGenerator();
 
@@ -427,6 +436,7 @@ describe('Health Check Schema Extraction Integration', () => {
       resourceType: 'healthcheck',
       extractedAt: '2026-01-21T00:00:00Z',
       version: '1.0.0',
+      extractionVersion: '3.0.0-unified',
     };
 
     const input: SchemaGenerationInput = {
@@ -436,7 +446,7 @@ describe('Health Check Schema Extraction Integration', () => {
       formUrl: metadata.formUrl,
     };
 
-    const output = generator.generate(input);
+    const output = await generator.generate(input);
 
     // Schema should be valid
     const validation = generator.validateSchema(output.schema);

@@ -409,6 +409,16 @@ export class FieldMapper {
   isLoaded(): boolean {
     return this.config !== null;
   }
+
+  /**
+   * Get all loaded mappings (Phase 2: needed for array field handling)
+   *
+   * @returns Complete field mapping configuration
+   */
+  getMappings(): FieldMappingConfig {
+    this.ensureConfigLoaded();
+    return this.config!;
+  }
 }
 
 /**

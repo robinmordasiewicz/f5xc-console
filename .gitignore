@@ -42,3 +42,10 @@ coverage/
 
 # Build output
 site/
+
+# API validation outputs
+reports/
+api-spec/
+
+# Temporary test output
+test-output/

@@ -1,0 +1,931 @@
+{
+  "schema": {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "F5 XC Code Base Integration Configuration",
+    "description": "JSON Schema for F5 Distributed Cloud Code Base Integration resource with UI tooltips, defaults, and nested configurations",
+    "type": "object",
+    "properties": {
+      "name": {
+        "type": "string",
+        "description": "The configuration object will be created with name. It has to be unique within the namespace.\nThe value of name has to follow DNS-1035 format.",
+        "x-f5xc-field": {
+          "inputType": "textbox",
+          "uiLabel": "Name",
+          "apiProperty": "name",
+          "advanced": false
+        },
+        "minLength": 1,
+        "maxLength": 63,
+        "pattern": "^[a-z][a-z0-9-]*[a-z0-9]$",
+        "x-f5xc-pattern-description": "Must start with lowercase letter, contain only lowercase letters, numbers, and hyphens, and end with letter or number"
+      },
+      "labels": {
+        "type": "object",
+        "description": "Map of string keys and values that can be used to organize and categorize\n(scope and select) objects as chosen by the user. Values specified here will be used\nby selector expression",
+        "x-f5xc-field": {
+          "inputType": "object",
+          "uiLabel": "Labels",
+          "apiProperty": "labels",
+          "advanced": false
+        },
+        "x-f5xc-ui": {
+          "placeholder": "Add Label"
+        }
+      },
+      "description": {
+        "type": "string",
+        "description": "Human readable description for the object",
+        "x-f5xc-field": {
+          "inputType": "textbox",
+          "uiLabel": "Description",
+          "apiProperty": "description",
+          "advanced": false
+        }
+      },
+      "code_base": {
+        "type": "string",
+        "description": "Select the type of code repository integration. Each type has specific fields for authentication and connection settings.",
+        "x-f5xc-field": {
+          "inputType": "textbox",
+          "uiLabel": "Code Base",
+          "apiProperty": "spec.code_base_type",
+          "advanced": false
+        },
+        "default": "GitHub Integration",
+        "x-f5xc-ui": {
+          "defaultValue": "GitHub Integration"
+        },
+        "enum": [
+          "GitHub Integration",
+          "GitHub Enterprise Integration",
+          "GitLab Cloud Integration",
+          "GitLab Enterprise Integration",
+          "BitBucket Cloud Integration",
+          "BitBucket Server Integration",
+          "Azure Repos Integration"
+        ],
+        "x-f5xc-enum-descriptions": {
+          "GitHub Integration": "Connect to GitHub.com repositories",
+          "GitHub Enterprise Integration": "Connect to GitHub Enterprise Server on-premises",
+          "GitLab Cloud Integration": "Connect to GitLab.com repositories",
+          "GitLab Enterprise Integration": "Connect to self-hosted GitLab Enterprise",
+          "BitBucket Cloud Integration": "Connect to Atlassian BitBucket Cloud repositories",
+          "BitBucket Server Integration": "Connect to self-hosted BitBucket Server (formerly Stash)",
+          "Azure Repos Integration": "Connect to Azure DevOps Repos (formerly VSTS)"
+        },
+        "minLength": 1
+      },
+      "github_username": {
+        "type": "string",
+        "description": "GitHub account username used for API authentication. Requires a Personal Access Token with appropriate repository permissions.",
+        "x-f5xc-field": {
+          "inputType": "textbox",
+          "uiLabel": "GitHub Username",
+          "apiProperty": "spec.github.username",
+          "advanced": false
+        },
+        "x-f5xc-conditional": {
+          "field": "code_base",
+          "value": "GitHub Integration"
+        },
+        "minLength": 1
+      },
+      "github_verify_ssl": {
+        "type": "boolean",
+        "description": "Enable SSL certificate verification when connecting to GitHub API. Disable only for testing with self-signed certificates.",
+        "x-f5xc-field": {
+          "inputType": "checkbox",
+          "uiLabel": "GitHub Verify SSL",
+          "apiProperty": "spec.github.verify_ssl",
+          "advanced": false
+        },
+        "default": true,
+        "x-f5xc-ui": {
+          "defaultValue": "true"
+        },
+        "x-f5xc-conditional": {
+          "field": "code_base",
+          "value": "GitHub Integration"
+        }
+      },
+      "github_enterprise_hostname": {
+        "type": "string",
+        "description": "Hostname of your GitHub Enterprise Server instance (e.g., github.mycompany.com). Do not include protocol or trailing slash.",
+        "x-f5xc-field": {
+          "inputType": "textbox",
+          "uiLabel": "GitHub Hostname",
+          "apiProperty": "spec.github_enterprise.hostname",
+          "advanced": false
+        },
+        "x-f5xc-conditional": {
+          "field": "code_base",
+          "value": "GitHub Enterprise Integration"
+        },
+        "minLength": 1
+      },
+      "github_enterprise_username": {
+        "type": "string",
+        "description": "GitHub Username field",
+        "x-f5xc-field": {
+          "inputType": "textbox",
+          "uiLabel": "GitHub Username",
+          "apiProperty": "spec.github_enterprise.username",
+          "advanced": false
+        },
+        "x-f5xc-conditional": {
+          "field": "code_base",
+          "value": "GitHub Enterprise Integration"
+        },
+        "minLength": 1
+      },
+      "gitlab_enterprise_url": {
+        "type": "string",
+        "description": "Full URL to your GitLab Enterprise instance including protocol (e.g., https://gitlab.mycompany.com).",
+        "x-f5xc-field": {
+          "inputType": "textbox",
+          "uiLabel": "GitLab URL",
+          "apiProperty": "spec.gitlab_enterprise.url",
+          "advanced": false
+        },
+        "x-f5xc-conditional": {
+          "field": "code_base",
+          "value": "GitLab Enterprise Integration"
+        },
+        "minLength": 1
+      },
+      "bitbucket_username": {
+        "type": "string",
+        "description": "BitBucket Cloud account username. Use with an App Password (not your account password).",
+        "x-f5xc-field": {
+          "inputType": "textbox",
+          "uiLabel": "BitBucket Username",
+          "apiProperty": "spec.bitbucket_cloud.username",
+          "advanced": false
+        },
+        "x-f5xc-conditional": {
+          "field": "code_base",
+          "value": "BitBucket Cloud Integration"
+        },
+        "minLength": 1
+      },
+      "bitbucket_server_url": {
+        "type": "string",
+        "description": "Full URL to your BitBucket Server instance including protocol (e.g., https://bitbucket.mycompany.com).",
+        "x-f5xc-field": {
+          "inputType": "textbox",
+          "uiLabel": "BitBucket Server URL",
+          "apiProperty": "spec.bitbucket_server.url",
+          "advanced": false
+        },
+        "x-f5xc-conditional": {
+          "field": "code_base",
+          "value": "BitBucket Server Integration"
+        },
+        "minLength": 1
+      },
+      "bitbucket_server_username": {
+        "type": "string",
+        "description": "BitBucket Server account username for API authentication.",
+        "x-f5xc-field": {
+          "inputType": "textbox",
+          "uiLabel": "BitBucket Server Username",
+          "apiProperty": "spec.bitbucket_server.username",
+          "advanced": false
+        },
+        "x-f5xc-conditional": {
+          "field": "code_base",
+          "value": "BitBucket Server Integration"
+        },
+        "minLength": 1
+      },
+      "bitbucket_server_verify_ssl": {
+        "type": "boolean",
+        "description": "Enable SSL certificate verification when connecting to BitBucket Server. Disable only for testing with self-signed certificates.",
+        "x-f5xc-field": {
+          "inputType": "checkbox",
+          "uiLabel": "Verify SSL",
+          "apiProperty": "spec.bitbucket_server.verify_ssl",
+          "advanced": false
+        },
+        "default": true,
+        "x-f5xc-ui": {
+          "defaultValue": "true"
+        },
+        "x-f5xc-conditional": {
+          "field": "code_base",
+          "value": "BitBucket Server Integration"
+        }
+      },
+      "github_personal_access_token": {
+        "type": "object",
+        "description": "Configure the GitHub Personal Access Token for API authentication. Supports blindfolded (encrypted) or clear text secrets.",
+        "x-f5xc-nested": {
+          "trigger": "github_personal_access_token",
+          "value": "configured"
+        },
+        "properties": {
+          "secret_type": {
+            "type": "string",
+            "description": "Choose how to store the secret: Blindfolded Secret encrypts using F5 XC technology, Clear Secret stores as plain text.",
+            "x-f5xc-field": {
+              "inputType": "textbox",
+              "uiLabel": "Secret Type",
+              "apiProperty": "secret_type",
+              "advanced": false
+            },
+            "default": "Blindfolded Secret",
+            "x-f5xc-ui": {
+              "defaultValue": "Blindfolded Secret"
+            },
+            "enum": [
+              "Blindfolded Secret",
+              "Clear Secret"
+            ],
+            "x-f5xc-enum-descriptions": {
+              "Blindfolded Secret": "Secret encrypted using F5 XC Blindfold technology",
+              "Clear Secret": "Secret that is not encrypted (stored in plain text)"
+            },
+            "minLength": 1
+          },
+          "action": {
+            "type": "string",
+            "description": "Action field",
+            "x-f5xc-field": {
+              "inputType": "textbox",
+              "uiLabel": "Action",
+              "apiProperty": "action",
+              "advanced": false
+            },
+            "default": "Blindfold New Secret",
+            "x-f5xc-ui": {
+              "defaultValue": "Blindfold New Secret"
+            },
+            "enum": [
+              "Blindfold New Secret"
+            ],
+            "x-f5xc-conditional": {
+              "field": "secret_type",
+              "value": "Blindfolded Secret"
+            },
+            "minLength": 1
+          },
+          "policy_type": {
+            "type": "string",
+            "description": "Policy Type field",
+            "x-f5xc-field": {
+              "inputType": "textbox",
+              "uiLabel": "Policy Type",
+              "apiProperty": "policy_type",
+              "advanced": false
+            },
+            "default": "Built-in",
+            "x-f5xc-ui": {
+              "defaultValue": "Built-in"
+            },
+            "enum": [
+              "Built-in"
+            ],
+            "x-f5xc-conditional": {
+              "field": "secret_type",
+              "value": "Blindfolded Secret"
+            }
+          },
+          "secret_to_blindfold": {
+            "type": "string",
+            "description": "Enter the secret value (e.g., Personal Access Token) to be encrypted using F5 XC Blindfold technology.",
+            "x-f5xc-field": {
+              "inputType": "textbox",
+              "uiLabel": "Secret to Blindfold",
+              "apiProperty": "spec.github.access_token.blindfold_secret_info.location",
+              "advanced": false
+            },
+            "x-f5xc-conditional": {
+              "field": "secret_type",
+              "value": "Blindfolded Secret"
+            },
+            "minLength": 1
+          },
+          "clear_secret_value": {
+            "type": "string",
+            "description": "Secret Value field",
+            "x-f5xc-field": {
+              "inputType": "textbox",
+              "uiLabel": "Secret Value",
+              "apiProperty": "spec.github.access_token.clear_secret_info.value",
+              "advanced": false
+            },
+            "x-f5xc-conditional": {
+              "field": "secret_type",
+              "value": "Clear Secret"
+            },
+            "minLength": 1
+          }
+        },
+        "required": [
+          "secret_type",
+          "action",
+          "secret_to_blindfold",
+          "clear_secret_value"
+        ]
+      },
+      "github_enterprise_personal_access_token": {
+        "type": "object",
+        "description": "Configure the GitHub Enterprise Personal Access Token for API authentication.",
+        "x-f5xc-nested": {
+          "trigger": "github_enterprise_personal_access_token",
+          "value": "configured"
+        },
+        "properties": {
+          "secret_type": {
+            "type": "string",
+            "description": "Choose how to store the secret: Blindfolded Secret encrypts using F5 XC technology, Clear Secret stores as plain text.",
+            "x-f5xc-field": {
+              "inputType": "textbox",
+              "uiLabel": "Secret Type",
+              "apiProperty": "secret_type",
+              "advanced": false
+            },
+            "default": "Blindfolded Secret",
+            "x-f5xc-ui": {
+              "defaultValue": "Blindfolded Secret"
+            },
+            "enum": [
+              "Blindfolded Secret",
+              "Clear Secret"
+            ],
+            "minLength": 1
+          },
+          "secret_to_blindfold": {
+            "type": "string",
+            "description": "Enter the secret value (e.g., Personal Access Token) to be encrypted using F5 XC Blindfold technology.",
+            "x-f5xc-field": {
+              "inputType": "textbox",
+              "uiLabel": "Secret to Blindfold",
+              "apiProperty": "secret_to_blindfold",
+              "advanced": false
+            },
+            "x-f5xc-conditional": {
+              "field": "secret_type",
+              "value": "Blindfolded Secret"
+            },
+            "minLength": 1
+          }
+        },
+        "required": [
+          "secret_type",
+          "secret_to_blindfold"
+        ]
+      },
+      "gitlab_cloud_personal_access_token": {
+        "type": "object",
+        "description": "Configure the GitLab Cloud Personal Access Token for API authentication.",
+        "x-f5xc-nested": {
+          "trigger": "gitlab_cloud_personal_access_token",
+          "value": "configured"
+        },
+        "properties": {
+          "secret_type": {
+            "type": "string",
+            "description": "Choose how to store the secret: Blindfolded Secret encrypts using F5 XC technology, Clear Secret stores as plain text.",
+            "x-f5xc-field": {
+              "inputType": "textbox",
+              "uiLabel": "Secret Type",
+              "apiProperty": "secret_type",
+              "advanced": false
+            },
+            "default": "Blindfolded Secret",
+            "x-f5xc-ui": {
+              "defaultValue": "Blindfolded Secret"
+            },
+            "enum": [
+              "Blindfolded Secret",
+              "Clear Secret"
+            ],
+            "minLength": 1
+          },
+          "secret_to_blindfold": {
+            "type": "string",
+            "description": "Enter the secret value (e.g., Personal Access Token) to be encrypted using F5 XC Blindfold technology.",
+            "x-f5xc-field": {
+              "inputType": "textbox",
+              "uiLabel": "Secret to Blindfold",
+              "apiProperty": "secret_to_blindfold",
+              "advanced": false
+            },
+            "x-f5xc-conditional": {
+              "field": "secret_type",
+              "value": "Blindfolded Secret"
+            },
+            "minLength": 1
+          }
+        },
+        "required": [
+          "secret_type",
+          "secret_to_blindfold"
+        ]
+      },
+      "gitlab_enterprise_personal_access_token": {
+        "type": "object",
+        "description": "Configure the GitLab Enterprise Personal Access Token for API authentication.",
+        "x-f5xc-nested": {
+          "trigger": "gitlab_enterprise_personal_access_token",
+          "value": "configured"
+        },
+        "properties": {
+          "secret_type": {
+            "type": "string",
+            "description": "Choose how to store the secret: Blindfolded Secret encrypts using F5 XC technology, Clear Secret stores as plain text.",
+            "x-f5xc-field": {
+              "inputType": "textbox",
+              "uiLabel": "Secret Type",
+              "apiProperty": "secret_type",
+              "advanced": false
+            },
+            "default": "Blindfolded Secret",
+            "x-f5xc-ui": {
+              "defaultValue": "Blindfolded Secret"
+            },
+            "enum": [
+              "Blindfolded Secret",
+              "Clear Secret"
+            ],
+            "minLength": 1
+          },
+          "secret_to_blindfold": {
+            "type": "string",
+            "description": "Enter the secret value (e.g., Personal Access Token) to be encrypted using F5 XC Blindfold technology.",
+            "x-f5xc-field": {
+              "inputType": "textbox",
+              "uiLabel": "Secret to Blindfold",
+              "apiProperty": "secret_to_blindfold",
+              "advanced": false
+            },
+            "x-f5xc-conditional": {
+              "field": "secret_type",
+              "value": "Blindfolded Secret"
+            },
+            "minLength": 1
+          }
+        },
+        "required": [
+          "secret_type",
+          "secret_to_blindfold"
+        ]
+      },
+      "bitbucket_password": {
+        "type": "object",
+        "description": "Configure the BitBucket Cloud App Password for API authentication.",
+        "x-f5xc-nested": {
+          "trigger": "bitbucket_password",
+          "value": "configured"
+        },
+        "properties": {
+          "secret_type": {
+            "type": "string",
+            "description": "Choose how to store the secret: Blindfolded Secret encrypts using F5 XC technology, Clear Secret stores as plain text.",
+            "x-f5xc-field": {
+              "inputType": "textbox",
+              "uiLabel": "Secret Type",
+              "apiProperty": "secret_type",
+              "advanced": false
+            },
+            "default": "Blindfolded Secret",
+            "x-f5xc-ui": {
+              "defaultValue": "Blindfolded Secret"
+            },
+            "enum": [
+              "Blindfolded Secret",
+              "Clear Secret"
+            ],
+            "minLength": 1
+          },
+          "secret_to_blindfold": {
+            "type": "string",
+            "description": "Enter the secret value (e.g., Personal Access Token) to be encrypted using F5 XC Blindfold technology.",
+            "x-f5xc-field": {
+              "inputType": "textbox",
+              "uiLabel": "Secret to Blindfold",
+              "apiProperty": "secret_to_blindfold",
+              "advanced": false
+            },
+            "x-f5xc-conditional": {
+              "field": "secret_type",
+              "value": "Blindfolded Secret"
+            },
+            "minLength": 1
+          }
+        },
+        "required": [
+          "secret_type",
+          "secret_to_blindfold"
+        ]
+      },
+      "bitbucket_server_password": {
+        "type": "object",
+        "description": "Configure the BitBucket Server Password for API authentication.",
+        "x-f5xc-nested": {
+          "trigger": "bitbucket_server_password",
+          "value": "configured"
+        },
+        "properties": {
+          "secret_type": {
+            "type": "string",
+            "description": "Choose how to store the secret: Blindfolded Secret encrypts using F5 XC technology, Clear Secret stores as plain text.",
+            "x-f5xc-field": {
+              "inputType": "textbox",
+              "uiLabel": "Secret Type",
+              "apiProperty": "secret_type",
+              "advanced": false
+            },
+            "default": "Blindfolded Secret",
+            "x-f5xc-ui": {
+              "defaultValue": "Blindfolded Secret"
+            },
+            "enum": [
+              "Blindfolded Secret",
+              "Clear Secret"
+            ],
+            "minLength": 1
+          },
+          "action": {
+            "type": "string",
+            "description": "Action field",
+            "x-f5xc-field": {
+              "inputType": "textbox",
+              "uiLabel": "Action",
+              "apiProperty": "action",
+              "advanced": false
+            },
+            "default": "Blindfold New Secret",
+            "x-f5xc-ui": {
+              "defaultValue": "Blindfold New Secret"
+            },
+            "enum": [
+              "Blindfold New Secret"
+            ],
+            "x-f5xc-conditional": {
+              "field": "secret_type",
+              "value": "Blindfolded Secret"
+            },
+            "minLength": 1
+          },
+          "policy_type": {
+            "type": "string",
+            "description": "Policy Type field",
+            "x-f5xc-field": {
+              "inputType": "textbox",
+              "uiLabel": "Policy Type",
+              "apiProperty": "policy_type",
+              "advanced": false
+            },
+            "default": "Built-in",
+            "x-f5xc-ui": {
+              "defaultValue": "Built-in"
+            },
+            "enum": [
+              "Built-in"
+            ],
+            "x-f5xc-conditional": {
+              "field": "secret_type",
+              "value": "Blindfolded Secret"
+            }
+          },
+          "secret_to_blindfold": {
+            "type": "string",
+            "description": "Enter the secret value (e.g., Personal Access Token) to be encrypted using F5 XC Blindfold technology.",
+            "x-f5xc-field": {
+              "inputType": "textbox",
+              "uiLabel": "Secret to Blindfold",
+              "apiProperty": "secret_to_blindfold",
+              "advanced": false
+            },
+            "x-f5xc-conditional": {
+              "field": "secret_type",
+              "value": "Blindfolded Secret"
+            },
+            "minLength": 1
+          }
+        },
+        "required": [
+          "secret_type",
+          "action",
+          "secret_to_blindfold"
+        ]
+      },
+      "azure_repos_personal_access_token": {
+        "type": "object",
+        "description": "Configure the Azure Repos Personal Access Token for API authentication.",
+        "x-f5xc-nested": {
+          "trigger": "azure_repos_personal_access_token",
+          "value": "configured"
+        },
+        "properties": {
+          "secret_type": {
+            "type": "string",
+            "description": "Choose how to store the secret: Blindfolded Secret encrypts using F5 XC technology, Clear Secret stores as plain text.",
+            "x-f5xc-field": {
+              "inputType": "textbox",
+              "uiLabel": "Secret Type",
+              "apiProperty": "secret_type",
+              "advanced": false
+            },
+            "default": "Blindfolded Secret",
+            "x-f5xc-ui": {
+              "defaultValue": "Blindfolded Secret"
+            },
+            "enum": [
+              "Blindfolded Secret",
+              "Clear Secret"
+            ],
+            "minLength": 1
+          },
+          "secret_to_blindfold": {
+            "type": "string",
+            "description": "Enter the secret value (e.g., Personal Access Token) to be encrypted using F5 XC Blindfold technology.",
+            "x-f5xc-field": {
+              "inputType": "textbox",
+              "uiLabel": "Secret to Blindfold",
+              "apiProperty": "secret_to_blindfold",
+              "advanced": false
+            },
+            "x-f5xc-conditional": {
+              "field": "secret_type",
+              "value": "Blindfolded Secret"
+            },
+            "minLength": 1
+          }
+        },
+        "required": [
+          "secret_type",
+          "secret_to_blindfold"
+        ]
+      }
+    },
+    "required": [
+      "name",
+      "code_base",
+      "github_username",
+      "github_enterprise_hostname",
+      "github_enterprise_username",
+      "gitlab_enterprise_url",
+      "bitbucket_username",
+      "bitbucket_server_url",
+      "bitbucket_server_username"
+    ],
+    "x-f5xc-metadata": {
+      "formUrl": "https://f5-amer-ent.console.ves.volterra.io/web/workspaces/web-app-and-api-protection/namespaces/default/manage/api_security/code_base_integration",
+      "resourceType": "code_base_integration",
+      "extractedAt": "1.0.0-stable",
+      "version": "1.0.0",
+      "extractionVersion": "3.0.0-unified",
+      "extractionMethod": "property-builder",
+      "nestedConfigurations": [
+        "github_personal_access_token",
+        "github_enterprise_personal_access_token",
+        "gitlab_cloud_personal_access_token",
+        "gitlab_enterprise_personal_access_token",
+        "bitbucket_password",
+        "bitbucket_server_password",
+        "azure_repos_personal_access_token"
+      ]
+    }
+  },
+  "selectors": {
+    "resourceType": "code_base_integration",
+    "fieldSelectors": {
+      "Name": {
+        "schemaPath": "properties.name",
+        "inputType": "textbox",
+        "required": true,
+        "advanced": false
+      },
+      "Labels": {
+        "schemaPath": "properties.labels",
+        "inputType": "object",
+        "required": false,
+        "advanced": false
+      },
+      "Description": {
+        "schemaPath": "properties.description",
+        "inputType": "textbox",
+        "required": false,
+        "advanced": false
+      },
+      "Code Base": {
+        "schemaPath": "properties.code_base",
+        "inputType": "textbox",
+        "required": true,
+        "advanced": false
+      },
+      "GitHub Username": {
+        "schemaPath": "properties.github_enterprise_username",
+        "inputType": "textbox",
+        "required": true,
+        "advanced": false
+      },
+      "GitHub Verify SSL": {
+        "schemaPath": "properties.github_verify_ssl",
+        "inputType": "checkbox",
+        "required": false,
+        "advanced": false
+      },
+      "GitHub Hostname": {
+        "schemaPath": "properties.github_enterprise_hostname",
+        "inputType": "textbox",
+        "required": true,
+        "advanced": false
+      },
+      "GitLab URL": {
+        "schemaPath": "properties.gitlab_enterprise_url",
+        "inputType": "textbox",
+        "required": true,
+        "advanced": false
+      },
+      "BitBucket Username": {
+        "schemaPath": "properties.bitbucket_username",
+        "inputType": "textbox",
+        "required": true,
+        "advanced": false
+      },
+      "BitBucket Server URL": {
+        "schemaPath": "properties.bitbucket_server_url",
+        "inputType": "textbox",
+        "required": true,
+        "advanced": false
+      },
+      "BitBucket Server Username": {
+        "schemaPath": "properties.bitbucket_server_username",
+        "inputType": "textbox",
+        "required": true,
+        "advanced": false
+      },
+      "Verify SSL": {
+        "schemaPath": "properties.bitbucket_server_verify_ssl",
+        "inputType": "checkbox",
+        "required": false,
+        "advanced": false
+      }
+    },
+    "nestedSelectors": {
+      "github_personal_access_token": {
+        "Secret Type": {
+          "schemaPath": "properties.github_personal_access_token.properties.secret_type",
+          "inputType": "textbox",
+          "required": true,
+          "advanced": false
+        },
+        "Action": {
+          "schemaPath": "properties.github_personal_access_token.properties.action",
+          "inputType": "textbox",
+          "required": true,
+          "advanced": false
+        },
+        "Policy Type": {
+          "schemaPath": "properties.github_personal_access_token.properties.policy_type",
+          "inputType": "textbox",
+          "required": false,
+          "advanced": false
+        },
+        "Secret to Blindfold": {
+          "schemaPath": "properties.github_personal_access_token.properties.secret_to_blindfold",
+          "inputType": "textbox",
+          "required": true,
+          "advanced": false
+        },
+        "Secret Value": {
+          "schemaPath": "properties.github_personal_access_token.properties.clear_secret_value",
+          "inputType": "textbox",
+          "required": true,
+          "advanced": false
+        }
+      },
+      "github_enterprise_personal_access_token": {
+        "Secret Type": {
+          "schemaPath": "properties.github_enterprise_personal_access_token.properties.secret_type",
+          "inputType": "textbox",
+          "required": true,
+          "advanced": false
+        },
+        "Secret to Blindfold": {
+          "schemaPath": "properties.github_enterprise_personal_access_token.properties.secret_to_blindfold",
+          "inputType": "textbox",
+          "required": true,
+          "advanced": false
+        }
+      },
+      "gitlab_cloud_personal_access_token": {
+        "Secret Type": {
+          "schemaPath": "properties.gitlab_cloud_personal_access_token.properties.secret_type",
+          "inputType": "textbox",
+          "required": true,
+          "advanced": false
+        },
+        "Secret to Blindfold": {
+          "schemaPath": "properties.gitlab_cloud_personal_access_token.properties.secret_to_blindfold",
+          "inputType": "textbox",
+          "required": true,
+          "advanced": false
+        }
+      },
+      "gitlab_enterprise_personal_access_token": {
+        "Secret Type": {
+          "schemaPath": "properties.gitlab_enterprise_personal_access_token.properties.secret_type",
+          "inputType": "textbox",
+          "required": true,
+          "advanced": false
+        },
+        "Secret to Blindfold": {
+          "schemaPath": "properties.gitlab_enterprise_personal_access_token.properties.secret_to_blindfold",
+          "inputType": "textbox",
+          "required": true,
+          "advanced": false
+        }
+      },
+      "bitbucket_password": {
+        "Secret Type": {
+          "schemaPath": "properties.bitbucket_password.properties.secret_type",
+          "inputType": "textbox",
+          "required": true,
+          "advanced": false
+        },
+        "Secret to Blindfold": {
+          "schemaPath": "properties.bitbucket_password.properties.secret_to_blindfold",
+          "inputType": "textbox",
+          "required": true,
+          "advanced": false
+        }
+      },
+      "bitbucket_server_password": {
+        "Secret Type": {
+          "schemaPath": "properties.bitbucket_server_password.properties.secret_type",
+          "inputType": "textbox",
+          "required": true,
+          "advanced": false
+        },
+        "Action": {
+          "schemaPath": "properties.bitbucket_server_password.properties.action",
+          "inputType": "textbox",
+          "required": true,
+          "advanced": false
+        },
+        "Policy Type": {
+          "schemaPath": "properties.bitbucket_server_password.properties.policy_type",
+          "inputType": "textbox",
+          "required": false,
+          "advanced": false
+        },
+        "Secret to Blindfold": {
+          "schemaPath": "properties.bitbucket_server_password.properties.secret_to_blindfold",
+          "inputType": "textbox",
+          "required": true,
+          "advanced": false
+        }
+      },
+      "azure_repos_personal_access_token": {
+        "Secret Type": {
+          "schemaPath": "properties.azure_repos_personal_access_token.properties.secret_type",
+          "inputType": "textbox",
+          "required": true,
+          "advanced": false
+        },
+        "Secret to Blindfold": {
+          "schemaPath": "properties.azure_repos_personal_access_token.properties.secret_to_blindfold",
+          "inputType": "textbox",
+          "required": true,
+          "advanced": false
+        }
+      }
+    },
+    "actionSelectors": {
+      "submit": "button:has(generic:text(\"Add Code_base_integration\"))",
+      "cancel": "button:has(generic:text(\"Cancel\"))",
+      "editGithubPersonalAccessToken": "link:text(\"Configure\")",
+      "applyConfig": "button:has(generic:text(\"Apply\"))",
+      "discardConfig": "button:has(generic:text(\"Discard\"))",
+      "editGithubEnterprisePersonalAccessToken": "link:text(\"Configure\")",
+      "editGitlabCloudPersonalAccessToken": "link:text(\"Configure\")",
+      "editGitlabEnterprisePersonalAccessToken": "link:text(\"Configure\")",
+      "editBitbucketPassword": "link:text(\"Configure\")",
+      "editBitbucketServerPassword": "link:text(\"Configure\")",
+      "editAzureReposPersonalAccessToken": "link:text(\"Configure\")"
+    }
+  },
+  "metadata": {
+    "formUrl": "https://f5-amer-ent.console.ves.volterra.io/web/workspaces/web-app-and-api-protection/namespaces/default/manage/api_security/code_base_integration",
+    "resourceType": "code_base_integration",
+    "extractedAt": "1.0.0-stable",
+    "version": "1.0.0",
+    "extractionVersion": "3.0.0-unified",
+    "coverage": {
+      "totalFields": 32,
+      "topLevelFields": 13,
+      "nestedFields": 19,
+      "nestedConfigurations": 7,
+      "fieldsWithSelectors": 32,
+      "fieldsWithTooltips": 14,
+      "fieldsWithDefaults": 14,
+      "percentage": 100
+    },
+    "warnings": []
+  }
+}

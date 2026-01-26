@@ -72,6 +72,48 @@ export interface ConditionalDependency {
 }
 
 /**
+ * Deferred features not yet implemented in current extraction phase
+ * Used to track MVP limitations and guide future enhancements
+ */
+export interface DeferredFeatures {
+  /** Array fields not yet modeled as arrays (e.g., origin_servers) */
+  arrayFields?: string[];
+  /** API reference fields using placeholder enums instead of live API lookups */
+  apiReferences?: Array<{
+    /** Field name (e.g., "health_check_reference") */
+    field: string;
+    /** Referenced resource type (e.g., "healthcheck") */
+    resourceType: string;
+    /** API endpoint path for fetching valid values */
+    apiPath: string;
+  }>;
+  /** Fields requiring deeper nesting than currently supported (>2 levels) */
+  deepNesting?: string[];
+}
+
+/**
+ * API discovery status tracking
+ * Tracks whether API discovery was attempted and the resolution status of API reference fields
+ */
+export interface ApiDiscoveryStatus {
+  /** Whether API discovery was enabled for this extraction */
+  enabled: boolean;
+  /** API reference fields and their resolution status */
+  references: Array<{
+    /** Field name (e.g., "health_check") */
+    field: string;
+    /** Referenced resource type (e.g., "healthcheck") */
+    resourceType: string;
+    /** true if API succeeded, false if fallback used */
+    resolved: boolean;
+    /** ISO timestamp if resolved successfully */
+    lastFetched?: string;
+    /** Whether placeholder fallback values were used */
+    fallbackUsed?: boolean;
+  }>;
+}
+
+/**
  * Metadata about an extracted schema
  */
 export interface SchemaMetadata {
@@ -79,16 +121,24 @@ export interface SchemaMetadata {
   formUrl: string;
   /** Resource type (e.g., 'healthcheck', 'origin_pool') */
   resourceType: string;
-  /** Timestamp of extraction */
+  /** ISO timestamp of extraction for idempotency tracking */
   extractedAt: string;
   /** Schema version */
   version: string;
+  /** Extraction script version for reproducibility */
+  extractionVersion: string;
+  /** F5 XC namespace for API operations */
+  namespace?: string;
   /** Fields that require "Show Advanced Fields" toggle */
   advancedFields?: string[];
   /** Nested configuration sections (e.g., "Edit HTTP Configuration") */
   nestedConfigurations?: NestedConfiguration[];
   /** Any warnings or limitations during extraction */
   warnings?: string[];
+  /** Deferred features not yet implemented (MVP tracking) */
+  deferredFeatures?: DeferredFeatures;
+  /** API discovery status and reference field resolution tracking */
+  apiDiscovery?: ApiDiscoveryStatus;
 }
 
 /**
@@ -223,6 +273,14 @@ export interface JSONSchemaProperty {
     minimumConfiguration?: boolean;
     /** Required for API submission */
     requiredForAPI?: boolean;
+    /** Whether this is an API reference field (dropdown populated from API) */
+    isAPIReference?: boolean;
+    /** Referenced resource type if isAPIReference is true */
+    referencedResourceType?: string;
+    /** Uses placeholder enum instead of live API values (Phase 1 MVP) */
+    usesPlaceholder?: boolean;
+    /** Timestamp when API values were last fetched (Phase 3) */
+    lastFetched?: string;
   };
 }
 
@@ -384,4 +442,130 @@ export interface SchemaExtractionErrorDetails {
   context?: any;
   /** Recovery suggestions */
   suggestions?: string[];
+}
+
+/**
+ * Global configuration from field-mappings.yaml v2.0
+ * Contains settings shared across all resource types
+ */
+export interface GlobalConfig {
+  /** Configuration file version */
+  version: string;
+  /** API reference configuration for dynamic enums */
+  api_references: Record<string, ApiReferenceConfig>;
+  /** Default settings for extraction and export */
+  defaults: {
+    /** Extraction behavior defaults */
+    extraction: {
+      maxNestingDepth: number;
+      domStabilizationTimeout: number;
+      captureScreenshots: boolean;
+      validateSchema: boolean;
+      expandAdvancedFields: boolean;
+      extractNestedConfigs: boolean;
+    };
+    /** Export behavior defaults */
+    export: {
+      outputDir: string;
+      includeSelectors: boolean;
+      includeReport: boolean;
+    };
+  };
+}
+
+/**
+ * API reference configuration for fetching dynamic enum values
+ */
+export interface ApiReferenceConfig {
+  /** API endpoint path */
+  api_path: string;
+  /** Field containing the value */
+  value_field: string;
+  /** Whether to cache results */
+  cacheable: boolean;
+  /** Cache TTL in seconds */
+  cache_ttl: number;
+  /** Fallback placeholder values if API fails */
+  placeholder_fallback: string[];
+  /** Description of this reference */
+  description?: string;
+}
+
+/**
+ * Resource-specific configuration from field-mappings.yaml v2.0
+ */
+export interface ResourceConfig {
+  /** Resource type identifier */
+  resourceType: string;
+  /** Human-readable description */
+  description: string;
+  /** API type identifier */
+  api_type: string;
+  /** Resource metadata */
+  metadata?: {
+    formUrl?: string;
+    formTitle?: string;
+    complexity?: number;
+  };
+  /** Field mappings (UI to API property paths) */
+  field_mappings?: Record<string, string>;
+  /** Discriminator fields for oneOf relationships */
+  discriminators?: Array<{
+    field: string;
+    api_property: string;
+    options: Record<string, { api_path?: string; nested_config?: any }>;
+  }>;
+  /** Array field configurations */
+  arrays?: Array<{
+    field: string;
+    api_property: string;
+    min_items?: number;
+    max_items?: number;
+    add_button_text?: string;
+    item_discriminator?: string;
+    description?: string;
+    item_types?: Record<string, { api_path?: string; fields?: Record<string, string>; required?: string[]; description?: string }>;
+  }>;
+  /** Validation rules */
+  validation_rules?: {
+    required_api_fields?: string[];
+    mutually_exclusive?: string[][];
+    field_constraints?: Record<string, {
+      type?: string;
+      min?: number;
+      max?: number;
+      min_items?: number;
+      max_items?: number;
+    }>;
+  };
+  /** API reference fields */
+  reference_fields?: Array<{
+    field: string;
+    type: string;
+    api_property: string;
+    reference_type: string;
+    required: boolean;
+    description?: string;
+    fallback_behavior?: string;
+  }>;
+  /** Nested configuration mappings */
+  nested_configs?: Record<string, any>;
+  /** Merged global defaults */
+  defaults?: {
+    extraction: {
+      maxNestingDepth: number;
+      domStabilizationTimeout: number;
+      captureScreenshots: boolean;
+      validateSchema: boolean;
+      expandAdvancedFields: boolean;
+      extractNestedConfigs: boolean;
+    };
+    export: {
+      outputDir: string;
+      includeSelectors: boolean;
+      includeReport: boolean;
+    };
+  };
+  /** API references from global config */
+  globalApiReferences?: Record<string, ApiReferenceConfig>;
 }

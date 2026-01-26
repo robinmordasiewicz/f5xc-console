@@ -83,7 +83,7 @@ export interface FormValidationError {
  */
 export interface FormInstruction {
   /** Instruction type */
-  type: 'navigate_tab' | 'expand_section' | 'fill_field' | 'click_button' | 'select_option' | 'toggle_checkbox';
+  type: 'navigate_tab' | 'expand_section' | 'fill_field' | 'click_button' | 'select_option' | 'toggle_checkbox' | 'handle_dialog';
   /** Target element UID (from snapshot) */
   target_uid?: string;
   /** Human-readable description */
@@ -94,6 +94,10 @@ export interface FormInstruction {
   field?: FormField;
   /** Whether instruction is required */
   required: boolean;
+  /** Dialog action (for handle_dialog type) */
+  dialogAction?: 'accept' | 'dismiss';
+  /** Text for prompt dialogs */
+  promptText?: string;
 }
 
 /**
@@ -650,6 +654,66 @@ export class FormHandler {
       description: `Click "${submitButton.name}" button to submit form`,
       required: true,
     };
+  }
+
+  /**
+   * Generate MCP instruction to handle a browser dialog
+   * Used for alerts, confirms, and prompts that may appear during form operations
+   */
+  generateHandleDialogInstruction(
+    action: 'accept' | 'dismiss',
+    promptText?: string
+  ): Record<string, unknown> {
+    const params: Record<string, unknown> = { action };
+
+    if (promptText) {
+      params.text = promptText;
+    }
+
+    return {
+      tool: 'mcp__chrome-devtools__handle_dialog',
+      params,
+      description: `${action === 'accept' ? 'Accept' : 'Dismiss'} browser dialog${promptText ? ` with text: "${promptText}"` : ''}`,
+      expectedOutcome: 'Dialog handled successfully',
+    };
+  }
+
+  /**
+   * Generate submit with dialog handling
+   * Useful when form submission triggers a confirmation dialog
+   */
+  async generateSubmitWithDialogHandling(
+    snapshot: ParsedSnapshot,
+    expectDialog: boolean = true,
+    acceptDialog: boolean = true,
+    promptText?: string
+  ): Promise<Record<string, unknown>[]> {
+    const instructions: Record<string, unknown>[] = [];
+
+    // First, generate submit instruction
+    const submitInstruction = this.generateSubmitInstruction(snapshot);
+    if (!submitInstruction) {
+      return instructions;
+    }
+
+    // Convert to MCP instruction
+    instructions.push({
+      tool: 'mcp__chrome-devtools__click',
+      params: { uid: submitInstruction.target_uid },
+      description: submitInstruction.description,
+      expectedOutcome: 'Submit button clicked',
+    });
+
+    // If we expect a dialog, add dialog handling
+    if (expectDialog) {
+      const dialogInstruction = this.generateHandleDialogInstruction(
+        acceptDialog ? 'accept' : 'dismiss',
+        promptText
+      );
+      instructions.push(dialogInstruction);
+    }
+
+    return instructions;
   }
 
   /**

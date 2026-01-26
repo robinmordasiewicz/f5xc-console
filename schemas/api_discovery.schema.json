@@ -1,0 +1,169 @@
+{
+  "schema": {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "F5 XC API Discovery Configuration",
+    "description": "JSON Schema for F5 Distributed Cloud API Discovery resource with UI tooltips, defaults, and nested configurations",
+    "type": "object",
+    "properties": {
+      "name": {
+        "type": "string",
+        "description": "The configuration object will be created with name. It has to be unique within the namespace.\nThe value of name has to follow DNS-1035 format.",
+        "x-f5xc-field": {
+          "inputType": "textbox",
+          "uiLabel": "Name",
+          "apiProperty": "name",
+          "advanced": false
+        },
+        "minLength": 1,
+        "maxLength": 63,
+        "pattern": "^[a-z][a-z0-9-]*[a-z0-9]$",
+        "x-f5xc-pattern-description": "Must start with lowercase letter, contain only lowercase letters, numbers, and hyphens, and end with letter or number"
+      },
+      "labels": {
+        "type": "object",
+        "description": "Map of string keys and values that can be used to organize and categorize\n(scope and select) objects as chosen by the user. Values specified here will be used\nby selector expression",
+        "x-f5xc-field": {
+          "inputType": "object",
+          "uiLabel": "Labels",
+          "apiProperty": "labels",
+          "advanced": false
+        },
+        "x-f5xc-ui": {
+          "placeholder": "Add Label"
+        }
+      },
+      "description": {
+        "type": "string",
+        "description": "Human readable description for the object",
+        "x-f5xc-field": {
+          "inputType": "textbox",
+          "uiLabel": "Description",
+          "apiProperty": "description",
+          "advanced": false
+        }
+      },
+      "custom_authentication_types": {
+        "type": "object",
+        "description": "Configure custom authentication types for API discovery. Each item specifies a parameter type (query, header, cookie) and parameter name.",
+        "x-f5xc-nested": {
+          "trigger": "custom_authentication_types",
+          "value": "configured"
+        },
+        "properties": {
+          "custom_auth_type": {
+            "type": "array",
+            "description": "Custom Authentication Types field",
+            "x-f5xc-field": {
+              "inputType": "array",
+              "uiLabel": "Custom Authentication Types",
+              "apiProperty": "spec.custom_auth_config.custom_auth_type",
+              "advanced": false
+            },
+            "items": {
+              "type": "object",
+              "properties": {
+                "location": {
+                  "type": "string",
+                  "label": "Parameter Type",
+                  "description": "Where to look for the authentication parameter",
+                  "enum": [
+                    "QUERY",
+                    "HEADER",
+                    "COOKIE"
+                  ],
+                  "enumDescriptions": {
+                    "QUERY": "Query Parameter - Look for auth in URL query string",
+                    "HEADER": "Header - Look for auth in HTTP request header",
+                    "COOKIE": "Cookie - Look for auth in HTTP cookie"
+                  },
+                  "required": true
+                },
+                "name": {
+                  "type": "string",
+                  "label": "Parameter Name",
+                  "description": "Name of the parameter containing authentication",
+                  "minLength": 1,
+                  "maxLength": 256,
+                  "required": true
+                }
+              }
+            }
+          }
+        },
+        "required": []
+      }
+    },
+    "required": [
+      "name"
+    ],
+    "x-f5xc-metadata": {
+      "formUrl": "https://f5-amer-ent.console.ves.volterra.io/web/workspaces/web-app-and-api-protection/namespaces/default/manage/api_security/api_discovery",
+      "resourceType": "api_discovery",
+      "extractedAt": "1.0.0-stable",
+      "version": "1.0.0",
+      "extractionVersion": "3.0.0-unified",
+      "extractionMethod": "property-builder",
+      "nestedConfigurations": [
+        "custom_authentication_types"
+      ]
+    }
+  },
+  "selectors": {
+    "resourceType": "api_discovery",
+    "fieldSelectors": {
+      "Name": {
+        "schemaPath": "properties.name",
+        "inputType": "textbox",
+        "required": true,
+        "advanced": false
+      },
+      "Labels": {
+        "schemaPath": "properties.labels",
+        "inputType": "object",
+        "required": false,
+        "advanced": false
+      },
+      "Description": {
+        "schemaPath": "properties.description",
+        "inputType": "textbox",
+        "required": false,
+        "advanced": false
+      }
+    },
+    "nestedSelectors": {
+      "custom_authentication_types": {
+        "Custom Authentication Types": {
+          "schemaPath": "properties.custom_authentication_types.properties.custom_auth_type",
+          "inputType": "array",
+          "required": false,
+          "advanced": false
+        }
+      }
+    },
+    "actionSelectors": {
+      "submit": "button:has(generic:text(\"Add Api_discovery\"))",
+      "cancel": "button:has(generic:text(\"Cancel\"))",
+      "editCustomAuthenticationTypes": "link:text(\"Configure\")",
+      "applyConfig": "button:has(generic:text(\"Apply\"))",
+      "discardConfig": "button:has(generic:text(\"Discard\"))"
+    }
+  },
+  "metadata": {
+    "formUrl": "https://f5-amer-ent.console.ves.volterra.io/web/workspaces/web-app-and-api-protection/namespaces/default/manage/api_security/api_discovery",
+    "resourceType": "api_discovery",
+    "extractedAt": "1.0.0-stable",
+    "version": "1.0.0",
+    "extractionVersion": "3.0.0-unified",
+    "coverage": {
+      "totalFields": 4,
+      "topLevelFields": 3,
+      "nestedFields": 1,
+      "nestedConfigurations": 1,
+      "fieldsWithSelectors": 4,
+      "fieldsWithTooltips": 6,
+      "fieldsWithDefaults": 0,
+      "percentage": 100
+    },
+    "warnings": []
+  }
+}

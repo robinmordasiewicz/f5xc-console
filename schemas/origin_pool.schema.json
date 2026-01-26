@@ -1,0 +1,717 @@
+{
+  "schema": {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "F5 XC Origin Pool Configuration",
+    "description": "JSON Schema for F5 Distributed Cloud origin_pool resource with UI tooltips, defaults, and nested configurations",
+    "type": "object",
+    "properties": {
+      "name": {
+        "type": "string",
+        "description": "The configuration object will be created with name. It has to be unique within the namespace.\nThe value of name has to follow DNS-1035 format.",
+        "x-f5xc-field": {
+          "inputType": "textbox",
+          "uiLabel": "Name",
+          "apiProperty": "metadata.name",
+          "advanced": false
+        },
+        "minLength": 1,
+        "maxLength": 63,
+        "pattern": "^[a-z][a-z0-9-]*[a-z0-9]$",
+        "x-f5xc-pattern-description": "Must start with lowercase letter, contain only lowercase letters, numbers, and hyphens, and end with letter or number"
+      },
+      "labels": {
+        "type": "object",
+        "description": "Map of string keys and values that can be used to organize and categorize\n(scope and select) objects as chosen by the user.",
+        "x-f5xc-field": {
+          "inputType": "object",
+          "uiLabel": "Labels",
+          "apiProperty": "metadata.labels",
+          "advanced": false
+        },
+        "x-f5xc-ui": {
+          "placeholder": "Add Label"
+        }
+      },
+      "description": {
+        "type": "string",
+        "description": "Human readable description for the object.",
+        "x-f5xc-field": {
+          "inputType": "textbox",
+          "uiLabel": "Description",
+          "apiProperty": "metadata.description",
+          "advanced": false
+        },
+        "maxLength": 256
+      },
+      "port": {
+        "type": "number",
+        "description": "The port number to connect to on the origin server.\nThis is the default port for all origin servers in the pool.",
+        "x-f5xc-field": {
+          "inputType": "spinbutton",
+          "uiLabel": "Port",
+          "apiProperty": "port",
+          "advanced": false
+        },
+        "default": 80,
+        "x-f5xc-ui": {
+          "defaultValue": "80"
+        },
+        "minimum": 1,
+        "maximum": 65535
+      },
+      "tls_configuration": {
+        "type": "string",
+        "description": "TLS configuration for connections to origin servers.\nSelect Enable TLS to encrypt traffic between the load balancer and origin servers.",
+        "x-f5xc-field": {
+          "inputType": "textbox",
+          "uiLabel": "TLS Configuration",
+          "apiProperty": "tls_configuration",
+          "advanced": false
+        },
+        "default": "Disable TLS",
+        "x-f5xc-ui": {
+          "defaultValue": "Disable TLS"
+        },
+        "enum": [
+          "Disable TLS",
+          "Enable TLS"
+        ],
+        "x-f5xc-enum-descriptions": {
+          "Disable TLS": "Disable TLS for origin server connections.",
+          "Enable TLS": "Enable TLS for origin server connections. Requires TLS certificates."
+        },
+        "minLength": 1
+      },
+      "load_balancer_algorithm": {
+        "type": "string",
+        "description": "The algorithm used to select an origin server for each request.\nDetermines how traffic is distributed across origin servers.",
+        "x-f5xc-field": {
+          "inputType": "textbox",
+          "uiLabel": "Load Balancer Algorithm",
+          "apiProperty": "load_balancer_algorithm",
+          "advanced": false
+        },
+        "default": "Round Robin",
+        "x-f5xc-ui": {
+          "defaultValue": "Round Robin"
+        },
+        "enum": [
+          "Round Robin",
+          "Least Active",
+          "Ring Hash",
+          "Random"
+        ],
+        "x-f5xc-enum-descriptions": {
+          "Round Robin": "Distribute requests evenly across all origin servers.",
+          "Least Active": "Send requests to the origin server with the fewest active connections.",
+          "Ring Hash": "Use consistent hashing based on a hash policy to select origin servers.",
+          "Random": "Randomly select an origin server for each request."
+        }
+      },
+      "health_check": {
+        "type": "string",
+        "description": "Health check to use for this origin pool.\nThe health check monitors the availability of origin servers.",
+        "x-f5xc-field": {
+          "inputType": "textbox",
+          "uiLabel": "Health Check",
+          "apiProperty": "health_check",
+          "advanced": false
+        },
+        "enum": []
+      },
+      "use_tls": {
+        "type": "object",
+        "description": "TLS configuration for secure origin server connections.",
+        "x-f5xc-nested": {
+          "trigger": "tls_configuration",
+          "value": "Enable TLS"
+        },
+        "properties": {
+          "tls_certificates": {
+            "type": "string",
+            "description": "TLS certificates to use for origin server connections.",
+            "x-f5xc-field": {
+              "inputType": "textbox",
+              "uiLabel": "TLS Certificates",
+              "apiProperty": "tls_certificates",
+              "advanced": false
+            },
+            "enum": []
+          },
+          "tls_version": {
+            "type": "string",
+            "description": "Minimum TLS version to use for origin server connections.",
+            "x-f5xc-field": {
+              "inputType": "textbox",
+              "uiLabel": "TLS Version",
+              "apiProperty": "tls_version",
+              "advanced": false
+            },
+            "default": "TLS 1.2+",
+            "x-f5xc-ui": {
+              "defaultValue": "TLS 1.2+"
+            },
+            "enum": [
+              "TLS 1.0+",
+              "TLS 1.1+",
+              "TLS 1.2+",
+              "TLS 1.3"
+            ]
+          },
+          "server_name_indication": {
+            "type": "string",
+            "description": "Server Name Indication (SNI) to use in TLS handshake.\nUsed when the origin server hosts multiple domains.",
+            "x-f5xc-field": {
+              "inputType": "textbox",
+              "uiLabel": "Server Name Indication",
+              "apiProperty": "server_name_indication",
+              "advanced": false
+            },
+            "maxLength": 256,
+            "format": "hostname"
+          },
+          "skip_server_verification": {
+            "type": "boolean",
+            "description": "Skip verification of origin server TLS certificates.\nWARNING: This reduces security and should only be used for testing.",
+            "x-f5xc-field": {
+              "inputType": "checkbox",
+              "uiLabel": "Skip Server Verification",
+              "apiProperty": "skip_server_verification",
+              "advanced": true
+            },
+            "default": false,
+            "x-f5xc-ui": {
+              "defaultValue": "false"
+            }
+          }
+        },
+        "required": []
+      },
+      "ring_hash_config": {
+        "type": "object",
+        "description": "Hash policy configuration for Ring Hash load balancing.",
+        "x-f5xc-nested": {
+          "trigger": "load_balancer_algorithm",
+          "value": "Ring Hash"
+        },
+        "properties": {
+          "hash_policy": {
+            "type": "string",
+            "description": "The policy used to generate hash values for origin server selection.\nDetermines which attribute is used for consistent hashing.",
+            "x-f5xc-field": {
+              "inputType": "textbox",
+              "uiLabel": "Hash Policy",
+              "apiProperty": "hash_policy",
+              "advanced": false
+            },
+            "default": "Header Name",
+            "x-f5xc-ui": {
+              "defaultValue": "Header Name"
+            },
+            "enum": [
+              "Header Name",
+              "Cookie",
+              "Source IP"
+            ],
+            "x-f5xc-enum-descriptions": {
+              "Header Name": "Hash based on a specific HTTP header value.",
+              "Cookie": "Hash based on a specific cookie value.",
+              "Source IP": "Hash based on the source IP address of the client."
+            },
+            "minLength": 1
+          },
+          "header_name": {
+            "type": "string",
+            "description": "HTTP header name to use for hash calculation.",
+            "x-f5xc-field": {
+              "inputType": "textbox",
+              "uiLabel": "Header Name",
+              "apiProperty": "header_name",
+              "advanced": false
+            },
+            "x-f5xc-conditional": {
+              "field": "hash_policy",
+              "value": "Header Name"
+            },
+            "minLength": 1,
+            "maxLength": 256,
+            "pattern": "^[A-Za-z][A-Za-z0-9-]*$",
+            "x-f5xc-pattern-description": "HTTP header name (starts with letter, alphanumeric with hyphens)"
+          },
+          "cookie_name": {
+            "type": "string",
+            "description": "Cookie name to use for hash calculation.",
+            "x-f5xc-field": {
+              "inputType": "textbox",
+              "uiLabel": "Cookie Name",
+              "apiProperty": "cookie_name",
+              "advanced": false
+            },
+            "x-f5xc-conditional": {
+              "field": "hash_policy",
+              "value": "Cookie"
+            },
+            "minLength": 1,
+            "maxLength": 256,
+            "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+            "x-f5xc-pattern-description": "Cookie name (starts with letter or underscore, alphanumeric with underscores)"
+          }
+        },
+        "required": [
+          "hash_policy"
+        ]
+      },
+      "origin_servers": {
+        "type": "array",
+        "description": "List of origin servers that form this pool.\nAt least one origin server must be configured.",
+        "minItems": 1,
+        "maxItems": 100,
+        "items": {
+          "oneOf": [
+            {
+              "type": "object",
+              "properties": {
+                "origin_server_type": {
+                  "const": "Public DNS Name",
+                  "description": "When origin_server_type is Public DNS Name"
+                },
+                "dns_name": {
+                  "type": "string",
+                  "description": "Fully qualified domain name of the origin server.",
+                  "x-f5xc-field": {
+                    "inputType": "textbox",
+                    "uiLabel": "DNS Name",
+                    "apiProperty": "origin_servers[].public_name.dns_name",
+                    "advanced": false
+                  },
+                  "minLength": 1,
+                  "maxLength": 256,
+                  "format": "hostname"
+                },
+                "dns_refresh_interval": {
+                  "type": "number",
+                  "description": "Interval in seconds to refresh DNS resolution.",
+                  "x-f5xc-field": {
+                    "inputType": "spinbutton",
+                    "uiLabel": "DNS Refresh Interval",
+                    "apiProperty": "origin_servers[].public_name.refresh_interval",
+                    "advanced": true
+                  },
+                  "default": 60,
+                  "x-f5xc-ui": {
+                    "defaultValue": "60",
+                    "unit": "seconds"
+                  },
+                  "minimum": 0,
+                  "maximum": 604800
+                }
+              },
+              "required": [
+                "dns_name"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "origin_server_type": {
+                  "const": "K8s Service",
+                  "description": "When origin_server_type is K8s Service"
+                },
+                "service_name": {
+                  "type": "string",
+                  "description": "Name of the Kubernetes or Consul service.",
+                  "x-f5xc-field": {
+                    "inputType": "textbox",
+                    "uiLabel": "Service Name",
+                    "apiProperty": "origin_servers[].k8s_service.service_name",
+                    "advanced": false
+                  },
+                  "minLength": 1,
+                  "maxLength": 1024,
+                  "pattern": "^[a-zA-Z][a-zA-Z0-9.-]*(:.*)?$",
+                  "x-f5xc-pattern-description": "Service name with optional namespace and cluster-ID (servicename.namespace:cluster-ID)"
+                },
+                "site_locator": {
+                  "type": "string",
+                  "description": "Site where the origin server is located.",
+                  "x-f5xc-field": {
+                    "inputType": "textbox",
+                    "uiLabel": "Site Locator",
+                    "apiProperty": "origin_servers[].k8s_service.site_locator.site.name",
+                    "advanced": false
+                  },
+                  "minLength": 1,
+                  "maxLength": 63
+                },
+                "vk8s_networks": {
+                  "type": "string",
+                  "description": "Network to use for connecting to the Kubernetes service.",
+                  "x-f5xc-field": {
+                    "inputType": "textbox",
+                    "uiLabel": "vK8s Networks",
+                    "apiProperty": "origin_servers[].k8s_service",
+                    "advanced": false
+                  },
+                  "enum": [
+                    "Site Local Network",
+                    "Site Local Inside Network",
+                    "Outside Network"
+                  ]
+                },
+                "service_port": {
+                  "type": "number",
+                  "description": "Port of the Kubernetes service.",
+                  "x-f5xc-field": {
+                    "inputType": "spinbutton",
+                    "uiLabel": "Service Port",
+                    "apiProperty": "origin_servers[].k8s_service.service_port",
+                    "advanced": false
+                  },
+                  "minimum": 1,
+                  "maximum": 65535
+                }
+              },
+              "required": [
+                "service_name",
+                "site_locator"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "origin_server_type": {
+                  "const": "Private IP",
+                  "description": "When origin_server_type is Private IP"
+                },
+                "ip_address": {
+                  "type": "string",
+                  "description": "IP address of the origin server.",
+                  "x-f5xc-field": {
+                    "inputType": "textbox",
+                    "uiLabel": "IP Address",
+                    "apiProperty": "origin_servers[].private_ip.ip",
+                    "advanced": false
+                  },
+                  "minLength": 1,
+                  "maxLength": 1024,
+                  "format": "ipv4"
+                },
+                "site_locator": {
+                  "type": "string",
+                  "description": "Site where the origin server is located.",
+                  "x-f5xc-field": {
+                    "inputType": "textbox",
+                    "uiLabel": "Site Locator",
+                    "apiProperty": "origin_servers[].private_ip.site_locator.site.name",
+                    "advanced": false
+                  },
+                  "minLength": 1,
+                  "maxLength": 63
+                },
+                "network_choice": {
+                  "type": "string",
+                  "description": "Network to use for connecting to the origin server (inside or outside network).",
+                  "x-f5xc-field": {
+                    "inputType": "textbox",
+                    "uiLabel": "Network",
+                    "apiProperty": "origin_servers[].private_ip",
+                    "advanced": false
+                  },
+                  "default": "Outside Network",
+                  "x-f5xc-ui": {
+                    "defaultValue": "Outside Network"
+                  },
+                  "enum": [
+                    "Inside Network",
+                    "Outside Network"
+                  ]
+                }
+              },
+              "required": [
+                "ip_address",
+                "site_locator"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "origin_server_type": {
+                  "const": "Public IP",
+                  "description": "When origin_server_type is Public IP"
+                },
+                "ip_address": {
+                  "type": "string",
+                  "description": "IP address of the origin server.",
+                  "x-f5xc-field": {
+                    "inputType": "textbox",
+                    "uiLabel": "IP Address",
+                    "apiProperty": "origin_servers[].public_ip.ip",
+                    "advanced": false
+                  },
+                  "minLength": 1,
+                  "format": "ipv4"
+                }
+              },
+              "required": [
+                "ip_address"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "origin_server_type": {
+                  "const": "Consul Service",
+                  "description": "When origin_server_type is Consul Service"
+                },
+                "service_name": {
+                  "type": "string",
+                  "description": "Name of the Kubernetes or Consul service.",
+                  "x-f5xc-field": {
+                    "inputType": "textbox",
+                    "uiLabel": "Service Name",
+                    "apiProperty": "origin_servers[].consul_service.service_name",
+                    "advanced": false
+                  },
+                  "minLength": 1,
+                  "maxLength": 256,
+                  "pattern": "^[a-zA-Z][a-zA-Z0-9_-]*$",
+                  "x-f5xc-pattern-description": "Consul service name (alphanumeric with underscores and hyphens)"
+                },
+                "site_locator": {
+                  "type": "string",
+                  "description": "Site where the origin server is located.",
+                  "x-f5xc-field": {
+                    "inputType": "textbox",
+                    "uiLabel": "Site Locator",
+                    "apiProperty": "origin_servers[].consul_service.site_locator.site.name",
+                    "advanced": false
+                  },
+                  "minLength": 1,
+                  "maxLength": 63
+                },
+                "network_type": {
+                  "type": "string",
+                  "description": "Network type for Consul service discovery.",
+                  "x-f5xc-field": {
+                    "inputType": "textbox",
+                    "uiLabel": "Network Type",
+                    "apiProperty": "origin_servers[].consul_service.network",
+                    "advanced": false
+                  },
+                  "enum": [
+                    "Site Local Network",
+                    "Site Local Inside Network"
+                  ]
+                }
+              },
+              "required": [
+                "service_name",
+                "site_locator"
+              ]
+            }
+          ]
+        },
+        "x-f5xc-array": {
+          "addButtonLabel": "Add Origin Server",
+          "itemDiscriminator": "origin_server_type"
+        }
+      }
+    },
+    "required": [
+      "name",
+      "port",
+      "tls_configuration"
+    ],
+    "oneOf": [
+      {
+        "properties": {
+          "tls_configuration": {
+            "const": "Disable TLS"
+          }
+        },
+        "required": [
+          "tls_configuration"
+        ]
+      },
+      {
+        "properties": {
+          "tls_configuration": {
+            "const": "Enable TLS"
+          }
+        },
+        "required": [
+          "tls_configuration"
+        ]
+      },
+      {
+        "properties": {
+          "load_balancer_algorithm": {
+            "const": "Round Robin"
+          }
+        },
+        "required": [
+          "load_balancer_algorithm"
+        ]
+      },
+      {
+        "properties": {
+          "load_balancer_algorithm": {
+            "const": "Least Active"
+          }
+        },
+        "required": [
+          "load_balancer_algorithm"
+        ]
+      },
+      {
+        "properties": {
+          "load_balancer_algorithm": {
+            "const": "Ring Hash"
+          }
+        },
+        "required": [
+          "load_balancer_algorithm"
+        ]
+      },
+      {
+        "properties": {
+          "load_balancer_algorithm": {
+            "const": "Random"
+          }
+        },
+        "required": [
+          "load_balancer_algorithm"
+        ]
+      }
+    ],
+    "x-f5xc-metadata": {
+      "formUrl": "https://f5-amer-ent.console.ves.volterra.io/web/workspaces/web-app-and-api-protection/namespaces/default/manage/load_balancers/origin_pools",
+      "resourceType": "origin_pool",
+      "extractedAt": "3.1.0-stable",
+      "version": "3.1.0",
+      "extractionVersion": "3.0.0-unified",
+      "extractionMethod": "property-builder",
+      "nestedConfigurations": [
+        "use_tls",
+        "ring_hash_config"
+      ]
+    }
+  },
+  "selectors": {
+    "resourceType": "origin_pool",
+    "fieldSelectors": {
+      "Name": {
+        "schemaPath": "properties.name",
+        "inputType": "textbox",
+        "required": true,
+        "advanced": false
+      },
+      "Labels": {
+        "schemaPath": "properties.labels",
+        "inputType": "object",
+        "required": false,
+        "advanced": false
+      },
+      "Description": {
+        "schemaPath": "properties.description",
+        "inputType": "textbox",
+        "required": false,
+        "advanced": false
+      },
+      "Port": {
+        "schemaPath": "properties.port",
+        "inputType": "spinbutton",
+        "required": true,
+        "advanced": false
+      },
+      "TLS Configuration": {
+        "schemaPath": "properties.tls_configuration",
+        "inputType": "textbox",
+        "required": true,
+        "advanced": false
+      },
+      "Load Balancer Algorithm": {
+        "schemaPath": "properties.load_balancer_algorithm",
+        "inputType": "textbox",
+        "required": false,
+        "advanced": false
+      },
+      "Health Check": {
+        "schemaPath": "properties.health_check",
+        "inputType": "textbox",
+        "required": false,
+        "advanced": false
+      }
+    },
+    "nestedSelectors": {
+      "use_tls": {
+        "TLS Certificates": {
+          "schemaPath": "properties.use_tls.properties.tls_certificates",
+          "inputType": "textbox",
+          "required": false,
+          "advanced": false
+        },
+        "TLS Version": {
+          "schemaPath": "properties.use_tls.properties.tls_version",
+          "inputType": "textbox",
+          "required": false,
+          "advanced": false
+        },
+        "Server Name Indication": {
+          "schemaPath": "properties.use_tls.properties.server_name_indication",
+          "inputType": "textbox",
+          "required": false,
+          "advanced": false
+        },
+        "Skip Server Verification": {
+          "schemaPath": "properties.use_tls.properties.skip_server_verification",
+          "inputType": "checkbox",
+          "required": false,
+          "advanced": true
+        }
+      },
+      "ring_hash_config": {
+        "Hash Policy": {
+          "schemaPath": "properties.ring_hash_config.properties.hash_policy",
+          "inputType": "textbox",
+          "required": true,
+          "advanced": false
+        },
+        "Header Name": {
+          "schemaPath": "properties.ring_hash_config.properties.header_name",
+          "inputType": "textbox",
+          "required": false,
+          "advanced": false
+        },
+        "Cookie Name": {
+          "schemaPath": "properties.ring_hash_config.properties.cookie_name",
+          "inputType": "textbox",
+          "required": false,
+          "advanced": false
+        }
+      }
+    },
+    "actionSelectors": {
+      "submit": "button:has(generic:text(\"Add Origin_pool\"))",
+      "cancel": "button:has(generic:text(\"Cancel\"))"
+    }
+  },
+  "metadata": {
+    "formUrl": "https://f5-amer-ent.console.ves.volterra.io/web/workspaces/web-app-and-api-protection/namespaces/default/manage/load_balancers/origin_pools",
+    "resourceType": "origin_pool",
+    "extractedAt": "3.1.0-stable",
+    "version": "3.1.0",
+    "extractionVersion": "3.0.0-unified",
+    "coverage": {
+      "totalFields": 27,
+      "topLevelFields": 7,
+      "nestedFields": 20,
+      "nestedConfigurations": 2,
+      "fieldsWithSelectors": 27,
+      "fieldsWithTooltips": 25,
+      "fieldsWithDefaults": 6,
+      "percentage": 100
+    },
+    "warnings": []
+  }
+}
